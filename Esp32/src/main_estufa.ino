@@ -36,14 +36,14 @@
 
 
 static uint64_t ESP_UID = ESP.getEfuseMac();
-
+char UID[16];
 DoubleResetDetector* drd;
 
 // SSID and PW for Config Portal
-String ssid = "ESP_" + String((unsigned long)ESP_UID, HEX);
+String ssid = "ESP_" + String((unsigned int)ESP_UID, HEX);
 const char *password = "default";
 
-TOTP totp = TOTP((uint8_t* )&ESP_UID, 8);
+TOTP *totp ;//= TOTP((uint8_t* )&ESP_UID, 8);
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP);// By default 'pool.ntp.org' is used with 60 seconds update interval and no offset
 char* totpcode = NULL;
@@ -123,7 +123,7 @@ class Motor {
 class PhotoSensor {
 
     public:
-        //               33
+        //               34
         PhotoSensor(int pin){
             this->pin = pin;
         };
@@ -269,7 +269,7 @@ void callback(char *topic, byte *payload, unsigned int length){
 void printValues(){
 
     if ((WiFi.status() == WL_CONNECTED)) {
-        Serial.println("Online");
+        //Serial.println("Online");
         // HTTPClient http;
 
         // http.begin("https://jsonplaceholder.typicode.com/posts?userId=1", root_ca); //Specify the URL and certificate
@@ -306,6 +306,9 @@ void printValues(){
 
 //############################################################################################
 void setup(){
+    sprintf(UID,"%llu", ESP_UID);
+    totp = new TOTP((uint8_t*) UID, 16);
+
     // put your setup code here, to run once:
     // initialize the LED digital pin as an output.
     pinMode(PIN_LED, OUTPUT);
@@ -326,8 +329,7 @@ void setup(){
     String Router_Pass = ESP_wifiManager.WiFi_Pass();
 
     //Remove this line if you do not want to see WiFi password printed
-    Serial.println("Stored: SSID = " + Router_SSID + ", Pass = " +
-        Router_Pass);
+    Serial.println("Stored: SSID = " + Router_SSID + ", Pass = " + Router_Pass);
 
     // SSID to uppercase
     ssid.toUpperCase();
@@ -397,10 +399,10 @@ void setup(){
     client.setCallback(callback);
 
     //Declaracao dos pinos dos respectivos sensores
-    motor = new Motor(200, 12, 27, 14, 26);
-    photo = new PhotoSensor(33);
+    photo = new PhotoSensor(34);
     moisture = new MoisterSensor(32);
     air = new AirSensor(25, DHT11);
+    motor = new Motor(200, 12, 27, 14, 26);
     Serial.println("Setup done");
     
 }
@@ -410,7 +412,7 @@ void loop(){
     
   	timeClient.update();
     
-    totpcode = totp.getCode(timeClient.getEpochTime());
+    totpcode = totp->getCode(timeClient.getEpochTime());
 
     if (counter == 160000){
         Serial.println(totpcode);
@@ -429,8 +431,11 @@ void loop(){
 		digitalWrite(PIN_RELAY, LOW); // Turn the LED off by making the voltage HIGH
 	}
 
+    Serial.printf("ESP_UID: %s\n", UID);
+    Serial.println(totpcode);
     if ((millis() - lastMillis) > POSTTIME){ //PASSOU um minuto
         printValues();
+        delay(5000);
         lastMillis = millis();
     }
 }
