@@ -9,12 +9,12 @@ $(document).ready(function(){
         }
         else{
             $.ajax({
-                url:  "localhost:3000"+"/"+"login",
+                url:  "http://localhost:3000"+"/"+"login",
                 type: 'POST',
                 dataType : 'json',
                 contentType: "application/json; charset=utf-8",
                 crossDomain:true,
-                data:JSON.stringify({"username":user,"password":pssw}),
+                data:JSON.stringify({"username":user,"pass":pssw}),
                 success:function(data){
                     console.log(data);
                     id_user: data.userId;

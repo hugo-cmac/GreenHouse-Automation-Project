@@ -66,8 +66,8 @@ module.exports={
 			let err = { code: status.BAD_REQUEST, message: "Please provide utilizador" };
 			return callback(err, null);
 		} else {
-			let query = "select * from User where mail = ?";
-			let table = [req.body.mail];
+			let query = "select * from User where username = ?";
+			let table = [req.body.username];
 			query = mysql.format(query, table);
 			pool.query(query, function (error, results) {
 				if (error) {
