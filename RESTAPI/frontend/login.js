@@ -17,8 +17,8 @@ $(document).ready(function(){
                 data:JSON.stringify({"username":user,"pass":pssw}),
                 success:function(data){
                     console.log(data);
-                    id_user: data.userId;
-                    localStorage.setItem('userId',data.userId);
+                    localStorage.setItem('userId',data.username);
+                    console.log(data.username);
                     //localStorage.setItem('userIdgrande',data.userIdgrande);
                     alert("Login efetuado.\nA redirecionar...")
                     window.location.href = "admin.html";
