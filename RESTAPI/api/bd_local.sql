@@ -73,15 +73,23 @@ delimiter ;
 delimiter //
 create procedure insert_profile(in idprof int(10), desi varchar(255), temin int(10), temax int(10), ham int(10), hama int(10), hem int(10), hema int(10))
 begin
-	insert into Device(id_perfil,designacao,temp_min,temp_max,hum_air_min,hum_air_max,hum_earth_min,hum_earth_max)
-		values(idprof,desi,temin,temax,ham,hama,hem,hema);
+	insert into Device(designacao,temp_min,temp_max,hum_air_min,hum_air_max,hum_earth_min,hum_earth_max)
+		values(desi,temin,temax,ham,hama,hem,hema);
 end//
 delimiter ;
 
 delimiter //
-create procedure insert_history(in idhis int(10), tim varchar(255), temper int(10), hume int(10), lumi int(10), pum int(10), mto int(10))
+create procedure insert_history(in iddev int(10), tim varchar(255), temper int(10), hume int(10), lumi int(10), pum int(10), mto int(10))
 begin
-	insert into History(id_history,timestamp,temp, hum_air,hum_earth,luminosity,pump,motor)
-		values(idhis,tim,temper,hume,lumi,pum,mto);
+	insert into History(id_device,timestamp,temp, hum_air,hum_earth,luminosity,pump,motor)
+		values(iddev,tim,temper,hume,lumi,pum,mto);
+end//
+delimiter ;
+
+delimiter //
+create procedure insert_reldevice(in idus int(10), iddev int(10), desi varchar(255))
+begin
+	insert into rel_user_device(id_user,id_device,designacao)
+		values(idus,iddev,desi);
 end//
 delimiter ;

@@ -249,12 +249,12 @@ module.exports={
 	//PROFILE
 
 	insertProfile: function (req, callback) {
-		if (!req.body. || !req.body.) {
-			let err = { code: status.BAD_REQUEST, message: "Please provide a device" };
+		if (!req.body.designacao || !req.body.temp_min || !req.body.temp_max || !req.body.hum_air_min || !req.body.hum_air_max || !req.body.hum_earth_min || !req.body.hum_earth_max) {
+			let err = { code: status.BAD_REQUEST, message: "Please provide a profile" };
 			return callback(err, null);
 		} else {
-			let query = "call insert_device(?)";
-			let table = [req.body.serial];
+			let query = "call insert_profile(?,?,?,?,?,?,?)";
+			let table = [req.body.designacao,req.body.temp_min,req.body.temp_max,req.body.hum_air_min,req.body.hum_air_max,req.body.hum_earth_min,req.body.hum_earth_max];
 			query = mysql.format(query, table);
 			pool.query(query, function (error, results) {
 				if (error) {
@@ -269,7 +269,7 @@ module.exports={
 	},
 
 	getProfile: function (callback) {
-		pool.query('SELECT id_device, serial FROM Device', function (error, results) {
+		pool.query('SELECT id_perfil,designacao,temp_min,temp_max,hum_air_min,hum_air_max,hum_earth_min,hum_earth_max FROM Perfil', function (error, results) {
 			if (error) {
 				let err = { code: status.INTERNAL_SERVER_ERROR, message: error };
 				return callback(err, null);
@@ -279,9 +279,10 @@ module.exports={
 			}
 		});
 	},
+
 	getProfileById: function (req, callback) {
-		let query = "SELECT id_device, serial FROM Device WHERE id_device = ?";
-		let table = [req.params.id_device];
+		let query = "id_perfil,designacao,temp_min,temp_max,hum_air_min,hum_air_max,hum_earth_min,hum_earth_max FROM Perfil WHERE id_perfil = ?";
+		let table = [req.params.id_perfil];
 		query = mysql.format(query, table);
 		pool.query(query, function (error, results) {
 			if (error) {
@@ -300,8 +301,155 @@ module.exports={
 	},
 
 	deleteProfile: function (req, callback) {
-		let query = "DELETE from Device WHERE id_device = ?";
-		let table = [req.params.id_device];
+		let query = "DELETE from Perfil WHERE id_perfil = ?";
+		let table = [req.params.id_perfil];
+		query = mysql.format(query, table);
+		pool.query(query, function (error, results) {
+			if (error) {
+				err = { code: status.INTERNAL_SERVER_ERROR, message: error };
+				return callback(err, null);
+			}
+			else {
+				if (results.affectedRows > 0)
+					return callback(null, results);
+				else {
+					err = { code: status.NOT_FOUND, message: "Profile doesn't exist" };
+					return callback(err, null);
+				}
+			}
+		});
+	},
+
+	//HISTORY
+
+	insertHistory: function (req, callback) {
+		if (!req.body.id_device || !req.body.timestamp || !req.body.temp || !req.body.hum_air || !req.body.hum_earth || !req.body.luminosity || !req.body.pump || !req.body.motor) {
+			let err = { code: status.BAD_REQUEST, message: "Please provide a history device" };
+			return callback(err, null);
+		} else {
+			let query = "call insert_history(?,?,?,?,?,?,?)";
+			let table = [req.body.id_device,req.body.timestamp,req.body.temp,req.body.hum_air,req.body.hum_earth,req.body.luminosity,req.body.pump];
+			query = mysql.format(query, table);
+			pool.query(query, function (error, results) {
+				if (error) {
+					err = { code: status.INTERNAL_SERVER_ERROR, message: error };
+					return callback(err, null);
+				}
+				else {
+					return callback(null, results);
+				}
+			});
+		}
+	},
+
+	getHistory: function (callback) {
+		pool.query('SELECT id_history,id_device,timestamp,temp,hum_air,hum_earth,luminosity,pump,motor FROM History', function (error, results) {
+			if (error) {
+				let err = { code: status.INTERNAL_SERVER_ERROR, message: error };
+				return callback(err, null);
+			}
+			else {
+				return callback(null, results);
+			}
+		});
+	},
+
+	getHistoryById: function (req, callback) {
+		let query = "SELECT id_history,id_device,timestamp,temp,hum_air,hum_earth,luminosity,pump,motor FROM History WHERE id_history = ?";
+		let table = [req.params.id_history];
+		query = mysql.format(query, table);
+		pool.query(query, function (error, results) {
+			if (error) {
+				err = { code: status.INTERNAL_SERVER_ERROR, message: error };
+				return callback(err, null);
+			}
+			else {
+				if (results.length > 0)
+					return callback(null, results);
+				else {
+					let err = { code: status.NOT_FOUND, message: "History doesn't exist" };
+					return callback(err, null);
+				}
+			}
+		});
+	},
+
+	deleteHistory: function (req, callback) {
+		let query = "DELETE from History WHERE id_history = ?";
+		let table = [req.params.id_history];
+		query = mysql.format(query, table);
+		pool.query(query, function (error, results) {
+			if (error) {
+				err = { code: status.INTERNAL_SERVER_ERROR, message: error };
+				return callback(err, null);
+			}
+			else {
+				if (results.affectedRows > 0)
+					return callback(null, results);
+				else {
+					err = { code: status.NOT_FOUND, message: "History doesn't exist" };
+					return callback(err, null);
+				}
+			}
+		});
+	},
+
+	//USER-DEVICE 
+
+	insertUSRDEV: function (req, callback) {
+		if (!req.body.id_user || !req.body.id_device || !req.body.designacao) {
+			let err = { code: status.BAD_REQUEST, message: "Please provide a relation" };
+			return callback(err, null);
+		} else {
+			let query = "call insert_reldevice(?,?,?)";
+			let table = [req.body.id_user,req.body.id_device,req.body.designacao];
+			query = mysql.format(query, table);
+			pool.query(query, function (error, results) {
+				if (error) {
+					err = { code: status.INTERNAL_SERVER_ERROR, message: error };
+					return callback(err, null);
+				}
+				else {
+					return callback(null, results);
+				}
+			});
+		}
+	},
+
+	getUSRDEV: function (callback) {
+		pool.query('SELECT id_rel_user_device, id_user,id_device,designacao FROM rel_user_device', function (error, results) {
+			if (error) {
+				let err = { code: status.INTERNAL_SERVER_ERROR, message: error };
+				return callback(err, null);
+			}
+			else {
+				return callback(null, results);
+			}
+		});
+	},
+	getUSRDEVById: function (req, callback) {
+		let query = "SELECT id_rel_user_device, id_user,id_device,designacao FROM Device WHERE id_rel_user_device = ?";
+		let table = [req.params.id_rel_user_device];
+		query = mysql.format(query, table);
+		pool.query(query, function (error, results) {
+			if (error) {
+				err = { code: status.INTERNAL_SERVER_ERROR, message: error };
+				return callback(err, null);
+			}
+			else {
+				if (results.length > 0)
+					return callback(null, results);
+				else {
+					let err = { code: status.NOT_FOUND, message: "Device doesn't exist" };
+					return callback(err, null);
+				}
+			}
+		});
+	},
+
+	deleteUSRDEV: function (req, callback) {
+		let query = "DELETE from rel_user_device WHERE id_rel_user_device = ?";
+		let table = [req.params.id_rel_user_device];
 		query = mysql.format(query, table);
 		pool.query(query, function (error, results) {
 			if (error) {
@@ -318,6 +466,9 @@ module.exports={
 			}
 		});
 	},
+
+
+
 
 
 

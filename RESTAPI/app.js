@@ -186,9 +186,200 @@ app.delete('/devices/:id_device', verifyToken, function (req, res) {
 
 //HISTORY
 
+app.post('/history', function (req, res) {
+	servBD.insertHistory(req, function (error, results) {
+		if (error) {
+			res.status(error.code).send(error.message);
+		}
+		else {
+			return res.status(status.OK).send({ error: false, data: results, message: 'User logged in successfully' });
+		}
+	});
+});
+
+app.get('/history', verifyToken, function (req, res) {
+	// jwt.verify(req.token, "config.secret", (err, authData) => {
+	// 	if (err) {
+	// 		res.status(status.UNAUTHORIZED).send("Wrong token");
+	// 	} else {
+			servBD.getHistory(function (error, results) {
+				if (error) {
+					res.status(error.code).send(error.message);
+				}
+				else {
+					res.status(status.OK).send({ error: false, data: results, message: 'Utilizadores.' });
+				}
+			});
+	// 	}
+	// });
+});
+
+app.get('/history/:id_history', verifyToken, function (req, res) {
+	// jwt.verify(req.token, "config.secret", (err, authData) => {
+	// 	if (err) {
+	// 		res.status(status.UNAUTHORIZED).send("Wrong token");
+	// 	} else {
+			servBD.getHistoryById(req, function (error, results) {
+				if (error) {
+					res.status(error.code).send(error.message);
+				}
+				else {
+					return res.status(status.OK).send({ error: false, data: results, message: 'Utilizador.' });
+				}
+			});
+	// 	}
+	// });
+});
 
 
+app.delete('/history/:id_history', verifyToken, function (req, res) {
+	// jwt.verify(req.token, "config.secret", (err, authData) => {
+	// 	if (err) {
+	// 		res.status(status.UNAUTHORIZED).send("Wrong token");
+	// 	} else {
+			servBD.deleteHistory(req, function (error, results) {
+				if (error) {
+					res.status(error.code).send(error.message);
+				}
+				else {
+					return res.status(status.CREATED).send({ error: false, data: results, message: 'Utilizador deleted successfully' });
+				}
+			});
+	// 	}
+	// });
+});
 
+//PROFILES
+
+
+app.post('/profiles', function (req, res) {
+	servBD.insertProfile(req, function (error, results) {
+		if (error) {
+			res.status(error.code).send(error.message);
+		}
+		else {
+			return res.status(status.OK).send({ error: false, data: results, message: 'User logged in successfully' });
+		}
+	});
+});
+
+app.get('/profiles', verifyToken, function (req, res) {
+	// jwt.verify(req.token, "config.secret", (err, authData) => {
+	// 	if (err) {
+	// 		res.status(status.UNAUTHORIZED).send("Wrong token");
+	// 	} else {
+			servBD.getProfile(function (error, results) {
+				if (error) {
+					res.status(error.code).send(error.message);
+				}
+				else {
+					res.status(status.OK).send({ error: false, data: results, message: 'Utilizadores.' });
+				}
+			});
+	// 	}
+	// });
+});
+
+app.get('/profiles/:id_perfil', verifyToken, function (req, res) {
+	// jwt.verify(req.token, "config.secret", (err, authData) => {
+	// 	if (err) {
+	// 		res.status(status.UNAUTHORIZED).send("Wrong token");
+	// 	} else {
+			servBD.getProfileById(req, function (error, results) {
+				if (error) {
+					res.status(error.code).send(error.message);
+				}
+				else {
+					return res.status(status.OK).send({ error: false, data: results, message: 'Utilizador.' });
+				}
+			});
+	// 	}
+	// });
+});
+
+
+app.delete('/profiles/:id_perfil', verifyToken, function (req, res) {
+	// jwt.verify(req.token, "config.secret", (err, authData) => {
+	// 	if (err) {
+	// 		res.status(status.UNAUTHORIZED).send("Wrong token");
+	// 	} else {
+			servBD.deleteProfile(req, function (error, results) {
+				if (error) {
+					res.status(error.code).send(error.message);
+				}
+				else {
+					return res.status(status.CREATED).send({ error: false, data: results, message: 'Utilizador deleted successfully' });
+				}
+			});
+	// 	}
+	// });
+});
+
+//USER-DEVICE
+
+
+app.post('/reluser', function (req, res) {
+	servBD.insertUSRDEV(req, function (error, results) {
+		if (error) {
+			res.status(error.code).send(error.message);
+		}
+		else {
+			return res.status(status.OK).send({ error: false, data: results, message: 'User logged in successfully' });
+		}
+	});
+});
+
+app.get('/reluser', verifyToken, function (req, res) {
+	// jwt.verify(req.token, "config.secret", (err, authData) => {
+	// 	if (err) {
+	// 		res.status(status.UNAUTHORIZED).send("Wrong token");
+	// 	} else {
+			servBD.getUSRDEV(function (error, results) {
+				if (error) {
+					res.status(error.code).send(error.message);
+				}
+				else {
+					res.status(status.OK).send({ error: false, data: results, message: 'Utilizadores.' });
+				}
+			});
+	// 	}
+	// });
+});
+
+app.get('/reluser/:id_rel_user_device', verifyToken, function (req, res) {
+	// jwt.verify(req.token, "config.secret", (err, authData) => {
+	// 	if (err) {
+	// 		res.status(status.UNAUTHORIZED).send("Wrong token");
+	// 	} else {
+			servBD.getUSRDEVById(req, function (error, results) {
+				if (error) {
+					res.status(error.code).send(error.message);
+				}
+				else {
+					return res.status(status.OK).send({ error: false, data: results, message: 'Utilizador.' });
+				}
+			});
+	// 	}
+	// });
+});
+
+
+app.delete('/reluser/:id_rel_user_device', verifyToken, function (req, res) {
+	// jwt.verify(req.token, "config.secret", (err, authData) => {
+	// 	if (err) {
+	// 		res.status(status.UNAUTHORIZED).send("Wrong token");
+	// 	} else {
+			servBD.deleteUSRDEV(req, function (error, results) {
+				if (error) {
+					res.status(error.code).send(error.message);
+				}
+				else {
+					return res.status(status.CREATED).send({ error: false, data: results, message: 'Utilizador deleted successfully' });
+				}
+			});
+	// 	}
+	// });
+});
 
 
 
