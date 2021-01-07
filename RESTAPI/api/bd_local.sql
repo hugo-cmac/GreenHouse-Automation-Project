@@ -93,3 +93,9 @@ begin
 		values(idus,iddev,desi);
 end//
 delimiter ;
+
+ALTER TABLE User AUTO_INCREMENT=0;
+ALTER TABLE Device AUTO_INCREMENT=0;
+ALTER TABLE History AUTO_INCREMENT=0;
+ALTER TABLE rel_user_device AUTO_INCREMENT=0;
+ALTER TABLE Perfil AUTO_INCREMENT=0;
