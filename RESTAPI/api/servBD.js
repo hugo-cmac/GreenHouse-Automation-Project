@@ -88,7 +88,7 @@ module.exports={
 						});
 						results[0].token = token;
 						results[0].auth = true;
-						console.log(JSON.stringify(results));
+						//console.log(JSON.stringify(results[0].username));
 						return callback(null, results[0]);
 					} else {
 						let err = { code: status.NOT_FOUND, message: "Utilizador doesn't exist" };
