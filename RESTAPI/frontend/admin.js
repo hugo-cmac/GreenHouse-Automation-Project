@@ -1,7 +1,7 @@
 $(document).ready(function(){
     
     $.ajax({
-		url: "localhost:3000/" + "files",
+		url: localStorage.getItem('base_url') + "files",
 		type: 'GET',
 		contentType: "application/json; charset=utf-8",
 		dataType: "json",

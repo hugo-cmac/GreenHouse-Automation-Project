@@ -9,7 +9,7 @@ $(document).ready(function(){
 			}
 			else{
 					$.ajax({
-							url: "http://localhost:3000"+"/"+"register",
+							url: localStorage.getItem('base_url')+"register",
 							type: 'POST',
 							dataType : 'json',
 							contentType: "application/json; charset=utf-8",
