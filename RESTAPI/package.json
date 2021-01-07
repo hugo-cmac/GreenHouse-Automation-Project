@@ -1,0 +1,25 @@
+{
+  "name": "rf-g9",
+  "version": "1.0.0",
+  "description": "Projeto RF - G9",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \\\"Error: no test specified\\\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "grupo9",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "connect": "^3.7.0",
+    "express": "^4.17.1",
+    "jquery": "^3.5.1",
+    "jsdom": "^16.4.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.11.9",
+    "morgan": "^1.10.0",
+    "mqtt": "^4.2.6",
+    "mysql": "^2.18.1",
+    "nodemon": "^2.0.6"
+  }
+}
