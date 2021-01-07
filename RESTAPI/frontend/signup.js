@@ -2,18 +2,19 @@ $(document).ready(function(){
 	jQuery.support.cors = true;
 	$('#register_btn').click(function (){
 			var user = $('#username').val();
+			var mail = $('#mail').val();
 			var pass = $('#pass').val();
-			if(user == '' || pass == ''){
+			if(user == '' || mail == '' || pass == ''){
 				alert("Preencha todos os dados.")
 			}
 			else{
 					$.ajax({
-							url: "http://192.168.137.1:3000/"+"users"+"/"+"signup",
+							url: "http://localhost:3000"+"/"+"register",
 							type: 'POST',
 							dataType : 'json',
 							contentType: "application/json; charset=utf-8",
 							crossDomain: true,
-			      			data: JSON.stringify({"username":user,"password":pass}),
+			      			data: JSON.stringify({"username":user,"mail":mail,"pass":pass}),
 							//tem que enviar tb o nome local, etc
 							success:function(data){
 								console.log(data);

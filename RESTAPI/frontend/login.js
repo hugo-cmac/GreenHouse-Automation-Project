@@ -9,7 +9,7 @@ $(document).ready(function(){
         }
         else{
             $.ajax({
-                url:  "http://192.168.137.1:3000"+"/users"+"/"+"login",
+                url:  "localhost:3000"+"/"+"login",
                 type: 'POST',
                 dataType : 'json',
                 contentType: "application/json; charset=utf-8",
