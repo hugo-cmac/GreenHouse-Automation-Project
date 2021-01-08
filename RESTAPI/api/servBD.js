@@ -186,9 +186,11 @@ module.exports={
 			pool.query(query, function (error, results) {
 				if (error) {
 					err = { code: status.INTERNAL_SERVER_ERROR, message: error };
+					console.log(JSON.stringify(err));
 					return callback(err, null);
 				}
 				else {
+					console.log(JSON.stringify(results));
 					return callback(null, results);
 				}
 			});
