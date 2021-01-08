@@ -180,13 +180,14 @@ module.exports={
 			let err = { code: status.BAD_REQUEST, message: "Please provide a device" };
 			return callback(err, null);
 		} else {
+			console.log(req.body.serial);
 			let query = "call insert_device(?)";
 			let table = [req.body.serial];
 			query = mysql.format(query, table);
 			pool.query(query, function (error, results) {
 				if (error) {
 					err = { code: status.INTERNAL_SERVER_ERROR, message: error };
-					console.log(JSON.stringify(err));
+					//console.log(JSON.stringify(err));
 					return callback(err, null);
 				}
 				else {
