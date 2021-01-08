@@ -196,7 +196,7 @@ module.exports={
 	},
 
 	getDevices: function (callback) {
-		pool.query('SELECT id_device, serial FROM Device', function (error, results) {
+		pool.query('SELECT * FROM Device', function (error, results) {
 			if (error) {
 				let err = { code: status.INTERNAL_SERVER_ERROR, message: error };
 				return callback(err, null);
