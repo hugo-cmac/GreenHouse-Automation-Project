@@ -63,7 +63,7 @@ end//
 delimiter ;
 
 delimiter //
-create procedure insert_device(srl int(10))
+create procedure insert_device(srl varchar(255))
 begin
 	insert into Device(serial_number)
 		values(srl);
