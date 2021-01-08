@@ -78,6 +78,7 @@ const char* root_ca = \
 "-----END CERTIFICATE-----\n";
 
 
+
 class Motor {
     
     public:
@@ -265,7 +266,7 @@ void callback(char *topic, byte *payload, unsigned int length){
             return;
     }
 }
-
+/*
 void printValues(){
 
     if ((WiFi.status() == WL_CONNECTED)) {
@@ -303,7 +304,7 @@ void printValues(){
     Serial.print("Humidade da terra: ");
     Serial.println(moisture->estado());
 }
-
+*/
 //############################################################################################
 void setup(){
     sprintf(UID,"%llu", ESP_UID);
