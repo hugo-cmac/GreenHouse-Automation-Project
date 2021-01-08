@@ -1,7 +1,7 @@
 $(document).ready(function(){
     
     $.ajax({
-		url: localStorage.getItem('base_url') + "files",
+		url: localStorage.getItem('base_url') + "devices",
 		type: 'GET',
 		contentType: "application/json; charset=utf-8",
 		dataType: "json",
@@ -15,5 +15,7 @@ $(document).ready(function(){
 			// alert(xhr.status);
 			// alert(thrownError); 
 		}
-	});   
+    });   
+    
+    
 });
