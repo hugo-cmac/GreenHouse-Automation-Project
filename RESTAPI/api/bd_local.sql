@@ -71,9 +71,9 @@ end//
 delimiter ;
 
 delimiter //
-create procedure insert_profile(in idprof int(10), desi varchar(255), temin int(10), temax int(10), ham int(10), hama int(10), hem int(10), hema int(10))
+create procedure insert_profile(in desi varchar(255), temin int(10), temax int(10), ham int(10), hama int(10), hem int(10), hema int(10))
 begin
-	insert into Device(designacao,temp_min,temp_max,hum_air_min,hum_air_max,hum_earth_min,hum_earth_max)
+	insert into Perfil(designacao,temp_min,temp_max,hum_air_min,hum_air_max,hum_earth_min,hum_earth_max)
 		values(desi,temin,temax,ham,hama,hem,hema);
 end//
 delimiter ;
