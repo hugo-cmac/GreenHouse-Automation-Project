@@ -13,7 +13,7 @@ CREATE TABLE User(
 
 CREATE TABLE Device(
   id_device  int(10) NOT NULL AUTO_INCREMENT, 
-  serial_number  int(30) NOT NULL, 
+  serial_number  varchar(30) NOT NULL, 
   PRIMARY KEY (id_device)
 
 );
