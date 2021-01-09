@@ -29,7 +29,7 @@ CREATE TABLE History (
   pump       varchar(255), 
   motor      varchar(255), 
   PRIMARY KEY (id_history),
-  FOREIGN KEY (serial_number) REFERENCES Device(serial_number)
+  FOREIGN KEY (id_device) REFERENCES Device(id_device)
 );
 
 CREATE TABLE rel_user_device (

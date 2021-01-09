@@ -1,5 +1,4 @@
 $(document).ready(function(){
-    
     $.ajax({
 		url: localStorage.getItem('base_url') + "devices",
 		type: 'GET',
@@ -16,7 +15,4 @@ $(document).ready(function(){
 			// alert(thrownError); 
 		}
     });   
-
-    
-
 });
