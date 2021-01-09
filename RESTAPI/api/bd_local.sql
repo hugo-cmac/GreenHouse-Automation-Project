@@ -79,7 +79,7 @@ end//
 delimiter ;
 
 delimiter //
-create procedure insert_history(in iddev varchar(255), tim varchar(255), temper varchar(255), huma varchar(255), hume varchar(255), lumi varchar(255), pum varchar(255), mto varchar(255))
+create procedure insert_history(in iddev int(10), tim varchar(255), temper varchar(255), huma varchar(255), hume varchar(255), lumi varchar(255), pum varchar(255), mto varchar(255))
 begin
 	insert into History(id_device,timestamp,temp, hum_air,hum_earth,luminosity,pump,motor)
 		values(iddev,tim,temper,huma,hume,lumi,pum,mto);
