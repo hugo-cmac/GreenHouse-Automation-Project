@@ -54,6 +54,7 @@ unsigned long ONStart;
 unsigned int counter = 0;
 
 unsigned int POSTTIME = 60000;  // 1min
+unsigned int TOTP_POSTTIME = 5000;  
 unsigned int lastMillis = 0;
 
 
@@ -76,9 +77,8 @@ const char* root_ca = \
 "fQjGGoe9GKhzvSbKYAydzpmfz1wPMOG+FDHqAjAU9JM8SaczepBGR7NjfRObTrdv\n" \
 "GDeAU/7dIOA1mjbRxwG55tzd8/8dLDoWV9mSOdY=\n" \
 "-----END CERTIFICATE-----\n";
-
-
-
+#include <HTTPClient.h>
+//############################################################################################################
 class Motor {
     
     public:
@@ -196,20 +196,27 @@ const char *broker = "mqtt.dioty.co";
 
 //TOPICOS
 const char *outTopic = "/augustocesarsilvamota@gmail.com/value";
-const char *inTopic = "/augustocesarsilvamota@gmail.com/ativar";  //abrir/fecharestufa topic
-
+const char *inTopic = "/augustocesarsilvamota@gmail.com/ativar";
+//const char *abrir_estufa = "/augustocesarsilvamota@gmail.com/abrir_estufa";
+//const char *fechar_estufa = "/augustocesarsilvamota@gmail.com/fechar_estufa";
+//const char *abrir_pump = "/augustocesarsilvamota@gmail.com/abrir_pump";
+//const char *fechar_pump = "/augustocesarsilvamota@gmail.com/fechar_pump";
+//const char *temp = "/augustocesarsilvamota@gmail.com/temperatura";
+//const char *hum = "/augustocesarsilvamota@gmail.com/humidade";
+//const char *luz = "/augustocesarsilvamota@gmail.com/luz";
+//const char *terra = "/augustocesarsilvamota@gmail.com/moisture";
 WiFiClient espClient;
 PubSubClient client(espClient);
 
 void reconnect(){ //connect
-	while (!client.connected()){
-        Serial.println("Broker");		
-		if (client.connect("ESTUFA", brokerUser, brokerPass)){
-			client.subscribe(inTopic);
-		}else{
-			delay(5000);
-		}
-	}
+  while (!client.connected()){
+        Serial.println("Broker");   
+    if (client.connect("ESTUFA", brokerUser, brokerPass)){
+      client.subscribe(inTopic);
+    }else{
+      delay(5000);
+    }
+  }
 }
 
 void callback(char *topic, byte *payload, unsigned int length){
@@ -266,45 +273,52 @@ void callback(char *topic, byte *payload, unsigned int length){
             return;
     }
 }
-/*
-void printValues(){
+void printESP_DEV(){
 
-    if ((WiFi.status() == WL_CONNECTED)) {
+     if ((WiFi.status() == WL_CONNECTED)) {
+        HTTPClient http;
+        http.begin("http://34.77.5.56:3000/devices");
+        http.addHeader("Content-Type", "application/json");
+        //REQUEST
+        String request = "{\"serial_number\":\"" + (String)(UID) + "\"}";
+        Serial.println(request);
+        int http_response_code = http.POST(request);        
+        if (http_response_code < 0){
+            Serial.println("CERCI DESLIGOU SERVER XC");
+            }
+            else{
+            String response = http.getString();
+            Serial.print("Response (/ESP_History): ");
+            Serial.println(response);
+            }
+        http.end();
+    }
+}
+void printHistory(){
+
+     if ((WiFi.status() == WL_CONNECTED)) {
+        HTTPClient http;
+        http.begin("http://34.77.5.56:3000/history");
+        http.addHeader("Content-Type", "application/json");
+        //REQUEST
+        String request = "{\"serial_number\":\"" + (String)(UID) + "\",\"timest\":\"" + (String)(UID) + "\",\"temp\":\"" + (String)(/*air->estadoTemperatura()*/UID) + "\",\"hum_air\":\"" + (String)(/*air->estadoHumidade()*/UID) + "\",\"hum_earth\":\"" + (String)(/*moisture->estado()*/UID) + "\",\"luminosity\":\"" + (String)(/*photo->estado()*/UID) + "\",\"pump\":\"" + (String)(UID) + "\",\"motor\":\"" + (String)(/*motor->estado()*/UID) + "\"}";
+        Serial.println(request);
+        int http_response_code = http.POST(request);
+        if (http_response_code < 0){
+            Serial.println("CERCI DESLIGOU SERVER XC");
+            }
+            else{
+            String response = http.getString();
+            Serial.print("Response (/ESP_History): ");
+            Serial.println(response);
+            }
+        http.end();
         //Serial.println("Online");
         // HTTPClient http;
-
         // http.begin("https://jsonplaceholder.typicode.com/posts?userId=1", root_ca); //Specify the URL and certificate
-        //http.addHeader("Content-Type", "application/x-www-form-urlencoded");
-        // http.POST(""api_key=tPmAT5Ab3j7F9&sensor=BME280&value1=24.25&value2=49.54&value3=1005.14"");
-        
-        // If you need an HTTP request with a content type: application/json, use the following:
-        //http.addHeader("Content-Type", "application/json");
-        //int httpResponseCode = http.POST("{\"api_key\":\"tPmAT5Ab3j7F9\",\"sensor\":\"BME280\",\"value1\":\"24.25\",\"value2\":\"49.54\",\"value3\":\"1005.14\"}");
-
-        // If you need an HTTP request with a content type: text/plain
-        //http.addHeader("Content-Type", "text/plain");
-        //int httpResponseCode = http.POST("Hello, World!");
-            
-        // http.end();
     }
-    Serial.print("Estufa aberta: ");
-    Serial.println(motor->estado());
-
-    Serial.print("Indice de luz: ");
-    Serial.println(photo->estado());
-
-    Serial.print("Temperatura do ar: ");
-    Serial.print(air->estadoTemperatura());
-    Serial.println("°C");
-
-    Serial.print("Percentagem de Humidade do ar: ");
-    Serial.print(air->estadoHumidade());
-    Serial.println("%");
-
-    Serial.print("Humidade da terra: ");
-    Serial.println(moisture->estado());
 }
-*/
+
 //############################################################################################
 void setup(){
     sprintf(UID,"%llu", ESP_UID);
@@ -402,19 +416,18 @@ void setup(){
     //Declaracao dos pinos dos respectivos sensores
     photo = new PhotoSensor(34);
     moisture = new MoisterSensor(32);
-    air = new AirSensor(25, DHT11);
+    air = new AirSensor(12, DHT11);
     motor = new Motor(200, 12, 27, 14, 26);
     Serial.println("Setup done");
     
 }
 
 void loop(){
-	drd->loop();
+  drd->loop();
     
-  	timeClient.update();
-    
+    timeClient.update();
     totpcode = totp->getCode(timeClient.getEpochTime());
-
+    //Serial.println(totpcode);
     if (counter == 160000){
         Serial.println(totpcode);
         counter = 0;
@@ -422,21 +435,21 @@ void loop(){
         counter++;
     }
 
-	if (!client.connected()){
-		reconnect();
-	}
+  if (!client.connected()){
+    reconnect();
+  }
 
     client.loop();
-	
-	if (ONStart > 0 && (millis() - ONStart) > 1000){
-		digitalWrite(PIN_RELAY, LOW); // Turn the LED off by making the voltage HIGH
-	}
+  
+  if (ONStart > 0 && (millis() - ONStart) > 1000){
+    digitalWrite(PIN_RELAY, LOW); // Turn the LED off by making the voltage HIGH
+  }
 
-    Serial.printf("ESP_UID: %s\n", UID);
-    Serial.println(totpcode);
     if ((millis() - lastMillis) > POSTTIME){ //PASSOU um minuto
-        printValues();
-        delay(5000);
+        printESP_DEV();
+        printHistory();
+         delay(5000);
         lastMillis = millis();
     }
+    // Serial.printf("ESP_UID: %s\n", UID);
 }
