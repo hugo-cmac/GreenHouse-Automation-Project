@@ -176,13 +176,13 @@ module.exports={
 	//DEVICES
 
 	insertDevice: function (req, callback) {
-		if (!req.body.serial) {
+		if (!req.body.serial_number) {
 			let err = { code: status.BAD_REQUEST, message: "Please provide a device" };
 			return callback(err, null);
 		} else {
 			//console.log(req.body.serial);
 			let query = "call insert_device(?)";
-			let table = [req.body.serial];
+			let table = [req.body.serial_number];
 			query = mysql.format(query, table);
 			pool.query(query, function (error, results) {
 				if (error) {
@@ -210,8 +210,8 @@ module.exports={
 		});
 	},
 	getDevicesById: function (req, callback) {
-		let query = "SELECT id_device, serial FROM Device WHERE id_device = ?";
-		let table = [req.params.id_device];
+		let query = "SELECT serial_number, serial FROM Device WHERE serial_number = ?";
+		let table = [req.params.serial_number];
 		query = mysql.format(query, table);
 		pool.query(query, function (error, results) {
 			if (error) {
@@ -230,8 +230,8 @@ module.exports={
 	},
 
 	deleteDevice: function (req, callback) {
-		let query = "DELETE from Device WHERE id_device = ?";
-		let table = [req.params.id_device];
+		let query = "DELETE from Device WHERE serial_number= ?";
+		let table = [req.params.serial_number];
 		query = mysql.format(query, table);
 		pool.query(query, function (error, results) {
 			if (error) {
@@ -337,6 +337,7 @@ module.exports={
 			pool.query(query, function (error, results) {
 				if (error) {
 					err = { code: status.INTERNAL_SERVER_ERROR, message: error };
+					console.log(JSON.stringify(err));
 					return callback(err, null);
 				}
 				else {
@@ -348,7 +349,7 @@ module.exports={
 	},
 
 	getHistory: function (callback) {
-		pool.query('SELECT id_history,id_device,timestamp,temp,hum_air,hum_earth,luminosity,pump,motor FROM History', function (error, results) {
+		pool.query('SELECT id_history,serial_number,timestamp,temp,hum_air,hum_earth,luminosity,pump,motor FROM History', function (error, results) {
 			if (error) {
 				let err = { code: status.INTERNAL_SERVER_ERROR, message: error };
 				return callback(err, null);
@@ -361,7 +362,7 @@ module.exports={
 	},
 
 	getHistoryById: function (req, callback) {
-		let query = "SELECT id_history,id_device,timestamp,temp,hum_air,hum_earth,luminosity,pump,motor FROM History WHERE id_history = ?";
+		let query = "SELECT id_history,serial_number,timestamp,temp,hum_air,hum_earth,luminosity,pump,motor FROM History WHERE id_history = ?";
 		let table = [req.params.id_history];
 		query = mysql.format(query, table);
 		pool.query(query, function (error, results) {
@@ -403,12 +404,12 @@ module.exports={
 	//USER-DEVICE 
 
 	insertUSRDEV: function (req, callback) {
-		if (!req.body.id_user || !req.body.id_device || !req.body.designacao) {
+		if (!req.body.id_user || !req.body.serial_number || !req.body.designacao) {
 			let err = { code: status.BAD_REQUEST, message: "Please provide a relation" };
 			return callback(err, null);
 		} else {
 			let query = "call insert_reldevice(?,?,?)";
-			let table = [req.body.id_user,req.body.id_device,req.body.designacao];
+			let table = [req.body.id_user,req.body.serial_number,req.body.designacao];
 			query = mysql.format(query, table);
 			pool.query(query, function (error, results) {
 				if (error) {
@@ -424,7 +425,7 @@ module.exports={
 	},
 
 	getUSRDEV: function (callback) {
-		pool.query('SELECT id_rel_user_device, id_user,id_device,designacao FROM rel_user_device', function (error, results) {
+		pool.query('SELECT id_rel_user_device, id_user,serial_number,designacao FROM rel_user_device', function (error, results) {
 			if (error) {
 				let err = { code: status.INTERNAL_SERVER_ERROR, message: error };
 				return callback(err, null);
@@ -435,7 +436,7 @@ module.exports={
 		});
 	},
 	getUSRDEVById: function (req, callback) {
-		let query = "SELECT id_rel_user_device, id_user,id_device,designacao FROM Device WHERE id_rel_user_device = ?";
+		let query = "SELECT id_rel_user_device, id_user,serial_number,designacao FROM Device WHERE id_rel_user_device = ?";
 		let table = [req.params.id_rel_user_device];
 		query = mysql.format(query, table);
 		pool.query(query, function (error, results) {

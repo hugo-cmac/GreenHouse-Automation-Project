@@ -12,9 +12,8 @@ CREATE TABLE User(
 );
 
 CREATE TABLE Device(
-  id_device  int(10) NOT NULL AUTO_INCREMENT, 
   serial_number  varchar(255) NOT NULL, 
-  PRIMARY KEY (id_device)
+  PRIMARY KEY (serial_number)
 
 );
 
@@ -29,28 +28,28 @@ CREATE TABLE History (
   pump       varchar(255), 
   motor      varchar(255), 
   PRIMARY KEY (id_history),
-  FOREIGN KEY (id_device) REFERENCES Device(id_device)
+  FOREIGN KEY (serial_number) REFERENCES Device(serial_number)
 );
 
 CREATE TABLE rel_user_device (
   id_rel_user_device int(10) NOT NULL AUTO_INCREMENT, 
   id_user            int(10) NOT NULL, 
-  id_device          int(10) NOT NULL, 
+  serial_number      varchar(255) NOT NULL, 
   designacao         varchar(255), 
   PRIMARY KEY (id_rel_user_device),
   FOREIGN KEY (id_user) REFERENCES User(id_user),
-  FOREIGN KEY (id_device) REFERENCES Device(id_device)
+  FOREIGN KEY (serial_number) REFERENCES Device(serial_number)
 );
 
 CREATE TABLE Perfil(
   id_perfil     int(10) NOT NULL AUTO_INCREMENT, 
   designacao    varchar(255), 
-  temp_min      int(10), 
-  temp_max      int(10), 
-  hum_air_min   int(10), 
-  hum_air_max   int(10), 
-  hum_earth_min int(10), 
-  hum_earth_max int(10), 
+  temp_min      varchar(255), 
+  temp_max      varchar(255), 
+  hum_air_min   varchar(255), 
+  hum_air_max   varchar(255), 
+  hum_earth_min varchar(255), 
+  hum_earth_max varchar(255), 
   PRIMARY KEY (id_perfil)
 );
 
@@ -71,7 +70,7 @@ end//
 delimiter ;
 
 delimiter //
-create procedure insert_profile(in desi varchar(255), temin int(10), temax int(10), ham int(10), hama int(10), hem int(10), hema int(10))
+create procedure insert_profile(in desi varchar(255), temin varchar(255), temax varchar(255), ham varchar(255), hama varchar(255), hem varchar(255), hema varchar(255))
 begin
 	insert into Perfil(designacao,temp_min,temp_max,hum_air_min,hum_air_max,hum_earth_min,hum_earth_max)
 		values(desi,temin,temax,ham,hama,hem,hema);
@@ -81,15 +80,15 @@ delimiter ;
 delimiter //
 create procedure insert_history(in iddev varchar(255), tim varchar(255), temper varchar(255), huma varchar(255), hume varchar(255), lumi varchar(255), pum varchar(255), mto varchar(255))
 begin
-	insert into History(serial_number,timest,temp, hum_air,hum_earth,luminosity,pump,motor)
+	insert into History(serial_number,timest,temp,hum_air,hum_earth,luminosity,pump,motor)
 		values(iddev,tim,temper,huma,hume,lumi,pum,mto);
 end//
 delimiter ;
 
 delimiter //
-create procedure insert_reldevice(in idus int(10), iddev int(10), desi varchar(255))
+create procedure insert_reldevice(in idus int(10), iddev varchar(255), desi varchar(255))
 begin
-	insert into rel_user_device(id_user,id_device,designacao)
+	insert into rel_user_device(id_user,serial_number,designacao)
 		values(idus,iddev,desi);
 end//
 delimiter ;

@@ -192,7 +192,7 @@ app.post('/history', function (req, res) {
 			res.status(error.code).send(error.message);
 		}
 		else {
-			return res.status(status.OK).send({ error: false, data: results, message: 'User logged in successfully' });
+			return res.status(status.OK).send({ error: false, data: results, message: 'History added successfully' });
 		}
 	});
 });
