@@ -21,7 +21,7 @@ CREATE TABLE Device(
 CREATE TABLE History (
   id_history int(10) NOT NULL AUTO_INCREMENT, 
   serial_number  varchar(255) NOT NULL, 
-  timestamp  varchar(255), 
+  timest  varchar(255), 
   temp       varchar(255), 
   hum_air    varchar(255), 
   hum_earth  varchar(255), 
@@ -81,7 +81,7 @@ delimiter ;
 delimiter //
 create procedure insert_history(in iddev varchar(255), tim varchar(255), temper varchar(255), huma varchar(255), hume varchar(255), lumi varchar(255), pum varchar(255), mto varchar(255))
 begin
-	insert into History(serial_number,timestamp,temp, hum_air,hum_earth,luminosity,pump,motor)
+	insert into History(serial_number,timest,temp, hum_air,hum_earth,luminosity,pump,motor)
 		values(iddev,tim,temper,huma,hume,lumi,pum,mto);
 end//
 delimiter ;
