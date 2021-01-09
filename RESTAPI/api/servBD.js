@@ -153,8 +153,8 @@ module.exports={
 			}
 		});
 	},
-	getUtilizadoresById: function (req, callback) {
-		let query = "SELECT id_user,username,mail F User WHERE id_user = ?";
+	getUtilizadoresById: function (req, callback) {
+		let query = "SELECT id_user,username,mail FROM User WHERE id_user = ?";
 		let table = [req.params.id_user];
 		query = mysql.format(query, table);
 		pool.query(query, function (error, results) {
