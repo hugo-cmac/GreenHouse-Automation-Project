@@ -153,8 +153,8 @@ module.exports={
 			}
 		});
 	},
-	getUtilizadoresById: function (req, callback) {
-		let query = "SELECT id_user,username,mail FROM User WHERE id_user = ?";
+	getUtilizadoresById: function (req, callback) {
+		let query = "SELECT id_user,username,mail F User WHERE id_user = ?";
 		let table = [req.params.id_user];
 		query = mysql.format(query, table);
 		pool.query(query, function (error, results) {
@@ -332,7 +332,7 @@ module.exports={
 			return callback(err, null);
 		} else {
 			let query = "call insert_history(?,?,?,?,?,?,?,?)";
-			let table = [req.body.serial_number,req.body.timest,req.body.temp,req.body.hum_air,req.body.hum_earth,req.body.luminosity,req.body.pump.req.body.motor];
+			let table = [req.body.serial_number,req.body.timest,req.body.temp,req.body.hum_air,req.body.hum_earth,req.body.luminosity,req.body.pump,req.body.motor];
 			query = mysql.format(query, table);
 			pool.query(query, function (error, results) {
 				if (error) {
