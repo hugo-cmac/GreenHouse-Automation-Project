@@ -82,9 +82,9 @@
     <!--================Hero Banner Area Start =================-->
     <section class="hero-banner d-flex align-items-center">
         <div class="container text-center">
-            <h2>DASHBOARD</h2>
+            <h2>Perfil</h2>
 
-            <h4>Visualiza o estado atual de todas as tuas estufas e dispositivos aqui!  </h4>
+            <h3>Insere novos perfis para as tuas estufas!  </h3>
             <!--<nav aria-label="breadcrumb" class="banner-breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="#">Home</a></li>
@@ -114,7 +114,25 @@
                 </div>-->
 
                 <!-- Single service -->
-
+                <div class="col-md-6 col-lg-4">
+                    <div class="single-service">
+                        <div class="service-icon">
+                            <i class="ti-check-box"></i>
+                        </div>
+                        <div class="service-content">
+                            <h5>Registo de perfil</h5>
+                            <label for="name">Username</label>
+                            <input type="text" name="name" class="form-control" id="username" data-rule="minlen:4" data-msg="Por favor, introduza um username válido!" />
+                            <div class="validate"></div>
+                            <label for="name">Password</label>
+                            <input type="password" name="name" class="form-control" id="pass" data-rule="minlen:4" data-msg="Por favor, introduza uma password com um mínimo de 4 carateres!" />
+                            <div class="validate"></div>
+                            <br/>
+                            <a class="banner_btn" id="login_btn" value="Entrar">Entrar<i class="ti-arrow-right"></i></a>
+                            <a class="banner_btn" href="signup.html" id="registar_btn" value="Registar">Registar<i class="ti-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Single service -->
                 <!--<div class="col-md-6 col-lg-4">

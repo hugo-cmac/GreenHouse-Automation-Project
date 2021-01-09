@@ -1,7 +1,7 @@
 $(document).ready(function(){
     $.ajax({
 		url: localStorage.getItem('base_url') + "devices",
-		type: 'GET',
+		type: 'POST',
 		contentType: "application/json; charset=utf-8",
 		dataType: "json",
 		data: {},
