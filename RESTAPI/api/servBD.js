@@ -331,8 +331,8 @@ module.exports={
 			let err = { code: status.BAD_REQUEST, message: "Please provide a history device" };
 			return callback(err, null);
 		} else {
-			let query = "call insert_history(?,?,?,?,?,?,?)";
-			let table = [req.body.id_device,req.body.timestamp,req.body.temp,req.body.hum_air,req.body.hum_earth,req.body.luminosity,req.body.pump];
+			let query = "call insert_history(?,?,?,?,?,?,?,?)";
+			let table = [req.body.serial_number,req.body.timestamp,req.body.temp,req.body.hum_air,req.body.hum_earth,req.body.luminosity,req.body.pump.req.body.motor];
 			query = mysql.format(query, table);
 			pool.query(query, function (error, results) {
 				if (error) {
