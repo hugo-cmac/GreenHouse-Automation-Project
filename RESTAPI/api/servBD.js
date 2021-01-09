@@ -265,6 +265,7 @@ module.exports={
 					return callback(err, null);
 				}
 				else {
+					console.log(JSON.stringify(results));
 					return callback(null, results);
 				}
 			});
@@ -339,6 +340,7 @@ module.exports={
 					return callback(err, null);
 				}
 				else {
+					console.log(JSON.stringify(results));
 					return callback(null, results);
 				}
 			});
@@ -352,6 +354,7 @@ module.exports={
 				return callback(err, null);
 			}
 			else {
+				console.log(JSON.stringify(results));
 				return callback(null, results);
 			}
 		});
@@ -367,7 +370,7 @@ module.exports={
 				return callback(err, null);
 			}
 			else {
-				if (results.length > 0)
+				if (results.length > 0)	
 					return callback(null, results);
 				else {
 					let err = { code: status.NOT_FOUND, message: "History doesn't exist" };
@@ -413,6 +416,7 @@ module.exports={
 					return callback(err, null);
 				}
 				else {
+					console.log(JSON.stringify(results));
 					return callback(null, results);
 				}
 			});
