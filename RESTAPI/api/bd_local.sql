@@ -20,7 +20,7 @@ CREATE TABLE Device(
 
 CREATE TABLE History (
   id_history int(10) NOT NULL AUTO_INCREMENT, 
-  id_device  int(10) NOT NULL, 
+  serial_number  varchar(255) NOT NULL, 
   timestamp  varchar(255), 
   temp       varchar(255), 
   hum_air    varchar(255), 
@@ -29,7 +29,7 @@ CREATE TABLE History (
   pump       varchar(255), 
   motor      varchar(255), 
   PRIMARY KEY (id_history),
-  FOREIGN KEY (id_device) REFERENCES Device(id_device)
+  FOREIGN KEY (serial_number) REFERENCES Device(serial_number)
 );
 
 CREATE TABLE rel_user_device (
@@ -81,7 +81,7 @@ delimiter ;
 delimiter //
 create procedure insert_history(in iddev int(10), tim varchar(255), temper varchar(255), huma varchar(255), hume varchar(255), lumi varchar(255), pum varchar(255), mto varchar(255))
 begin
-	insert into History(id_device,timestamp,temp, hum_air,hum_earth,luminosity,pump,motor)
+	insert into History(serial_number,timestamp,temp, hum_air,hum_earth,luminosity,pump,motor)
 		values(iddev,tim,temper,huma,hume,lumi,pum,mto);
 end//
 delimiter ;
