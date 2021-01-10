@@ -24,9 +24,8 @@ CREATE TABLE History (
   temp       varchar(255), 
   hum_air    varchar(255), 
   hum_earth  varchar(255), 
-  luminosity varchar(255), 
-  pump       varchar(255), 
-  motor      varchar(255), 
+  luminosity varchar(255),  
+  states     varchar(255), 
   PRIMARY KEY (id_history),
   FOREIGN KEY (serial_number) REFERENCES Device(serial_number)
 );
@@ -78,10 +77,10 @@ end//
 delimiter ;
 
 delimiter //
-create procedure insert_history(in iddev varchar(255), tim varchar(255), temper varchar(255), huma varchar(255), hume varchar(255), lumi varchar(255), pum varchar(255), mto varchar(255))
+create procedure insert_history(in iddev varchar(255), tim varchar(255), temper varchar(255), huma varchar(255), hume varchar(255), lumi varchar(255), ste varchar(255))
 begin
-	insert into History(serial_number,timest,temp,hum_air,hum_earth,luminosity,pump,motor)
-		values(iddev,tim,temper,huma,hume,lumi,pum,mto);
+	insert into History(serial_number,timest,temp,hum_air,hum_earth,luminosity,states)
+		values(iddev,tim,temper,huma,hume,lumi,ste);
 end//
 delimiter ;
 

@@ -327,12 +327,12 @@ module.exports={
 	//HISTORY
 
 	insertHistory: function (req, callback) {
-		if (!req.body.serial_number || !req.body.timest || !req.body.temp || !req.body.hum_air || !req.body.hum_earth || !req.body.luminosity || !req.body.pump || !req.body.motor) {
+		if (!req.body.serial_number || !req.body.timest || !req.body.temp || !req.body.hum_air || !req.body.hum_earth || !req.body.luminosity || !req.body.states) {
 			let err = { code: status.BAD_REQUEST, message: "Please provide a history device" };
 			return callback(err, null);
 		} else {
-			let query = "call insert_history(?,?,?,?,?,?,?,?)";
-			let table = [req.body.serial_number,req.body.timest,req.body.temp,req.body.hum_air,req.body.hum_earth,req.body.luminosity,req.body.pump,req.body.motor];
+			let query = "call insert_history(?,?,?,?,?,?,?)";
+			let table = [req.body.serial_number,req.body.timest,req.body.temp,req.body.hum_air,req.body.hum_earth,req.body.luminosity,req.body.states];
 			query = mysql.format(query, table);
 			pool.query(query, function (error, results) {
 				if (error) {
@@ -349,7 +349,7 @@ module.exports={
 	},
 
 	getHistory: function (callback) {
-		pool.query('SELECT id_history,serial_number,timestamp,temp,hum_air,hum_earth,luminosity,pump,motor FROM History', function (error, results) {
+		pool.query('SELECT id_history,serial_number,timestamp,temp,hum_air,hum_earth,luminosity,states FROM History', function (error, results) {
 			if (error) {
 				let err = { code: status.INTERNAL_SERVER_ERROR, message: error };
 				return callback(err, null);
@@ -362,7 +362,7 @@ module.exports={
 	},
 
 	getHistoryById: function (req, callback) {
-		let query = "SELECT id_history,serial_number,timestamp,temp,hum_air,hum_earth,luminosity,pump,motor FROM History WHERE id_history = ?";
+		let query = "SELECT id_history,serial_number,timestamp,temp,hum_air,hum_earth,luminosity,states FROM History WHERE id_history = ?";
 		let table = [req.params.id_history];
 		query = mysql.format(query, table);
 		pool.query(query, function (error, results) {
