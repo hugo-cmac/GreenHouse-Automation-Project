@@ -349,7 +349,7 @@ module.exports={
 	},
 
 	getHistory: function (callback) {
-		pool.query('SELECT id_history,serial_number,timestamp,temp,hum_air,hum_earth,luminosity,states FROM History', function (error, results) {
+		pool.query('SELECT id_history,serial_number,timest,temp,hum_air,hum_earth,luminosity,states FROM History', function (error, results) {
 			if (error) {
 				let err = { code: status.INTERNAL_SERVER_ERROR, message: error };
 				return callback(err, null);
@@ -362,7 +362,7 @@ module.exports={
 	},
 
 	getHistoryById: function (req, callback) {
-		let query = "SELECT id_history,serial_number,timestamp,temp,hum_air,hum_earth,luminosity,states FROM History WHERE id_history = ?";
+		let query = "SELECT id_history,serial_number,timest,temp,hum_air,hum_earth,luminosity,states FROM History WHERE id_history = ?";
 		let table = [req.params.id_history];
 		query = mysql.format(query, table);
 		pool.query(query, function (error, results) {

@@ -61,7 +61,7 @@ app.get('/utilizadores', verifyToken, function (req, res) {
 					res.status(error.code).send(error.message);
 				}
 				else {
-					res.status(status.OK).send({ error: false, data: results, message: 'Utilizadores.' });
+					res.status(status.OK).send({ error: false, data: results, message: 'All users.' });
 				}
 			});
 	// 	}
@@ -78,7 +78,7 @@ app.get('/utilizadores/:id_user', verifyToken, function (req, res) {
 					res.status(error.code).send(error.message);
 				}
 				else {
-					return res.status(status.OK).send({ error: false, data: results, message: 'Utilizador.' });
+					return res.status(status.OK).send({ error: false, data: results, message: 'User data found.' });
 				}
 			});
 	// 	}
@@ -112,7 +112,7 @@ app.delete('/utilizadores/:id_user', verifyToken, function (req, res) {
 					res.status(error.code).send(error.message);
 				}
 				else {
-					return res.status(status.CREATED).send({ error: false, data: results, message: 'Utilizador deleted successfully' });
+					return res.status(status.CREATED).send({ error: false, data: results, message: 'User deleted successfully' });
 				}
 			});
 	// 	}
@@ -142,7 +142,7 @@ app.get('/devices', verifyToken, function (req, res) {
 					res.status(error.code).send(error.message);
 				}
 				else {
-					res.status(status.OK).send({ error: false, data: results, message: 'Utilizadores.' });
+					res.status(status.OK).send({ error: false, data: results, message: 'All devices!' });
 				}
 			});
 	// 	}
@@ -159,7 +159,7 @@ app.get('/devices/:id_device', verifyToken, function (req, res) {
 					res.status(error.code).send(error.message);
 				}
 				else {
-					return res.status(status.OK).send({ error: false, data: results, message: 'Utilizador.' });
+					return res.status(status.OK).send({ error: false, data: results, message: 'Specific device obtained.' });
 				}
 			});
 	// 	}
@@ -177,7 +177,7 @@ app.delete('/devices/:id_device', verifyToken, function (req, res) {
 					res.status(error.code).send(error.message);
 				}
 				else {
-					return res.status(status.CREATED).send({ error: false, data: results, message: 'Utilizador deleted successfully' });
+					return res.status(status.CREATED).send({ error: false, data: results, message: 'Device deleted successfully' });
 				}
 			});
 	// 	}
@@ -207,7 +207,7 @@ app.get('/history', verifyToken, function (req, res) {
 					res.status(error.code).send(error.message);
 				}
 				else {
-					res.status(status.OK).send({ error: false, data: results, message: 'Utilizadores.' });
+					res.status(status.OK).send({ error: false, data: results, message: 'All device histotry.' });
 				}
 			});
 	// 	}
@@ -224,7 +224,7 @@ app.get('/history/:id_history', verifyToken, function (req, res) {
 					res.status(error.code).send(error.message);
 				}
 				else {
-					return res.status(status.OK).send({ error: false, data: results, message: 'Utilizador.' });
+					return res.status(status.OK).send({ error: false, data: results, message: 'Device history' });
 				}
 			});
 	// 	}
@@ -242,7 +242,7 @@ app.delete('/history/:id_history', verifyToken, function (req, res) {
 					res.status(error.code).send(error.message);
 				}
 				else {
-					return res.status(status.CREATED).send({ error: false, data: results, message: 'Utilizador deleted successfully' });
+					return res.status(status.CREATED).send({ error: false, data: results, message: 'History deleted successfully' });
 				}
 			});
 	// 	}
@@ -258,7 +258,7 @@ app.post('/profiles', function (req, res) {
 			res.status(error.code).send(error.message);
 		}
 		else {
-			return res.status(status.OK).send({ error: false, data: results, message: 'User logged in successfully' });
+			return res.status(status.OK).send({ error: false, data: results, message: 'Profile created!' });
 		}
 	});
 });
@@ -273,7 +273,7 @@ app.get('/profiles', verifyToken, function (req, res) {
 					res.status(error.code).send(error.message);
 				}
 				else {
-					res.status(status.OK).send({ error: false, data: results, message: 'Utilizadores.' });
+					res.status(status.OK).send({ error: false, data: results, message: 'All profiles.' });
 				}
 			});
 	// 	}
@@ -290,7 +290,7 @@ app.get('/profiles/:id_perfil', verifyToken, function (req, res) {
 					res.status(error.code).send(error.message);
 				}
 				else {
-					return res.status(status.OK).send({ error: false, data: results, message: 'Utilizador.' });
+					return res.status(status.OK).send({ error: false, data: results, message: 'Specific profile.' });
 				}
 			});
 	// 	}
@@ -308,7 +308,7 @@ app.delete('/profiles/:id_perfil', verifyToken, function (req, res) {
 					res.status(error.code).send(error.message);
 				}
 				else {
-					return res.status(status.CREATED).send({ error: false, data: results, message: 'Utilizador deleted successfully' });
+					return res.status(status.CREATED).send({ error: false, data: results, message: 'Profile deleted successfully' });
 				}
 			});
 	// 	}
@@ -324,7 +324,7 @@ app.post('/reluser', function (req, res) {
 			res.status(error.code).send(error.message);
 		}
 		else {
-			return res.status(status.OK).send({ error: false, data: results, message: 'User logged in successfully' });
+			return res.status(status.OK).send({ error: false, data: results, message: 'Greenhouse added!' });
 		}
 	});
 });
@@ -339,7 +339,7 @@ app.get('/reluser', verifyToken, function (req, res) {
 					res.status(error.code).send(error.message);
 				}
 				else {
-					res.status(status.OK).send({ error: false, data: results, message: 'Utilizadores.' });
+					res.status(status.OK).send({ error: false, data: results, message: 'All greenhouses.' });
 				}
 			});
 	// 	}
@@ -356,7 +356,7 @@ app.get('/reluser/:id_rel_user_device', verifyToken, function (req, res) {
 					res.status(error.code).send(error.message);
 				}
 				else {
-					return res.status(status.OK).send({ error: false, data: results, message: 'Utilizador.' });
+					return res.status(status.OK).send({ error: false, data: results, message: 'User greenhouse.' });
 				}
 			});
 	// 	}
@@ -374,7 +374,7 @@ app.delete('/reluser/:id_rel_user_device', verifyToken, function (req, res) {
 					res.status(error.code).send(error.message);
 				}
 				else {
-					return res.status(status.CREATED).send({ error: false, data: results, message: 'Utilizador deleted successfully' });
+					return res.status(status.CREATED).send({ error: false, data: results, message: 'Greenhouse deleted successfully' });
 				}
 			});
 	// 	}
