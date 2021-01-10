@@ -1,4 +1,4 @@
-//################################### WIFI MANAGER AND DRT BUTTON #########################
+//################################### Bibliotecas e defines #####################################
 #include <DNSServer.h>
 #include <WiFi.h>
 #include <WebServer.h>
@@ -38,17 +38,15 @@
 
 
 
+//################################### Variaveis globais #########################################
+
 static uint64_t ESP_UID = ESP.getEfuseMac();
 char UID[16];
-DoubleResetDetector* drd;
 
 // SSID and PW for Config Portal
 String ssid = "ESP_" + String((unsigned int)ESP_UID, HEX);
 const char *password = "default";
 
-TOTP *totp ;//= TOTP((uint8_t* )&ESP_UID, 8);
-WiFiUDP ntpUDP;
-NTPClient timeClient(ntpUDP);// By default 'pool.ntp.org' is used with 60 seconds update interval and no offset
 char* totpcode = NULL;
 
 bool initialConfig = false; // Indicates whether ESP has WiFi credentials saved from previous session, or double reset detected
@@ -56,7 +54,7 @@ unsigned long ONStart;
 
 unsigned int counter = 0;
 
-unsigned int POSTTIME = 120000;  // 1min
+unsigned int POSTTIME = 120000;  // 2min
 unsigned int lastMillis = 0;
 
 //trocar certificado
@@ -84,6 +82,10 @@ const char *broker = "mqtt.dioty.co";
 
 //TOPICOS
 const char *inTopic = "/augustocesarsilvamota@gmail.com/ativar";  //abrir/fecharestufa topic
+
+
+
+//################################### Declaracao de classes #####################################
 
 class PhotoSensor {
 
@@ -264,6 +266,15 @@ class Motor {
 };
 
 
+
+//################################### Declaracao de objetos #####################################
+
+DoubleResetDetector* drd;
+
+TOTP *totp ;//= TOTP((uint8_t* )&ESP_UID, 8);
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP);// By default 'pool.ntp.org' is used with 60 seconds update interval and no offset
+
 WiFiClient espClient;
 PubSubClient client(espClient);
 
@@ -273,6 +284,9 @@ AirSensor* air;
 Motor* motor;
 WaterPump* pump;
 
+
+
+//################################### Declaracao de Funcoes #####################################
 
 void reconnect(){ //connect
     while (!client.connected()){
@@ -557,5 +571,5 @@ void loop(){
         Serial.println(totpcode);
         lastMillis = millis();
     }
-    
+
 }
