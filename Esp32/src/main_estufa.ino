@@ -527,10 +527,10 @@ void setup(){
 }
 
 void loop(){
-	drd->loop();
-    
-  	timeClient.update();
-    
+    drd->loop();
+
+    timeClient.update();
+
     totpcode = totp->getCode(timeClient.getEpochTime());
 
     if (counter == 160000){
@@ -540,15 +540,15 @@ void loop(){
         counter++;
     }
 
-	if (!client.connected()){
-		reconnect();
-	}
+    if (!client.connected()){
+        reconnect();
+    }
 
     client.loop();
 	
-	if (ONStart > 0 && (millis() - ONStart) > 1000){
-		digitalWrite(PIN_RELAY, LOW); // Turn the LED off by making the voltage HIGH
-	}
+    if (ONStart > 0 && (millis() - ONStart) > 1000){
+        digitalWrite(PIN_RELAY, LOW); // Turn the LED off by making the voltage HIGH
+    }
     
     //printValues();
     //delay(1000);
@@ -557,4 +557,5 @@ void loop(){
         Serial.println(totpcode);
         lastMillis = millis();
     }
+    
 }
