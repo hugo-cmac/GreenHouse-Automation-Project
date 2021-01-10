@@ -2,6 +2,13 @@ var edit;
 
 $(document).ready(function(){
 	jQuery.support.cors = true;
+    var desi;
+    var tempmin;
+    var tempmax;
+    var hummin;
+    var hummax;
+    var humme;
+    var hummemax;
     $.ajax({
         url:  localStorage.getItem('base_url')+"profiles",
         type: 'GET',
