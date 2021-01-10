@@ -23,6 +23,9 @@
 
 #include <Stepper.h>
 
+#include <PubSubClient.h>
+
+
 #define DRD_TIMEOUT     10 // Number of seconds after reset during which a subseqent reset will be considered a double reset.
 #define DRD_ADDRESS     0 // RTC Memory Address for the DoubleResetDetector to use
 
@@ -53,11 +56,8 @@ unsigned long ONStart;
 
 unsigned int counter = 0;
 
-unsigned int POSTTIME = 60000;  // 1min
-unsigned int TOTP_POSTTIME = 5000;  
+unsigned int POSTTIME = 120000;  // 1min
 unsigned int lastMillis = 0;
-
-
 
 //trocar certificado
 const char* root_ca = \ 
@@ -77,49 +77,13 @@ const char* root_ca = \
 "fQjGGoe9GKhzvSbKYAydzpmfz1wPMOG+FDHqAjAU9JM8SaczepBGR7NjfRObTrdv\n" \
 "GDeAU/7dIOA1mjbRxwG55tzd8/8dLDoWV9mSOdY=\n" \
 "-----END CERTIFICATE-----\n";
-#include <HTTPClient.h>
-//############################################################################################################
-class Motor {
-    
-    public:
-        //    360 = 200        12        27        14        26
-        Motor(int steps, int pin1, int pin2, int pin3, int pin4) {
-            this->steps = steps;
-            this->myStepper = new Stepper(steps, pin1, pin2, pin3, pin4);// initialize the stepper library on pins 
-            this->myStepper->setSpeed(60);
-        };
 
-        boolean estado(){
-            return aberto;
-        }
+const char *brokerUser = "augustocesarsilvamota@gmail.com";
+const char *brokerPass = "323c0782";
+const char *broker = "mqtt.dioty.co";
 
-        void abrir(){
-            if(!aberto){
-                aberto = true;
-                for(int i = 0; i < 10; i++){
-                    this->myStepper->step(steps);
-                }
-            }
-        }
-
-        void fechar(){
-            if(aberto){
-                aberto = false;
-                for(int i = 0; i < 10; i++){
-                    this->myStepper->step(-steps);
-                }
-            }
-        }
-  
-    private:
-    
-        int steps=0; // change this to fit the number of steps per revolution
-        
-        Stepper* myStepper;
-        
-        boolean aberto = false;
-    
-};
+//TOPICOS
+const char *inTopic = "/augustocesarsilvamota@gmail.com/ativar";  //abrir/fecharestufa topic
 
 class PhotoSensor {
 
@@ -129,8 +93,10 @@ class PhotoSensor {
             this->pin = pin;
         };
 
-        int estado(){
-            return analogRead(pin); 
+        float estado(){
+            int value = analogRead(pin);
+            value = 4095 - value;
+            return ((float)(value*100))/4095;
         }
 
     private:
@@ -147,12 +113,18 @@ class MoisterSensor {
             this->pin = pin;
         };
 
-        int estado(){
-            return analogRead(pin);
+        float estado(){
+            int value = analogRead(pin);
+            if(value < reference)
+                value = reference;
+            value = 4095 - value;
+
+            return ((float)(value*100))/(4095 - reference);
         }
     private:
 
         int pin = 0;
+        const int reference = 1000;
 };
 
 class AirSensor {
@@ -182,45 +154,137 @@ class AirSensor {
 
 };
 
+class WaterPump{
 
-Motor* motor;
-PhotoSensor* photo;
-MoisterSensor* moisture;
-AirSensor* air;
+    public:
+        //             33
+        WaterPump(int pin, MoisterSensor *m){
+            this->pin = pin;
+            this->m = m;
 
-#include <PubSubClient.h>
+            pinMode(pin, OUTPUT);
+            digitalWrite(pin, HIGH);
+        };
 
-const char *brokerUser = "augustocesarsilvamota@gmail.com";
-const char *brokerPass = "323c0782";
-const char *broker = "mqtt.dioty.co";
+        void regar(){
+            digitalWrite(pin, LOW);
+            //while (m->estado() < max);
+            delay(2000);
+            digitalWrite(pin, HIGH);
+        }
 
-//TOPICOS
-const char *outTopic = "/augustocesarsilvamota@gmail.com/value";
-const char *inTopic = "/augustocesarsilvamota@gmail.com/ativar";
-//const char *abrir_estufa = "/augustocesarsilvamota@gmail.com/abrir_estufa";
-//const char *fechar_estufa = "/augustocesarsilvamota@gmail.com/fechar_estufa";
-//const char *abrir_pump = "/augustocesarsilvamota@gmail.com/abrir_pump";
-//const char *fechar_pump = "/augustocesarsilvamota@gmail.com/fechar_pump";
-//const char *temp = "/augustocesarsilvamota@gmail.com/temperatura";
-//const char *hum = "/augustocesarsilvamota@gmail.com/humidade";
-//const char *luz = "/augustocesarsilvamota@gmail.com/luz";
-//const char *terra = "/augustocesarsilvamota@gmail.com/moisture";
+        void verifica(){
+            if (m->estado() < min)
+                regar();
+        }
+
+        void setMax(int max){
+            this->max = max;
+        }
+
+        void setMin(int min){
+            this->min = min;
+        }
+    
+    private:
+
+        int pin = 0;
+        int min = 20;
+        int max = 60;
+
+        MoisterSensor *m = NULL;
+
+};
+
+class Motor {
+    
+    public:
+        //    360 = 200        12        27        14        26
+        Motor(int steps, int pin1, int pin2, int pin3, int pin4, AirSensor* a) {
+            this->steps = steps;
+            this->myStepper = new Stepper(steps, pin1, pin2, pin3, pin4);// initialize the stepper library on pins 
+            this->myStepper->setSpeed(60);
+            this->a = a;
+        };
+
+        boolean estado(){
+            return aberto;
+        }
+
+        void abrir(){
+            if(!aberto){
+                aberto = true;
+                for(int i = 0; i < 10; i++){
+                    this->myStepper->step(steps);
+                }
+            }
+        }
+
+        void fechar(){
+            if(aberto){
+                aberto = false;
+                for(int i = 0; i < 10; i++){
+                    this->myStepper->step(-steps);
+                }
+            }
+        }
+
+        void verifica(){
+            if (a->estadoTemperatura() > max) {
+                abrir();
+            }else if (a->estadoTemperatura() < min) {
+                fechar();
+            }    
+        }
+
+        void setMax(int max){
+            this->max = max;
+        }
+        
+        void setMin(int min){
+            this->min = min;
+        }
+
+  
+    private:
+    
+        int steps = 0; // change this to fit the number of steps per revolution
+        int max = 30;
+        int min = 10;
+
+        boolean aberto = false;
+
+        Stepper* myStepper;
+
+        AirSensor* a = NULL;
+        
+};
+
+
 WiFiClient espClient;
 PubSubClient client(espClient);
 
+PhotoSensor* photo;
+MoisterSensor* moisture;
+AirSensor* air;
+Motor* motor;
+WaterPump* pump;
+
+
 void reconnect(){ //connect
-  while (!client.connected()){
-        Serial.println("Broker");   
-    if (client.connect("ESTUFA", brokerUser, brokerPass)){
-      client.subscribe(inTopic);
-    }else{
-      delay(5000);
-    }
-  }
+	while (!client.connected()){
+        Serial.println("Broker");		
+		if (client.connect("ESTUFA", brokerUser, brokerPass)){
+			client.subscribe(inTopic);
+		}else{
+			delay(5000);
+		}
+	}
 }
 
 void callback(char *topic, byte *payload, unsigned int length){
     payload[length] = '\0';
+    char code[] = "0000000000";
     //123456;0/1;0/1;[default]
 
     char request[4][8];
@@ -240,29 +304,33 @@ void callback(char *topic, byte *payload, unsigned int length){
         }
     }
 
-    if (n == 0){
+    if (n == 0)
         return;
-    }
 
-    if (memcmp(request[0], totpcode, 6) != 0){
+    if (memcmp(request[0], /*totpcode*/ code, 6) != 0)
         return;
-    }
+
+    Serial.println("Callback verificado");
+
     switch (request[1][0]){
-        case '0':
+        case '0': //MOTOR para abrir e fechar a estufa
             if (request[2][0] == '0'){
-                //motor->fechar();
+                Serial.println("fechar");
+                motor->fechar();
             } else if (request[2][0] == '1') {
-                //motor->abrir();
+                Serial.println("abrir");
+                motor->abrir();
             }
             if (n == 3){
                 // set new default
             }
             return;
-        case '1':
+        case '1'://bomba para regar
             if (request[2][0] == '0'){
-                //motor fechar
+                
             } else if (request[2][0] == '1') {
-                //motor abrir
+                Serial.println("regar");
+                pump->regar();
             }
             if (n == 3){
                 // set new default
@@ -273,53 +341,85 @@ void callback(char *topic, byte *payload, unsigned int length){
             return;
     }
 }
-void printESP_DEV(){
 
-     if ((WiFi.status() == WL_CONNECTED)) {
+void postDeviceRegistation(){
+    int r = 0;
+    if ((WiFi.status() == WL_CONNECTED)) {
         HTTPClient http;
+
         http.begin("http://34.77.5.56:3000/devices");
         http.addHeader("Content-Type", "application/json");
-        //REQUEST
-        String request = "{\"serial_number\":\"" + (String)(UID) + "\"}";
-        Serial.println(request);
-        int http_response_code = http.POST(request);        
-        if (http_response_code < 0){
-            Serial.println("CERCI DESLIGOU SERVER XC");
-            }
-            else{
-            String response = http.getString();
-            Serial.print("Response (/ESP_History): ");
-            Serial.println(response);
-            }
+        
+        String request = 
+            "{\"serial_number\":\"" + String(UID) + "\"}";
+
+        if ((r = http.POST(request)) < 0) {
+            Serial.print("Error ");
+            Serial.println(r);
+        } else {
+            request = http.getString();
+            Serial.print("Response (/ESP_Device): ");
+            Serial.println(request);
+        }
+
         http.end();
     }
 }
-void printHistory(){
 
-     if ((WiFi.status() == WL_CONNECTED)) {
+void postValues(){
+    int r = 0;
+    if ((WiFi.status() == WL_CONNECTED)) {
         HTTPClient http;
-        http.begin("http://34.77.5.56:3000/history");
+
+        http.begin("http://34.77.5.56:3000/history"); //adicionar root_ca
         http.addHeader("Content-Type", "application/json");
-        //REQUEST
-        String request = "{\"serial_number\":\"" + (String)(UID) + "\",\"timest\":\"" + (String)(UID) + "\",\"temp\":\"" + (String)(/*air->estadoTemperatura()*/UID) + "\",\"hum_air\":\"" + (String)(/*air->estadoHumidade()*/UID) + "\",\"hum_earth\":\"" + (String)(/*moisture->estado()*/UID) + "\",\"luminosity\":\"" + (String)(/*photo->estado()*/UID) + "\",\"pump\":\"" + (String)(UID) + "\",\"motor\":\"" + (String)(/*motor->estado()*/UID) + "\"}";
-        Serial.println(request);
-        int http_response_code = http.POST(request);
-        if (http_response_code < 0){
-            Serial.println("CERCI DESLIGOU SERVER XC");
-            }
-            else{
-            String response = http.getString();
+
+        String request = 
+            "{\"serial_number\":\"" + String(UID)                       + "\","
+             "\"timest\":\""        + String(timeClient.getEpochTime()) + "\","
+             "\"temp\":\""          + String(air->estadoTemperatura())  + "\","
+             "\"hum_air\":\""       + String(air->estadoHumidade())     + "\","
+             "\"hum_earth\":\""     + String(moisture->estado())        + "\","
+             "\"luminosity\":\""    + String(photo->estado())           + "\","
+             "\"states\":\""        + String(motor->estado())           + "\"}";
+        
+        if ((r = http.POST(request)) < 0) {
+            Serial.print("Error ");
+            Serial.println(r);
+        } else {
+            request = http.getString();
             Serial.print("Response (/ESP_History): ");
-            Serial.println(response);
-            }
+            Serial.println(request);
+        }
+        
         http.end();
-        //Serial.println("Online");
-        // HTTPClient http;
-        // http.begin("https://jsonplaceholder.typicode.com/posts?userId=1", root_ca); //Specify the URL and certificate
     }
 }
 
-//############################################################################################
+void printValues(){
+    if (motor->estado())
+        Serial.println("Estufa aberta");
+    else
+        Serial.println("Estufa fechada");
+    
+    Serial.print("Percentagem de luz: ");
+    Serial.print(photo->estado());
+    Serial.println("%");
+
+    Serial.print("Temperatura do ar: ");
+    Serial.print(air->estadoTemperatura());
+    Serial.println("°C");
+
+    Serial.print("Percentagem de Humidade do ar: ");
+    Serial.print(air->estadoHumidade());
+    Serial.println("%");
+    
+    Serial.print("Percentagem de humidade da terra: ");
+    Serial.print(moisture->estado());
+    Serial.println("%");
+}
+
+
 void setup(){
     sprintf(UID,"%llu", ESP_UID);
     totp = new TOTP((uint8_t*) UID, 16);
@@ -328,7 +428,6 @@ void setup(){
     // initialize the LED digital pin as an output.
     pinMode(PIN_LED, OUTPUT);
     pinMode(PIN_RELAY, OUTPUT);
-        
     digitalWrite(PIN_RELAY, LOW);
 
     Serial.begin(9600);
@@ -416,18 +515,21 @@ void setup(){
     //Declaracao dos pinos dos respectivos sensores
     photo = new PhotoSensor(34);
     moisture = new MoisterSensor(32);
-    air = new AirSensor(12, DHT11);
-    motor = new Motor(200, 12, 27, 14, 26);
+    air = new AirSensor(25, DHT11);
+    motor = new Motor(200, 12, 27, 14, 26, air);
+    pump = new WaterPump(33, moisture);
+
     Serial.println("Setup done");
-    
+    postDeviceRegistation();
 }
 
 void loop(){
-  drd->loop();
+	drd->loop();
     
-    timeClient.update();
+  	timeClient.update();
+    
     totpcode = totp->getCode(timeClient.getEpochTime());
-    //Serial.println(totpcode);
+
     if (counter == 160000){
         Serial.println(totpcode);
         counter = 0;
@@ -435,21 +537,21 @@ void loop(){
         counter++;
     }
 
-  if (!client.connected()){
-    reconnect();
-  }
+	if (!client.connected()){
+		reconnect();
+	}
 
     client.loop();
-  
-  if (ONStart > 0 && (millis() - ONStart) > 1000){
-    digitalWrite(PIN_RELAY, LOW); // Turn the LED off by making the voltage HIGH
-  }
-
+	
+	if (ONStart > 0 && (millis() - ONStart) > 1000){
+		digitalWrite(PIN_RELAY, LOW); // Turn the LED off by making the voltage HIGH
+	}
+    
+    //printValues();
+    //delay(1000);
     if ((millis() - lastMillis) > POSTTIME){ //PASSOU um minuto
-        printESP_DEV();
-        printHistory();
-         delay(5000);
+        postValues();
+        Serial.println(totpcode);
         lastMillis = millis();
     }
-    // Serial.printf("ESP_UID: %s\n", UID);
 }
