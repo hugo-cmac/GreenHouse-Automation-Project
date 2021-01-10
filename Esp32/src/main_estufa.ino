@@ -102,11 +102,11 @@ class PhotoSensor {
     private:
 
         int pin = 0;
-    
+
 };
 
 class MoisterSensor {
-   
+
     public:
         //                 32
         MoisterSensor(int pin){
@@ -121,14 +121,16 @@ class MoisterSensor {
 
             return ((float)(value*100))/(4095 - reference);
         }
+
     private:
 
         int pin = 0;
         const int reference = 1000;
+
 };
 
 class AirSensor {
-   
+
     public:
         //             25      DHT11
         AirSensor(int pin, int type){
@@ -145,6 +147,7 @@ class AirSensor {
         float estadoHumidade(){
             return mydht->readHumidity();
         }
+
     private:
 
         int pin = 0;
@@ -272,14 +275,14 @@ WaterPump* pump;
 
 
 void reconnect(){ //connect
-	while (!client.connected()){
+    while (!client.connected()){
         Serial.println("Broker");		
-		if (client.connect("ESTUFA", brokerUser, brokerPass)){
-			client.subscribe(inTopic);
-		}else{
-			delay(5000);
-		}
-	}
+        if (client.connect("ESTUFA", brokerUser, brokerPass)){
+            client.subscribe(inTopic);
+        }else{
+            delay(5000);
+        }
+    }
 }
 
 void callback(char *topic, byte *payload, unsigned int length){
