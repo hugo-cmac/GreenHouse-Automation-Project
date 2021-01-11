@@ -25,6 +25,8 @@
 
 #include <PubSubClient.h>
 
+#include <mbedtls/md.h>
+
 
 #define DRD_TIMEOUT     10 // Number of seconds after reset during which a subseqent reset will be considered a double reset.
 #define DRD_ADDRESS     0 // RTC Memory Address for the DoubleResetDetector to use
@@ -81,7 +83,7 @@ const char *brokerPass = "323c0782";
 const char *broker = "mqtt.dioty.co";
 
 //TOPICOS
-const char *inTopic = "/augustocesarsilvamota@gmail.com/ativar";  //abrir/fecharestufa topic
+char inTopic[64] = "/augustocesarsilvamota@gmail.com/ativar";  //abrir/fecharestufa topic
 
 
 
@@ -208,7 +210,7 @@ class Motor {
         Motor(int steps, int pin1, int pin2, int pin3, int pin4, AirSensor* a) {
             this->steps = steps;
             this->myStepper = new Stepper(steps, pin1, pin2, pin3, pin4);// initialize the stepper library on pins 
-            this->myStepper->setSpeed(60);
+            this->myStepper->setSpeed(40);
             this->a = a;
         };
 
@@ -221,6 +223,7 @@ class Motor {
                 aberto = true;
                 for(int i = 0; i < 10; i++){
                     this->myStepper->step(steps);
+                    Serial.println("open");
                 }
             }
         }
@@ -292,7 +295,7 @@ void reconnect(){ //connect
     while (!client.connected()){
         Serial.println("Broker");		
         if (client.connect("ESTUFA", brokerUser, brokerPass)){
-            client.subscribe(inTopic);
+            client.subscribe((const char*) inTopic);
         }else{
             delay(5000);
         }
@@ -434,22 +437,49 @@ void printValues(){
     Serial.print("Percentagem de humidade da terra: ");
     Serial.print(moisture->estado());
     Serial.println("%");
+
+    delay(5000);
 }
 
+void hmac(){
+
+    char key[] = "secretKey";
+    const size_t keyLength = strlen(key); 
+
+    byte hmacResult[32];
+    
+    mbedtls_md_context_t ctx;
+    mbedtls_md_type_t md_type = MBEDTLS_MD_SHA256;
+    
+    mbedtls_md_init(&ctx);
+    mbedtls_md_setup(&ctx, mbedtls_md_info_from_type(md_type), 1);
+    mbedtls_md_hmac_starts(&ctx, (const unsigned char *) key, keyLength);
+    mbedtls_md_hmac_update(&ctx, (const unsigned char *) UID, 16);
+    mbedtls_md_hmac_finish(&ctx, hmacResult);
+    mbedtls_md_free(&ctx);
+    
+    Serial.print("Hash: ");
+    
+    for(int i = 0; i < 32; i++){
+        char str[3];
+    
+        sprintf(str, "%02x", (int)hmacResult[i]);
+        Serial.print(str);
+    }
+    Serial.print("\n");
+}
 
 void setup(){
-    sprintf(UID,"%llu", ESP_UID);
-    totp = new TOTP((uint8_t*) UID, 16);
-
-    // put your setup code here, to run once:
-    // initialize the LED digital pin as an output.
     pinMode(PIN_LED, OUTPUT);
     pinMode(PIN_RELAY, OUTPUT);
     digitalWrite(PIN_RELAY, LOW);
 
     Serial.begin(9600);
-    Serial.println("\nStarting");
+    Serial.println("\n======================= Starting =======================");
 
+    // put your setup code here, to run once:
+    // initialize the LED digital pin as an output.
+    
     drd = new DoubleResetDetector(DRD_TIMEOUT, DRD_ADDRESS);
 
     //Local intialization. Once its business is done, there is no need to keep it around
@@ -474,7 +504,7 @@ void setup(){
     }
 
     if (drd->detectDoubleReset()){
-        Serial.println("Double Reset Detected");
+        //Serial.println("Double Reset Detected");
         initialConfig = true;
     }
 
@@ -524,6 +554,10 @@ void setup(){
         Serial.println(ESP_wifiManager.getStatus(WiFi.status()));
     }
 
+    sprintf(UID,"%llu", ESP_UID);
+    //sprintf(inTopic,"%s/act", UID);
+    totp = new TOTP((uint8_t*) UID, 16);
+
     timeClient.begin();
 
     client.setServer(broker, 1883);
@@ -533,11 +567,14 @@ void setup(){
     photo = new PhotoSensor(34);
     moisture = new MoisterSensor(32);
     air = new AirSensor(25, DHT11);
-    motor = new Motor(200, 12, 27, 14, 26, air);
+    motor = new Motor(100, 12, 27, 14, 26, air);
     pump = new WaterPump(33, moisture);
 
     Serial.println("Setup done");
-    postDeviceRegistation();
+    //Serial.println(inTopic);
+    //postDeviceRegistation();
+    hmac();
+    Serial.println("\n========================================================");
 }
 
 void loop(){
@@ -565,9 +602,9 @@ void loop(){
     }
     
     //printValues();
-    //delay(1000);
+
     if ((millis() - lastMillis) > POSTTIME){ //PASSOU um minuto
-        postValues();
+        //postValues();
         Serial.println(totpcode);
         lastMillis = millis();
     }
