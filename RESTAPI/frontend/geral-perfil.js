@@ -1,4 +1,5 @@
 var edit;
+//var mqtt = require('mqtt');
 
 $(document).ready(function(){
 	jQuery.support.cors = true;
@@ -25,7 +26,6 @@ $(document).ready(function(){
                         "</div>"+
                         "<div id=\"collapseOne\" class=\"collapse show\" aria-labelledby=\"headingOne\" data-parent=\"#accordionExample\">"+
                             "<div class=\"card-body\">"+
-                                
                                     "Designação: "+data.data[i].designacao+"<br/>"+
                                     "Temperatura minima: "+data.data[i].temp_min+"<br/>"+
                                     "Temperatura máxima: "+data.data[i].temp_max+"<br/>"+
@@ -46,4 +46,13 @@ $(document).ready(function(){
             alert("Inseriu valores não válidos !");
         }
     });
+
+    $('#collapseOne').click(function() {
+
+        $('#collapseOne').removeClass('collapse');
+        $('#collapseOne').addClass('collapse show');
+
+    });
+
+
 });
