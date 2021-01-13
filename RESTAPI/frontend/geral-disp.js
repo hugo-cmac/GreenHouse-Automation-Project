@@ -1,7 +1,9 @@
 var edit;
+var aux =0; 
 
 $(document).ready(function(){
-	jQuery.support.cors = true;
+    jQuery.support.cors = true;
+    
 
     $.ajax({
         url:  localStorage.getItem('base_url')+"devices",
@@ -16,12 +18,13 @@ $(document).ready(function(){
             //localStorage.setItem('userIdgrande',data.userIdgrande);
             //alert("Perfil adiconado!\nA redirecionar...")
             for(i=0;i<data.data.length;i++){
+                aux++;
                 $('#listaPerfil').append(
                     "<div class=\"card\">"+
                         "<div class=\"card-header\">" +
                             "<h5 class=\"mb-0\">" +
                                 "<button class=\"btn btn-link\" type=\"button\" data-toggle=\"collapse\" data-target=\"#collapseOne\" aria-expanded=\"true\" aria-controls=\"collapseOne\">" +
-                                    "Dispositivo nº: " + data.data[i].id_device +
+                                    "Dispositivo nº: " + aux +
                             "</h5>"+
                         "</div>"+
                         "<div id=\"collapseOne\" class=\"collapse show\" aria-labelledby=\"headingOne\" data-parent=\"#accordionExample\">"+
