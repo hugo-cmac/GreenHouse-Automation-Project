@@ -1,4 +1,6 @@
 var edit;
+var aux=[];
+var cont =0;
 //var mqtt = require('mqtt');
 
 $(document).ready(function(){
@@ -11,11 +13,14 @@ $(document).ready(function(){
         crossDomain:true,
         data:{},
         success:function(data){
+            cont = data.data.length;
             console.log(data.data.length);
             /*localStorage.setItem('userID',data.data.username);*/
             //localStorage.setItem('userIdgrande',data.userIdgrande);
             //alert("Perfil adiconado!\nA redirecionar...")
             for(i=0;i<data.data.length;i++){
+                aux[i]=data.data[i];
+                cont = data.data.length;
                 $('#listaPerfil').append(
                     "<div class=\"card\">"+
                         "<div class=\"card-header\">" +
@@ -33,11 +38,20 @@ $(document).ready(function(){
                                     "Humidade do ar máxima: "+data.data[i].hum_air_max+"<br/>"+
                                     "Humidade do solo mínima: "+data.data[i].hum_earth_min+"<br/>"+
                                     "Humidade do solo máxima: "+data.data[i].hum_earth_max+"<br/>"+ 
-                                    "<a class=\"banner_btn\" id=\"active_btn_"+i+ "value=\"Ativar\">Ativar<i class=\"ti-arrow-right\"></i></a>"+               
+                                    "<a class=\"banner_btn\" id=\"active_btn_"+i+"\""+" "+ "value=\"Ativar\">Ativar<i class=\"ti-arrow-right\"></i></a>"+               
                             "</div>"+
                         "</div>"+
                     "</div>"
                 );
+
+                for(var a=0;a<cont;a++){
+                    console.log(i);
+                    $("#active_btn_"+i).click(function() {
+                        console.log("cont");
+                    });
+                }
+
+              
             }
         },
         error: function (xhr, ajaxOptions, thrownError) {
@@ -47,12 +61,12 @@ $(document).ready(function(){
         }
     });
 
-    $('#collapseOne').click(function() {
+    /*$('#collapseOne').click(function() {
 
         $('#collapseOne').removeClass('collapse');
         $('#collapseOne').addClass('collapse show');
 
-    });
+    });*/
 
 
 });
