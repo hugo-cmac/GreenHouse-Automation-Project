@@ -1,17 +1,29 @@
 var edit;
 var aux=[];
 var cont =0;
-var hostname = "mqtt.dioty.co";
-var port = 1883;
-var clientId = "CERCI_ESP_ID";
-clientId += new Date().getUTCMilliseconds();;
-var username = "augustocesarsilvamota@gmail.com";
-var password = "323c0782";
-mqttClient = new Paho.MQTT.Client(hostname, port, clientId);
-var subscription = "augustocesarsilvamota@gmail.com/+/ativar";
-/*mqttClient.onMessageArrived = MessageArrived;
-mqttClient.onConnectionLost = ConnectionLost;*/
-Connect();
+
+var url = "ws://mqtt.dioty.co:8080/mqtt";
+var options = {
+    clientId: 'mqttjs_' + Math.random().toString(16).substr(2, 8),
+    username: "augustocesarsilvamota@gmail.com",
+    password: "323c0782",
+};
+ 
+var client = mqtt.connect(url, options);
+
+client.on('connect', function() { // When connected
+	console.log("connected");
+    /*
+        client.subscribe('augustocesarsilvamota@gmail.com/ativar', function() {
+            // when a message arrives, do something with it
+            client.on('message', function(topic, message, packet) {
+                console.log("Received '" + message + "' on '" + topic + "'");
+            });
+        });*/
+
+        // publish a message to a topic
+        
+});
 
 
 $(document).ready(function(){
@@ -25,11 +37,11 @@ $(document).ready(function(){
         data:{},
         success:function(data){
             cont = data.data.length;
-            console.log(data.data.length);
             /*localStorage.setItem('userID',data.data.username);*/
             //localStorage.setItem('userIdgrande',data.userIdgrande);
             //alert("Perfil adiconado!\nA redirecionar...")
             for(i=0;i<data.data.length;i++){
+                //console.log(aux[i]);
                 aux[i]=data.data[i];
                 cont = data.data.length;
                 $('#listaPerfil').append(
@@ -56,13 +68,17 @@ $(document).ready(function(){
                 );
 
                 for(var a=0;a<cont;a++){
+                    
                     $("#active_btn_"+i).click(function() {
-                        
-                        //Connect();
-                        Connected();
+
+                        client.publish('/augustocesarsilvamota@gmail.com/ativar', aux[a], function() {
+                            console.log("Message is published");
+                            client.end(); // Close the connection when published
+                        });
+
+                       
                     });
                 }
-
             }
         },
         error: function (xhr, ajaxOptions, thrownError) {
@@ -71,41 +87,4 @@ $(document).ready(function(){
             alert("Inseriu valores não válidos !");
         }
     });
-
-    /*$('#collapseOne').click(function() {
-
-        $('#collapseOne').removeClass('collapse');
-        $('#collapseOne').addClass('collapse show');
-
-    });*/
-
-
 });
-
-function Connect(){
-	mqttClient.connect({
-	onSuccess: Connected,
-	onFailure: ConnectionFailed,
-	keepAliveInterval: 5000,
-	userName: username,
-	useSSL: true,
-    password: password});
-    
-    console.log("ligou crllll");
-}
-
-function Connected() {
-	console.log("Connected");
-	mqttClient.subscribe(subscription);
-}
-
-function ConnectionFailed(res) {
-	console.log("Connect failed:" + res.errorMessage);
-}
-
-function ConnectionLost(res) {
-	if (res.errorCode !== 0) {
-		console.log("Connection lost:" + res.errorMessage);
-		Connect();
-	}
-}
