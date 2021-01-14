@@ -10,20 +10,6 @@ mqttClient.onMessageArrived = MessageArrived;
 mqttClient.onConnectionLost = ConnectionLost;
 Connect();
 
-<<<<<<< HEAD
-client.on('connect', function() { 
-    console.log("Connected");
-    
-    // Check you have a connection
-/*
-// Subscribe to a Topic
-client.subscribe(/yourRootTopic/#, function() {
-// When a message arrives, write it to the console
-        client.on('message', function(topic, message, packet) {
-            console.log("Received '" + message + "' on '" + topic + "'");
-        });
-    });
-=======
 /*Initiates a connection to the MQTT broker*/
 function Connect(){
 	mqttClient.connect({
@@ -34,7 +20,6 @@ function Connect(){
 	useSSL: true,
 	password: password});
 }
->>>>>>> 5b8970fce8aaa1aa069510cd720c60588ceddda5
 
 /*Callback for successful MQTT connection */
 function Connected() {

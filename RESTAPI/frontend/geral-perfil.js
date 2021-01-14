@@ -1,13 +1,17 @@
 var edit;
 var aux=[];
 var cont =0;
-var MQTT_CLIENT = new Paho.MQTT.Client("mqtt://mqtt.dioty.co", 1883, "webio4mqttexample");
-
-// Create a client connection
-var client = mqtt.connect("mqtt://mqtt.dioty.co:1883", {
-username: "augustocesarsilvamota@gmail.com",
-password: "323c0782"
-});
+var hostname = "mqtt.dioty.co";
+var port = 1883;
+var clientId = "CERCI_ESP_ID";
+clientId += new Date().getUTCMilliseconds();;
+var username = "augustocesarsilvamota@gmail.com";
+var password = "323c0782";
+mqttClient = new Paho.MQTT.Client(hostname, port, clientId);
+var subscription = "augustocesarsilvamota@gmail.com/+/ativar";
+/*mqttClient.onMessageArrived = MessageArrived;
+mqttClient.onConnectionLost = ConnectionLost;*/
+Connect();
 
 
 $(document).ready(function(){
@@ -52,29 +56,10 @@ $(document).ready(function(){
                 );
 
                 for(var a=0;a<cont;a++){
-                    console.log(i);
                     $("#active_btn_"+i).click(function() {
                         
-                        client.on('connect', function() { 
-                            console.log("Connected");
-                            
-                            // Check you have a connection
-                        /*
-                        // Subscribe to a Topic
-                        client.subscribe(/yourRootTopic/#, function() {
-                        // When a message arrives, write it to the console
-                                client.on('message', function(topic, message, packet) {
-                                    console.log("Received '" + message + "' on '" + topic + "'");
-                                });
-                            });
-
-                        // Publish a message to a Topic
-                            client.publish(/yourRootTopic/test, 'Hello World Message!', function() {
-                                console.log("Message posted...");
-                                client.end(); // Close the connection after publish
-                            });
-                            */
-                        });
+                        //Connect();
+                        Connected();
                     });
                 }
 
@@ -96,3 +81,31 @@ $(document).ready(function(){
 
 
 });
+
+function Connect(){
+	mqttClient.connect({
+	onSuccess: Connected,
+	onFailure: ConnectionFailed,
+	keepAliveInterval: 5000,
+	userName: username,
+	useSSL: true,
+    password: password});
+    
+    console.log("ligou crllll");
+}
+
+function Connected() {
+	console.log("Connected");
+	mqttClient.subscribe(subscription);
+}
+
+function ConnectionFailed(res) {
+	console.log("Connect failed:" + res.errorMessage);
+}
+
+function ConnectionLost(res) {
+	if (res.errorCode !== 0) {
+		console.log("Connection lost:" + res.errorMessage);
+		Connect();
+	}
+}
