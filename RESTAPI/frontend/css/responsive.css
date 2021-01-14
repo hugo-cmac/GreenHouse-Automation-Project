@@ -114,7 +114,7 @@
 		display: block;
 		width: 25px;
 		height: 3px;
-		background: #f84b67;
+		background:  #21A756 /*#f84b67*/;
 		margin: auto;
 		margin-bottom: 4px;
 		transition: all 400ms linear;

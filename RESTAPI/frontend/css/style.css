@@ -2263,7 +2263,7 @@ h6 {
   left: 19px; }
 
 .primary-switch input:checked + label:before {
-  background: #f8b600; }
+  background: #21A756; }
 
 .confirm-switch {
   width: 35px;
@@ -2683,10 +2683,10 @@ h6 {
 
 .banner_btn {
   display: inline-block;
-  background: #f84b67;
+  background: #21A756;
   padding: 0 0 0 30px;
-  border: 1px solid #f84b67;
-  color: #fff;
+  border: 1px solid #21A756;
+  color: rgb(233, 202, 202);
   font-family: "Poppins", sans-serif;
   font-size: 13px;
   font-weight: 500;
@@ -3364,11 +3364,11 @@ h6 {
       transition: all 300ms linear 0s;
       color: #888888; }
       .footer-area .single-footer-widget ul li a:hover {
-        color: #f84b67; }
+        color:  #21A756; }
   .footer-area .single-footer-widget .form-wrap {
     margin-top: 25px; }
     .footer-area .single-footer-widget .form-wrap .info {
-      color: #f84b67; }
+      color: #21A756; }
   .footer-area .single-footer-widget input {
     height: 40px;
     border: 1px solid #eeeeee;
@@ -3405,7 +3405,7 @@ h6 {
     border-radius: 24px;
     padding: 6px 21px 4px 14px;
     border: 0;
-    background: #f84b67;
+    background:#21A756;
     color: #fff;
     position: relative;
     left: 0;
@@ -3432,7 +3432,7 @@ h6 {
     .footer-area .footer-bottom p {
       color: #777777; }
       .footer-area .footer-bottom p a {
-        color: #f84b67; }
+        color:  #21a756; }
     .footer-area .footer-bottom .footer-social {
       text-align: center; }
       @media (max-width: 991px) {
@@ -3449,7 +3449,7 @@ h6 {
         align-content: center;
         transition: all 300ms linear 0s; }
         .footer-area .footer-bottom .footer-social a:hover {
-          color: #f84b67; }
+          color:  #21A756 }
         .footer-area .footer-bottom .footer-social a i, .footer-area .footer-bottom .footer-social a span {
           font-size: 14px; }
 
