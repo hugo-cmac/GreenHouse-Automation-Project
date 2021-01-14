@@ -6,8 +6,8 @@ const options = {
       connectTimeout: 4000, // Timeout period
       // Authentication information
       clientId: 'emqx_test',
-      username: 'emqx_test',
-      password: 'emqx_test',
+      username: 'augustocesarsilvamota@gmail.com',
+      password: '323c0782',
 }
 
 // Connect string, and specify the connection method by the protocol
@@ -17,7 +17,7 @@ const options = {
 // mqtts Encrypted TCP connection
 // wxs WeChat applet connection
 // alis Alipay applet connection
-const connectUrl = 'wss://broker.emqx.io:8084/mqtt'
+const connectUrl = 'mqtt.dioty.co'
 const client = mqtt.connect(connectUrl, options)
 
 client.on('reconnect', (error) => {
