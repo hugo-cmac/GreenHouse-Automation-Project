@@ -66,25 +66,25 @@ $(document).ready(function(){
                         "</div>"+
                     "</div>"
                 );
-
-                for(var a=0;a<cont;a++){
-                    
-                    $("#active_btn_"+i).click(function() {
-
-                        client.publish('/augustocesarsilvamota@gmail.com/ativar', aux[a], function() {
-                            console.log("Message is published");
-                            client.end(); // Close the connection when published
-                        });
-
-                       
-                    });
-                }
             }
+
+            for(var a=0;a<cont;a++){
+                console.log(aux[a]);
+                
+                $("#active_btn_"+a).click(function() {
+                    var payload = "000000;2;"+aux[a].temp_max+";"+aux[a].temp_min+";"+aux[a].hum_air_max+";"+aux[a].hum_air_min+";"+aux[a].hum_earth_max+";"+aux[a].hum_earth_min;
+                    client.publish('/augustocesarsilvamota@gmail.com/ativar', payload, function() {
+                        console.log("Message is published");
+                        client.end(); // Close the connection when published
+                    });
+                });
+            }
+
         },
         error: function (xhr, ajaxOptions, thrownError) {
             console.log(JSON.stringify(xhr));
             console.log(JSON.stringify(thrownError));
-            alert("Inseriu valores não válidos !");
+            alert("Erro de ligação!");
         }
     });
 });
