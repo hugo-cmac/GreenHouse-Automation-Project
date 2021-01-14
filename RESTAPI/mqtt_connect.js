@@ -6,7 +6,10 @@ username: "augustocesarsilvamota@gmail.com",
 password: "323c0782"
 });
 
-client.on('connect', function() { // Check you have a connection
+client.on('connect', function() { 
+    console.log("Connected");
+    
+    // Check you have a connection
 /*
 // Subscribe to a Topic
 client.subscribe(/yourRootTopic/#, function() {
