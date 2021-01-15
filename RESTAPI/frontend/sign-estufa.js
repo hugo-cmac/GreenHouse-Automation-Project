@@ -17,7 +17,7 @@ $(document).ready(function(){
                     "<div class=\"switch-wrap d-flex justify-content-between\">"+
                         "<p>"+ "SN: " +data.data[i].serial_number+"</p>"+
                         "<div class=\"confirm-checkbox\" id=\"cc1\">"+
-                            "<input type=\"checkbox\" id=\"confirm-checkbox"+i+"\""+"S"+">"+
+                            "<input type=\"checkbox\" id=\"confirm-checkbox"+i+"\""+">"+
                             "<label for=\"confirm-checkbox"+i+"\""+">"+"</label>"+
                         "</div>"+
                     "</div>"
@@ -38,7 +38,7 @@ $(document).ready(function(){
 	$('#sign_btn').click(function (){
         var user = localStorage.getItem('userID');
         var desi = $('#desi').val();
-        for()
+        for(var a=0)
         if(desi == ''){
                 alert("Preencha todos os dados!");		
         }

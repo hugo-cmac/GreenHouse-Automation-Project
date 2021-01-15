@@ -16,8 +16,8 @@ $(document).ready(function(){
                 crossDomain:true,
                 data:JSON.stringify({"username":user,"pass":pssw}),
                 success:function(data){
-                    console.log(data.data.username);
-                    localStorage.setItem('userID',data.data.username);
+                    console.log(data.data.id_user);
+                    localStorage.setItem('userID',data.data.id_user);
                     //localStorage.setItem('userIdgrande',data.userIdgrande);
                     alert("Login efetuado.\nA redirecionar...")
                     window.location.href = "admin.html";
