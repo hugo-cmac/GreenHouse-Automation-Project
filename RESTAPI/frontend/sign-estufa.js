@@ -1,3 +1,5 @@
+var aux=[];
+
 $(document).ready(function(){
     jQuery.support.cors = true;
 
@@ -9,11 +11,20 @@ $(document).ready(function(){
         crossDomain:true,
         data:{},
         success:function(data){
-            /*console.log(data.data.username);
-            localStorage.setItem('userID',data.data.username);*/
-            //localStorage.setItem('userIdgrande',data.userIdgrande);
-            alert("Perfil adiconado!\nA redirecionar...")
-            window.location.href = "geral-perfil.html";
+            for(var i=0;i<data.data.length;i++){
+                aux[i]=data.data[i];
+                $("#checkIn").append(
+                    "<div class=\"switch-wrap d-flex justify-content-between\">"+
+                        "<p>"+ "SN: " +data.data[i].serial_number+"</p>"+
+                        "<div class=\"confirm-checkbox\" id=\"cc1\">"+
+                            "<input type=\"checkbox\" id=\"confirm-checkbox"+i+"\""+"S"+">"+
+                            "<label for=\"confirm-checkbox"+i+"\""+">"+"</label>"+
+                        "</div>"+
+                    "</div>"
+
+                );
+            }
+
         },
         error: function (xhr, ajaxOptions, thrownError) {
             console.log(JSON.stringify(xhr));
@@ -25,31 +36,26 @@ $(document).ready(function(){
 
 
 	$('#sign_btn').click(function (){
+        var user = localStorage.getItem('userID');
         var desi = $('#desi').val();
-		var tempmin = $('#tempmin').val();
-		var tempmax = $('#tempmax').val();
-		var hummin = $('#hummin').val();
-		var hummax = $('#hummax').val();
-		var humme = $('#humme').val();
-		var hummemax = $('#hummemax').val();
-        var token = '';
-        if(desi == '' || tempmin == '' || tempmax == '' || hummin == '' || hummax == '' || humme == '' || hummemax == '' ){
+        for()
+        if(desi == ''){
                 alert("Preencha todos os dados!");		
         }
         else{
             $.ajax({
-                url:  localStorage.getItem('base_url')+"profiles",
+                url:  localStorage.getItem('base_url')+"reluser",
                 type: 'POST',
                 dataType : 'json',
                 contentType: "application/json; charset=utf-8",
                 crossDomain:true,
-                data:JSON.stringify({"designacao":desi,"temp_min":tempmin,"temp_max":tempmax,"hum_air_min":hummin,"hum_air_max":hummax,"hum_earth_min":humme,"hum_earth_max":hummemax}),
+                data:JSON.stringify({"id_user":user,"id_device":device,"designacao":desi}),
                 success:function(data){
                     /*console.log(data.data.username);
                     localStorage.setItem('userID',data.data.username);*/
                     //localStorage.setItem('userIdgrande',data.userIdgrande);
-                    alert("Perfil adiconado!\nA redirecionar...")
-                    window.location.href = "geral-perfil.html";
+                    alert("Estufa adicionada!\nA redirecionar...")
+                    window.location.href = "admin.html";
                 },
                 error: function (xhr, ajaxOptions, thrownError) {
                     console.log(JSON.stringify(xhr));
