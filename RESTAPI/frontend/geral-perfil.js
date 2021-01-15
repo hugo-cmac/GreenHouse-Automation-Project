@@ -64,7 +64,7 @@ $(document).ready(function(){
                                             "Humidade do ar máxima: "+data.data[i].hum_air_max+"<br/>"+
                                             "Humidade do solo mínima: "+data.data[i].hum_earth_min+"<br/>"+
                                             "Humidade do solo máxima: "+data.data[i].hum_earth_max+"<br/>"+ 
-                                            "<a class=\"banner_btn\" id=\"active_btn_"+i+"\""+" "+ "value=\"Ativar\">Ativar<i class=\"ti-arrow-right\"></i></a>"+               
+                                            "<a class=\"banner_btn\" id=\"active_btn_"+i+"\""+" "+ "value=\""+i+"\"" +">Ativar<i class=\"ti-arrow-right\"></i></a>"+               
                                     "</div>"+
                                 "</div>"+
                             "</div>"+
@@ -95,11 +95,9 @@ $(document).ready(function(){
                 crossDomain:true,
                 data:{},
                 success:function(data){
-                    console.log(data.data.length);
+                   // console.log(data.data.length);
                     contb = data.data.length;
-                    /*localStorage.setItem('userID',data.data.username);*/
-                    //localStorage.setItem('userIdgrande',data.userIdgrande);
-                    //alert("Perfil adiconado!\nA redirecionar...")
+
                     for(i=0;i<data.data.length;i++){
                         $('#swiPerfil').append(
                             "<div class=\"switch-wrap d-flex justify-content-between\">"+
@@ -113,13 +111,13 @@ $(document).ready(function(){
                     }
 
                     for(var a=0;a<cont;a++){
-                        console.log(aux[a]);
                         $("#active_btn_"+a).click(function() {
+                            var btnValue=($(this).attr('value'));
                             for(var b=0;b<contb;b++){
                                 if(document.getElementById("default-switch"+b).checked == true){
-                                    console.log(aux[a]);
+                                    console.log(b);
                                     var val = document.getElementById("default-switch"+b).value;
-                                    var payload = "000000;2;"+aux[a].temp_max+";"+aux[a].temp_min+";"+aux[a].hum_air_max+";"+aux[a].hum_air_min+";"+aux[a].hum_earth_max+";"+aux[a].hum_earth_min;
+                                    var payload = "000000;2;"+aux[btnValue].temp_max+";"+aux[btnValue].temp_min+";"+aux[btnValue].hum_air_max+";"+aux[btnValue].hum_air_min+";"+aux[btnValue].hum_earth_max+";"+aux[btnValue].hum_earth_min;
                                     client.publish('/augustocesarsilvamota@gmail.com/'+val, payload, function() {
                                         console.log("Message is published");
                                         client.end(); // Close the connection when published
@@ -132,7 +130,7 @@ $(document).ready(function(){
                 error: function (xhr, ajaxOptions, thrownError) {
                     console.log(JSON.stringify(xhr));
                     console.log(JSON.stringify(thrownError));
-                    alert("Inseriu valores não válidos !");
+                    alert("Erro de ligação!");
                 }
             });
 
@@ -144,3 +142,5 @@ $(document).ready(function(){
         }
     });
 });
+
+

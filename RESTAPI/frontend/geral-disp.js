@@ -40,6 +40,39 @@ $(document).ready(function(){
                     "</div>"
                 );
             }
+
+            $.ajax({
+                url:  localStorage.getItem('base_url')+"history",
+                type: 'GET',
+                dataType : 'json',
+                contentType: "application/json; charset=utf-8",
+                crossDomain:true,
+                data:{},
+                success:function(data){
+                    console.log(data.data.length);
+                    contb = data.data.length;
+                    /*localStorage.setItem('userID',data.data.username);*/
+                    //localStorage.setItem('userIdgrande',data.userIdgrande);
+                    //alert("Perfil adiconado!\nA redirecionar...")
+                    for(i=0;i<data.data.length;i++){
+                        $('#swiPerfil').append(
+                            "<div class=\"switch-wrap d-flex justify-content-between\">"+
+                                "<p>"+ "Dispositivo " +(i+1)+ " (SN)" +":  " + data.data[i].serial_number +"</p>"+
+                                "<div class=\"primary-switch\">"+
+                                "<input type=\"checkbox\""+ "  value=\""+ data.data[i].serial_number +"\""+ " " + "id=\"default-switch"+i+"\""+" "+"checked" +">"+
+                                "<label for=\"default-switch"+i+"\""+">"+"</label>"+
+                                "</div>"+
+                            "</div>"
+                        );
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    console.log(JSON.stringify(xhr));
+                    console.log(JSON.stringify(thrownError));
+                    alert("Inseriu valores não válidos !");
+                }
+            });
+
         },
         error: function (xhr, ajaxOptions, thrownError) {
             console.log(JSON.stringify(xhr));
