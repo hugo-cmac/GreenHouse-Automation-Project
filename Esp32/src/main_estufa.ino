@@ -44,6 +44,7 @@
 
 static uint64_t ESP_UID = ESP.getEfuseMac();
 char UID[16];
+byte hmac_UID[32];
 
 // SSID and PW for Config Portal
 String ssid = "ESP_" + String((unsigned int)ESP_UID, HEX);
@@ -83,7 +84,7 @@ const char *brokerPass = "323c0782";
 const char *broker = "mqtt.dioty.co";
 
 //TOPICOS
-char inTopic[64] = "/augustocesarsilvamota@gmail.com/ativar";  //abrir/fecharestufa topic
+char inTopic[64];  //abrir/fecharestufa topic
 
 
 
@@ -245,11 +246,11 @@ class Motor {
             }    
         }
 
-        void setMax(int max){
+        void setMax(float max){
             this->max = max;
         }
         
-        void setMin(int min){
+        void setMin(float min){
             this->min = min;
         }
 
@@ -257,8 +258,8 @@ class Motor {
     private:
     
         int steps = 0; // change this to fit the number of steps per revolution
-        int max = 30;
-        int min = 10;
+        float max = 30;
+        float min = 10;
 
         boolean aberto = false;
 
@@ -305,9 +306,11 @@ void reconnect(){ //connect
 void callback(char *topic, byte *payload, unsigned int length){
     payload[length] = '\0';
     char code[] = "0000000000";
+
+    //000000;2;tmax;tmin;humamax;humamin;humemax;humemin
     //123456;0/1;0/1;[default]
 
-    char request[4][8];
+    char request[10][32];
     memset(request, 0, sizeof(request));
     int n = 0, c = 0;
     for (int i = 0; i < length; i++){
@@ -341,22 +344,30 @@ void callback(char *topic, byte *payload, unsigned int length){
                 Serial.println("abrir");
                 motor->abrir();
             }
-            if (n == 3){
-                // set new default
-            }
             return;
         case '1'://bomba para regar
-            if (request[2][0] == '0'){
-                
-            } else if (request[2][0] == '1') {
+            if (request[2][0] == '1') {
                 Serial.println("regar");
                 pump->regar();
             }
-            if (n == 3){
-                // set new default
-            }
             return;
-    
+        case '2':// novos limites
+            if (n != 7)
+                return;
+            
+            //sets dos limites de temperatura temperatura
+            motor->setMax(atof(request[2]));
+            motor->setMin(atof(request[3]));
+
+            //Humidade do ar
+            //atof(request[4])
+            //atof(request[5])
+
+            //Humidade da terra
+            pump->setMax(atof(request[6]));
+            pump->setMin(atof(request[7]));
+            return;
+            
         default:
             return;
     }
@@ -445,8 +456,6 @@ void hmac(){
 
     char key[] = "secretKey";
     const size_t keyLength = strlen(key); 
-
-    byte hmacResult[32];
     
     mbedtls_md_context_t ctx;
     mbedtls_md_type_t md_type = MBEDTLS_MD_SHA256;
@@ -455,7 +464,7 @@ void hmac(){
     mbedtls_md_setup(&ctx, mbedtls_md_info_from_type(md_type), 1);
     mbedtls_md_hmac_starts(&ctx, (const unsigned char *) key, keyLength);
     mbedtls_md_hmac_update(&ctx, (const unsigned char *) UID, 16);
-    mbedtls_md_hmac_finish(&ctx, hmacResult);
+    mbedtls_md_hmac_finish(&ctx, hmac_UID);
     mbedtls_md_free(&ctx);
     
     Serial.print("Hash: ");
@@ -463,7 +472,7 @@ void hmac(){
     for(int i = 0; i < 32; i++){
         char str[3];
     
-        sprintf(str, "%02x", (int)hmacResult[i]);
+        sprintf(str, "%02x", (int)hmac_UID[i]);
         Serial.print(str);
     }
     Serial.print("\n");
@@ -555,8 +564,12 @@ void setup(){
     }
 
     sprintf(UID,"%llu", ESP_UID);
-    //sprintf(inTopic,"%s/act", UID);
-    totp = new TOTP((uint8_t*) UID, 16);
+    sprintf(inTopic,"/augustocesarsilvamota@gmail.com/%llu", ESP_UID);
+    Serial.println(inTopic);
+
+    hmac();
+
+    totp = new TOTP((uint8_t*) hmac_UID, 32);
 
     timeClient.begin();
 
@@ -567,13 +580,13 @@ void setup(){
     photo = new PhotoSensor(34);
     moisture = new MoisterSensor(32);
     air = new AirSensor(25, DHT11);
-    motor = new Motor(100, 12, 27, 14, 26, air);
+    motor = new Motor(200, 12, 27, 14, 26, air);
     pump = new WaterPump(33, moisture);
 
     Serial.println("Setup done");
     //Serial.println(inTopic);
     //postDeviceRegistation();
-    hmac();
+    
     Serial.println("\n========================================================");
 }
 
