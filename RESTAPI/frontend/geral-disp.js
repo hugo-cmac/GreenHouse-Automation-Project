@@ -28,7 +28,7 @@ $(document).ready(function(){
                                             "Dispositivo nº: " + aux +
                                     "</h5>"+
                                 "</div>"+
-                                "<div id=\"collapseOne\" class=\"collapse show\" aria-labelledby=\"headingOne\" data-parent=\"#accordionExample\">"+
+                                "<div id=\"collapseOne" + i + "\" " + "class=\"collapse show\" aria-labelledby=\"headingOne\" data-parent=\"#accordionExample\">"+
                                     "<div class=\"card-body\">"+
                                         
                                             "Serial Number (SN): "+data.data[i].serial_number+"<br/>"+
@@ -54,16 +54,21 @@ $(document).ready(function(){
                     /*localStorage.setItem('userID',data.data.username);*/
                     //localStorage.setItem('userIdgrande',data.userIdgrande);
                     //alert("Perfil adiconado!\nA redirecionar...")
-                    for(i=0;i<data.data.length;i++){
-                        $('#swiPerfil').append(
-                            "<div class=\"switch-wrap d-flex justify-content-between\">"+
-                                "<p>"+ "Dispositivo " +(i+1)+ " (SN)" +":  " + data.data[i].serial_number +"</p>"+
-                                "<div class=\"primary-switch\">"+
-                                "<input type=\"checkbox\""+ "  value=\""+ data.data[i].serial_number +"\""+ " " + "id=\"default-switch"+i+"\""+" "+"checked" +">"+
-                                "<label for=\"default-switch"+i+"\""+">"+"</label>"+
-                                "</div>"+
-                            "</div>"
-                        );
+                    for(var i=0;i<aux;i++){
+                        for(var a = 0;a<contb;a++)
+                            if(aux2[i].serial_number == data.data[a].serial_number){
+                            $('#collapseOne'+i).append(
+
+                               ( "Amostra: "+data.data[a].id_history+ " "+ "<br/>").bold()+
+                                "Timestamp: "+data.data[a].timest+"<br/>"+
+                                "Temperatura: "+data.data[a].timest+"<br/>"+
+                                "Humidade do ar: "+data.data[a].hum_air+"<br/>"+
+                                "Humidade do solo: "+data.data[a].hum_earth+"<br/>"+
+                                "Luminosidade: "+data.data[a].luminosity+"<br/>"+
+                                "Estado do motor: "+data.data[a].states+"<br/>"
+
+                            );
+                        }
                     }
                 },
                 error: function (xhr, ajaxOptions, thrownError) {
