@@ -61,7 +61,7 @@ $(document).ready(function(){
 
                                ( "Amostra: "+data.data[a].id_history+ " "+ "<br/>").bold()+
                                 "Timestamp: "+data.data[a].timest+"<br/>"+
-                                "Temperatura: "+data.data[a].timest+"<br/>"+
+                                "Temperatura: "+data.data[a].temp+"<br/>"+
                                 "Humidade do ar: "+data.data[a].hum_air+"<br/>"+
                                 "Humidade do solo: "+data.data[a].hum_earth+"<br/>"+
                                 "Luminosidade: "+data.data[a].luminosity+"<br/>"+
