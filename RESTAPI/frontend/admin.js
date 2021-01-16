@@ -23,6 +23,7 @@ $(document).ready(function(){
 			}
 
 			for(var a=0;a<auxes.length;a++){
+				console.log(aux[a]);
 				localStorage.setItem('des',auxes[a].designacao);
 				$.ajax({
 					url: localStorage.getItem('base_url') + "history/"+auxes[a].serial_number,
@@ -30,7 +31,7 @@ $(document).ready(function(){
 					contentType: "application/json; charset=utf-8",
 					dataType: "json",
 					data: {},
-					success: function (data,auxes) {
+					success: function (data) {
 						var his = data.data.length;
 						$('#estufa').append(
 							"<div class=\"container\">"+
@@ -41,6 +42,7 @@ $(document).ready(function(){
 												"<img src=\"img/estufa2.jpeg\" alt=\"\" class=\"img-fluid\">"+
 											"</div>"+
 										"<div class=\"col-md-9 mt-sm-20 left-align-p\">"+
+											"<p>"+ "Dispositivo (SN): "+ data.data[his-1].serial_number+"</p>"+
 											"<p>"+ "Temperatura: "+ data.data[his-1].temp + " ªC" +"</p>"+
 											"<p>"+ "Humidade do ar: "+ data.data[his-1].hum_air + "%" +"</p>"+
 											"<p>"+ "Humidade do solo: "+ data.data[his-1].hum_earth + "%" +"</p>"+
