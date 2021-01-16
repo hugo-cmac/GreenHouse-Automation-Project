@@ -1,12 +1,13 @@
 var userI;
 var userN;
 var auxes=[];
-
+var cont = 0;
 $(document).ready(function(){
 	userI=localStorage.getItem("userID");  
 	userN=localStorage.getItem("userN");
 	console.log(userI);
 	console.log(userN);
+
 	document.getElementById("username").innerHTML = "Olá, "+userN;
 
     $.ajax({
@@ -18,12 +19,14 @@ $(document).ready(function(){
 		success: function (data) {
 			for(var i=0;i<data.data.length;i++){
 				if(data.data[i].id_user==userI){
-					auxes[i]=data.data[i];
+					auxes[cont]=data.data[i];
+					cont++;
 				}
 			}
+			console.log(auxes.length);
 
 			for(var a=0;a<auxes.length;a++){
-				console.log(aux[a]);
+				//console.log(auxes[a]);
 				localStorage.setItem('des',auxes[a].designacao);
 				$.ajax({
 					url: localStorage.getItem('base_url') + "history/"+auxes[a].serial_number,
