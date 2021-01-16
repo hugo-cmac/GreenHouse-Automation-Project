@@ -50,7 +50,7 @@ $(document).ready(function(){
 											"<p>"+ "Temperatura: "+ data.data[his-1].temp + " ªC" +"</p>"+
 											"<p>"+ "Humidade do ar: "+ data.data[his-1].hum_air + "%" +"</p>"+
 											"<p>"+ "Humidade do solo: "+ data.data[his-1].hum_earth + "%" +"</p>"+
-											"<p>"+ "Luminosidade: "+ data.data[his-1].luminosity+ " (Lumens)" +"</p>"+
+											"<p>"+ "Luminosidade: "+ data.data[his-1].luminosity+ "%" +"</p>"+
 											"<p>"+ "Estado do motor: "+ getState(data.data[his-1].states) +"</p>"+
 										"</div>"+
 									"</div>"+
