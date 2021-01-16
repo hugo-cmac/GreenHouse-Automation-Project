@@ -18,6 +18,7 @@ $(document).ready(function(){
                 success:function(data){
                     console.log(data.data.id_user);
                     localStorage.setItem('userID',data.data.id_user);
+                    localStorage.setItem('userN',data.data.username);
                     //localStorage.setItem('userIdgrande',data.userIdgrande);
                     alert("Login efetuado.\nA redirecionar...")
                     window.location.href = "admin.html";

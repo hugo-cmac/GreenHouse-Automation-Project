@@ -362,7 +362,7 @@ module.exports={
 	},
 
 	getHistoryById: function (req, callback) {
-		let query = "SELECT id_history,serial_number,timest,temp,hum_air,hum_earth,luminosity,states FROM History WHERE id_history = ?";
+		let query = "SELECT id_history,serial_number,timest,temp,hum_air,hum_earth,luminosity,states FROM History WHERE serial_number = ?";
 		let table = [req.params.id_history];
 		query = mysql.format(query, table);
 		pool.query(query, function (error, results) {

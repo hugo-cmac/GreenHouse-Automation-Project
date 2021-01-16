@@ -1,4 +1,5 @@
 var aux=[];
+var contdev=0;
 
 $(document).ready(function(){
     jQuery.support.cors = true;
@@ -13,11 +14,12 @@ $(document).ready(function(){
         success:function(data){
             for(var i=0;i<data.data.length;i++){
                 aux[i]=data.data[i];
+                contdev=data.data.length;
                 $("#checkIn").append(
                     "<div class=\"switch-wrap d-flex justify-content-between\">"+
                         "<p>"+ "SN: " +data.data[i].serial_number+"</p>"+
                         "<div class=\"confirm-checkbox\" id=\"cc1\">"+
-                            "<input type=\"checkbox\" id=\"confirm-checkbox"+i+"\""+">"+
+                            "<input type=\"checkbox\" id=\"confirm-checkbox"+i+"\""+ " value=\""+data.data[i].serial_number+ "\" " +">"+
                             "<label for=\"confirm-checkbox"+i+"\""+">"+"</label>"+
                         "</div>"+
                     "</div>"
@@ -29,18 +31,24 @@ $(document).ready(function(){
         error: function (xhr, ajaxOptions, thrownError) {
             console.log(JSON.stringify(xhr));
             console.log(JSON.stringify(thrownError));
-            alert("Inseriu valores não válidos !");
+            alert("Erro de ligação!");
         }
     });
     
 
 
 	$('#sign_btn').click(function (){
+        var dev;
         var user = localStorage.getItem('userID');
         var desi = $('#desi').val();
-        for(var a=0)
-        if(desi == ''){
-                alert("Preencha todos os dados!");		
+        for(var a=0;a<contdev;a++){
+            if(document.getElementById("confirm-checkbox"+a).checked == true){
+                console.log(document.getElementById("confirm-checkbox"+a).value);
+                dev = document.getElementById("confirm-checkbox"+a).value;
+            }
+        }
+        if(desi == '' || dev == ''){
+                alert("Preencha e selecione todos os dados!");		
         }
         else{
             $.ajax({
@@ -49,7 +57,7 @@ $(document).ready(function(){
                 dataType : 'json',
                 contentType: "application/json; charset=utf-8",
                 crossDomain:true,
-                data:JSON.stringify({"id_user":user,"id_device":device,"designacao":desi}),
+                data:JSON.stringify({"id_user":user,"serial_number":dev,"designacao":desi}),
                 success:function(data){
                     /*console.log(data.data.username);
                     localStorage.setItem('userID',data.data.username);*/
@@ -60,7 +68,7 @@ $(document).ready(function(){
                 error: function (xhr, ajaxOptions, thrownError) {
                     console.log(JSON.stringify(xhr));
                     console.log(JSON.stringify(thrownError));
-                    alert("Inseriu valores não válidos !");
+                    alert("Erro de ligação!!");
                 }
             });
         }

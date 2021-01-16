@@ -214,7 +214,7 @@ app.get('/history', verifyToken, function (req, res) {
 	// });
 });
 
-app.get('/history/:id_history', verifyToken, function (req, res) {
+app.get('/history/:serial_number', verifyToken, function (req, res) {
 	// jwt.verify(req.token, "config.secret", (err, authData) => {
 	// 	if (err) {
 	// 		res.status(status.UNAUTHORIZED).send("Wrong token");
