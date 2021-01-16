@@ -45,6 +45,7 @@
 static uint64_t ESP_UID = ESP.getEfuseMac();
 char UID[16];
 byte hmac_UID[32];
+String registcode = String();
 
 // SSID and PW for Config Portal
 String ssid = "ESP_" + String((unsigned int)ESP_UID, HEX);
@@ -54,11 +55,6 @@ char* totpcode = NULL;
 
 bool initialConfig = false; // Indicates whether ESP has WiFi credentials saved from previous session, or double reset detected
 unsigned long ONStart;
-
-unsigned int counter = 0;
-
-unsigned int POSTTIME = 120000;  // 2min
-unsigned int lastMillis = 0;
 
 //trocar certificado
 const char* root_ca = \ 
@@ -85,7 +81,7 @@ const char *broker = "mqtt.dioty.co";
 
 //TOPICOS
 char inTopic[64];  //abrir/fecharestufa topic
-
+char outTopic[64];
 
 
 //################################### Declaracao de classes #####################################
@@ -176,29 +172,32 @@ class WaterPump{
 
         void regar(){
             digitalWrite(pin, LOW);
+            //int tim = millis();
             //while (m->estado() < max);
             delay(2000);
             digitalWrite(pin, HIGH);
         }
 
         void verifica(){
-            if (m->estado() < min)
+            if (m->estado() < min){
+                Serial.println("Need water");
                 regar();
+            }
         }
 
-        void setMax(int max){
+        void setMax(float max){
             this->max = max;
         }
 
-        void setMin(int min){
+        void setMin(float min){
             this->min = min;
         }
     
     private:
 
         int pin = 0;
-        int min = 20;
-        int max = 60;
+        float min = 20;
+        float max = 60;
 
         MoisterSensor *m = NULL;
 
@@ -224,7 +223,6 @@ class Motor {
                 aberto = true;
                 for(int i = 0; i < 10; i++){
                     this->myStepper->step(steps);
-                    Serial.println("open");
                 }
             }
         }
@@ -239,27 +237,38 @@ class Motor {
         }
 
         void verifica(){
-            if (a->estadoTemperatura() > max) {
+            if (a->estadoTemperatura() > tempmax || a->estadoHumidade() > hummax) {
                 abrir();
-            }else if (a->estadoTemperatura() < min) {
+            }else if (a->estadoTemperatura() < tempmin || a->estadoHumidade() < hummin) {
                 fechar();
             }    
         }
 
-        void setMax(float max){
-            this->max = max;
+        void setTempMax(float max){
+            this->tempmax = max;
         }
         
-        void setMin(float min){
-            this->min = min;
+        void setTempMin(float min){
+            this->tempmin = min;
+        }
+
+        void setHumMax(float max){
+            this->hummax = max;
+        }
+        
+        void setHumMin(float min){
+            this->hummin = min;
         }
 
   
     private:
     
         int steps = 0; // change this to fit the number of steps per revolution
-        float max = 30;
-        float min = 10;
+        float tempmax = 30;
+        float tempmin = 10;
+
+        float hummax = 60;
+        float hummin = 50;
 
         boolean aberto = false;
 
@@ -269,7 +278,37 @@ class Motor {
         
 };
 
+class Timeout{
+    public:
+        Timeout(){
+                this->postCount = millis();
+                this->checkCount = millis();
+        };
 
+        bool post(){
+            if ((millis() - postCount) > postTimeout){
+                postCount = millis();
+                return true;
+            }
+            return false;
+        }
+
+        bool check(){
+            if ((millis() - checkCount) > checkTimeout){
+                checkCount = millis();
+                return true;
+            }
+            return false;
+        }
+
+    private:
+
+        int postTimeout = 120000;
+        int postCount = 0;
+
+        int checkTimeout = 60000;
+        int checkCount = 0;
+};
 
 //################################### Declaracao de objetos #####################################
 
@@ -288,7 +327,7 @@ AirSensor* air;
 Motor* motor;
 WaterPump* pump;
 
-
+Timeout timeout;
 
 //################################### Declaracao de Funcoes #####################################
 
@@ -354,27 +393,27 @@ void callback(char *topic, byte *payload, unsigned int length){
         case '2':// novos limites
             if (n != 7)
                 return;
-            
+
+            Serial.println("Set defaults");
             //sets dos limites de temperatura temperatura
-            motor->setMax(atof(request[2]));
-            motor->setMin(atof(request[3]));
+            motor->setTempMax(atof(request[2]));
+            motor->setTempMin(atof(request[3]));
 
             //Humidade do ar
-            //atof(request[4])
-            //atof(request[5])
+            motor->setHumMax(atof(request[4]));
+            motor->setHumMin(atof(request[5]));
 
             //Humidade da terra
             pump->setMax(atof(request[6]));
             pump->setMin(atof(request[7]));
             return;
-            
+
         default:
             return;
     }
 }
 
 void postDeviceRegistation(){
-    int r = 0;
     if ((WiFi.status() == WL_CONNECTED)) {
         HTTPClient http;
 
@@ -382,23 +421,15 @@ void postDeviceRegistation(){
         http.addHeader("Content-Type", "application/json");
         
         String request = 
-            "{\"serial_number\":\"" + String(UID) + "\"}";
+            "{\"serial_number\":\"" + String(UID) + "\","
+             "\"registcode\":\""     + registcode + "\"}";
 
-        if ((r = http.POST(request)) < 0) {
-            Serial.print("Error ");
-            Serial.println(r);
-        } else {
-            request = http.getString();
-            Serial.print("Response (/ESP_Device): ");
-            Serial.println(request);
-        }
-
+        http.POST(request);
         http.end();
     }
 }
 
 void postValues(){
-    int r = 0;
     if ((WiFi.status() == WL_CONNECTED)) {
         HTTPClient http;
 
@@ -414,16 +445,24 @@ void postValues(){
              "\"luminosity\":\""    + String(photo->estado())           + "\","
              "\"states\":\""        + String(motor->estado())           + "\"}";
         
-        if ((r = http.POST(request)) < 0) {
-            Serial.print("Error ");
-            Serial.println(r);
-        } else {
-            request = http.getString();
-            Serial.print("Response (/ESP_History): ");
-            Serial.println(request);
-        }
-        
+        http.POST(request);
+        Serial.println(request);
         http.end();
+
+        if (!client.connected())
+            reconnect();
+
+        request = 
+            "{\"totp\":\""          + String(totpcode)                  + "\","
+             "\"timest\":\""        + String(timeClient.getEpochTime()) + "\","
+             "\"temp\":\""          + String(air->estadoTemperatura())  + "\","
+             "\"hum_air\":\""       + String(air->estadoHumidade())     + "\","
+             "\"hum_earth\":\""     + String(moisture->estado())        + "\","
+             "\"luminosity\":\""    + String(photo->estado())           + "\","
+             "\"states\":\""        + String(motor->estado())           + "\"}";
+
+        client.publish(outTopic, (const uint8_t*) request.c_str(), request.length(), false);
+
     }
 }
 
@@ -453,7 +492,6 @@ void printValues(){
 }
 
 void hmac(){
-
     char key[] = "secretKey";
     const size_t keyLength = strlen(key); 
     
@@ -467,21 +505,18 @@ void hmac(){
     mbedtls_md_hmac_finish(&ctx, hmac_UID);
     mbedtls_md_free(&ctx);
     
-    Serial.print("Hash: ");
+    Serial.print("Registration Code: ");
     
-    for(int i = 0; i < 32; i++){
+    for(int i = 22; i < 32; i++){
         char str[3];
-    
-        sprintf(str, "%02x", (int)hmac_UID[i]);
-        Serial.print(str);
+        sprintf(str, "%02x", hmac_UID[i]);
+        registcode.concat(str);
     }
     Serial.print("\n");
 }
 
 void setup(){
     pinMode(PIN_LED, OUTPUT);
-    pinMode(PIN_RELAY, OUTPUT);
-    digitalWrite(PIN_RELAY, LOW);
 
     Serial.begin(9600);
     Serial.println("\n======================= Starting =======================");
@@ -552,10 +587,6 @@ void setup(){
         }
     }
 
-    // Serial.print("After waiting ");
-    // Serial.print((millis() - startedAt) / 1000);
-    // Serial.print(" secs more in setup(), connection result is ");
-
     if (WiFi.status() == WL_CONNECTED){
         Serial.print("connected. Local IP: ");
         Serial.println(WiFi.localIP());
@@ -564,12 +595,18 @@ void setup(){
     }
 
     sprintf(UID,"%llu", ESP_UID);
-    sprintf(inTopic,"/augustocesarsilvamota@gmail.com/%llu", ESP_UID);
+    sprintf(inTopic,"/augustocesarsilvamota@gmail.com/%llu/in", ESP_UID);
+    sprintf(outTopic,"/augustocesarsilvamota@gmail.com/%llu/out", ESP_UID);
+    
+    Serial.print("Input topic: \n\t");
     Serial.println(inTopic);
 
-    hmac();
+    Serial.print("Output topic: \n\t");
+    Serial.println(outTopic);
 
-    totp = new TOTP((uint8_t*) hmac_UID, 32);
+    hmac();
+    Serial.println(registcode);
+    totp = new TOTP((uint8_t*) &hmac_UID[22], 10);
 
     timeClient.begin();
 
@@ -583,43 +620,30 @@ void setup(){
     motor = new Motor(200, 12, 27, 14, 26, air);
     pump = new WaterPump(33, moisture);
 
-    Serial.println("Setup done");
-    //Serial.println(inTopic);
-    //postDeviceRegistation();
+    postDeviceRegistation();
     
-    Serial.println("\n========================================================");
+    Serial.println("\n========================================================\n\n\n");
 }
 
 void loop(){
     drd->loop();
 
     timeClient.update();
-
     totpcode = totp->getCode(timeClient.getEpochTime());
 
-    if (counter == 160000){
-        Serial.println(totpcode);
-        counter = 0;
-    }else{
-        counter++;
-    }
-
-    if (!client.connected()){
+    if (!client.connected())
         reconnect();
-    }
 
     client.loop();
-	
-    if (ONStart > 0 && (millis() - ONStart) > 1000){
-        digitalWrite(PIN_RELAY, LOW); // Turn the LED off by making the voltage HIGH
-    }
+
     
-    //printValues();
-
-    if ((millis() - lastMillis) > POSTTIME){ //PASSOU um minuto
-        //postValues();
-        Serial.println(totpcode);
-        lastMillis = millis();
+    if (timeout.post()) {
+        postValues();
     }
 
+    if (timeout.check()) {
+        motor->verifica();
+        pump->verifica();
+        printValues();
+    }
 }
