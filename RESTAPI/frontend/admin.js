@@ -26,7 +26,7 @@ $(document).ready(function(){
 			console.log(auxes.length);
 
 			for(var a=0;a<auxes.length;a++){
-				//console.log(auxes[a]);
+				console.log(localStorage.getItem('des'));
 				localStorage.setItem('des',auxes[a].designacao);
 				$.ajax({
 					url: localStorage.getItem('base_url') + "history/"+auxes[a].serial_number,
@@ -36,6 +36,7 @@ $(document).ready(function(){
 					data: {},
 					success: function (data) {
 						var his = data.data.length;
+						console.log(localStorage.getItem('des'));
 						$('#estufa').append(
 							"<div class=\"container\">"+
 								"<div class=\"section-top-border\">"+
@@ -56,7 +57,9 @@ $(document).ready(function(){
 								"</div>"+
 							"</div>"
 						);	
+						
 					},
+					
 					error: function (xhr, ajaxOptions, thrownError) {
 						// alert(xhr.status);
 						// alert(thrownError); 
@@ -74,10 +77,10 @@ $(document).ready(function(){
 
 function getState(aux){
 	if(aux == 0){
-		return "Desligado";
+		return "Desativado";
 	}
 	else{
-		return "Ligado";
+		return "Ativado";
 	}
 	
 }

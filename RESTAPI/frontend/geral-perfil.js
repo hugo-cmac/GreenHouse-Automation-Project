@@ -28,7 +28,11 @@ client.on('connect', function() { // When connected
 
 
 $(document).ready(function(){
-	jQuery.support.cors = true;
+    userI=localStorage.getItem("userID");  
+    userN=localStorage.getItem("userN");
+    document.getElementById("username").innerHTML = "Olá, "+userN;
+    jQuery.support.cors = true;
+    
     $.ajax({
         url:  localStorage.getItem('base_url')+"profiles",
         type: 'GET',
@@ -47,15 +51,15 @@ $(document).ready(function(){
                 cont = data.data.length;
                 $('#listaPerfil2').append(
                     "<div class=\"col-sm-12 col-lg-6\">" +
-                        "<div class=\"accordion\" id=\"listaPerfil\">"+
+                        "<div class=\"accordion\" id=\"listaPerfil"+ i + "\"" +">"+
                             "<div class=\"card\">"+
-                                "<div class=\"card-header\">" +
+                                "<div class=\"card-header\" "+"id=\"headingOne"+i+ "\"" +">" +
                                     "<h5 class=\"mb-0\">" +
-                                        "<button class=\"btn btn-link\" type=\"button\" data-toggle=\"collapse\" data-target=\"#collapseOne\" aria-expanded=\"true\" aria-controls=\"collapseOne\">" +
+                                        "<button class=\"btn btn-link\" type=\"button\" data-toggle=\"collapse\" data-target=\"#collapseOne"+ i+ "\"" + "aria-expanded=\"true\" aria-controls=\"collapseOne"+ i+ "\"" +">" +
                                             "Perfil nº: " + data.data[i].id_perfil +
                                     "</h5>"+
                                 "</div>"+
-                                "<div id=\"collapseOne\" class=\"collapse show\" aria-labelledby=\"headingOne\" data-parent=\"#accordionExample\">"+
+                                "<div id=\"collapseOne"+i+ "\"" + " class=\"collapse\" aria-labelledby=\"headingOne"+i+ "\"" +" data-parent=\"#listaPerfil"+ i +"\""+">"+
                                     "<div class=\"card-body\">"+
                                             "Designação: "+data.data[i].designacao+"<br/>"+
                                             "Temperatura minima: "+data.data[i].temp_min+"<br/>"+
@@ -64,7 +68,13 @@ $(document).ready(function(){
                                             "Humidade do ar máxima: "+data.data[i].hum_air_max+"<br/>"+
                                             "Humidade do solo mínima: "+data.data[i].hum_earth_min+"<br/>"+
                                             "Humidade do solo máxima: "+data.data[i].hum_earth_max+"<br/>"+ 
-                                            "<a class=\"banner_btn\" id=\"active_btn_"+i+"\""+" "+ "value=\""+i+"\"" +">Ativar<i class=\"ti-arrow-right\"></i></a>"+               
+                                            "<div class=\"single-service\">"+
+                                                "<div class=\"service-content\">"+
+                                                    "<div class=\"container text-center\">"+
+                                                    "<p>"+ "<a class=\"banner_btn\" id=\"active_btn_"+i+"\""+" "+ "value=\""+i+"\"" +">Ativar<i class=\"ti-arrow-right\"></i></a>"+"</p>"+
+                                                    "</div>"+             
+                                                "</div>"+
+                                            "</div>"+
                                     "</div>"+
                                 "</div>"+
                             "</div>"+

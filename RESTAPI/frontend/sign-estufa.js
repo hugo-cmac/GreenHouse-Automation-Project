@@ -4,6 +4,11 @@ var contdev=0;
 $(document).ready(function(){
     jQuery.support.cors = true;
 
+    userI=localStorage.getItem("userID");  
+    userN=localStorage.getItem("userN");
+    document.getElementById("username").innerHTML = "Olá, "+userN;
+
+    
     $.ajax({
         url:  localStorage.getItem('base_url')+"devices",
         type: 'GET',
@@ -17,7 +22,7 @@ $(document).ready(function(){
                 contdev=data.data.length;
                 $("#checkIn").append(
                     "<div class=\"switch-wrap d-flex justify-content-between\">"+
-                        "<p>"+ "SN: " +data.data[i].serial_number+"</p>"+
+                        "SN: " +data.data[i].serial_number+
                         "<div class=\"confirm-checkbox\" id=\"cc1\">"+
                             "<input type=\"checkbox\" id=\"confirm-checkbox"+i+"\""+ " value=\""+data.data[i].serial_number+ "\" " +">"+
                             "<label for=\"confirm-checkbox"+i+"\""+">"+"</label>"+

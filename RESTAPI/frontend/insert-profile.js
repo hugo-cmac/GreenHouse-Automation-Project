@@ -1,5 +1,8 @@
 $(document).ready(function(){
-	jQuery.support.cors = true;
+    jQuery.support.cors = true;
+    userI=localStorage.getItem("userID");  
+    userN=localStorage.getItem("userN");
+    document.getElementById("username").innerHTML = "Olá, "+userN;
 	$('#inserir_btn').click(function (){
         var desi = $('#desi').val();
 		var tempmin = $('#tempmin').val();

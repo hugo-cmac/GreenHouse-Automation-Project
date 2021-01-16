@@ -188,7 +188,7 @@ a:hover {
 }
 
 a:not([href]):not([tabindex]) {
-    color: inherit;
+    color: #ffff;
     text-decoration: none
 }
 

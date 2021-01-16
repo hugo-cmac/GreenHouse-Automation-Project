@@ -4,6 +4,9 @@ var aux2=[];
 
 $(document).ready(function(){
     jQuery.support.cors = true;
+    userI=localStorage.getItem("userID");  
+    userN=localStorage.getItem("userN");
+    document.getElementById("username").innerHTML = "Olá, "+userN;
     
 
     $.ajax({
@@ -20,19 +23,17 @@ $(document).ready(function(){
                 aux++;
                 $('#listaDisp').append(
                     "<div class=\"col-sm-12 col-lg-6\">" +
-                        "<div class=\"accordion\" id=\"listaPerfil\">"+
+                        "<div class=\"accordion\" id=\"listaPerfil"+i+ "\"" +">"+
                             "<div class=\"card\">"+
-                                "<div class=\"card-header\">" +
+                                "<div class=\"card-header\""+" id=\"headingOne"+i+ "\"" +">" +
                                     "<h5 class=\"mb-0\">" +
-                                        "<button class=\"btn btn-link\" type=\"button\" data-toggle=\"collapse\" data-target=\"#collapseOne\" aria-expanded=\"true\" aria-controls=\"collapseOne\">" +
+                                        "<button class=\"btn btn-link\" type=\"button\" data-toggle=\"collapse\" data-target=\"#collapseOne"+ i +"\""+" aria-expanded=\"true\" aria-controls=\"collapseOne\">" +
                                             "Dispositivo nº: " + aux +
                                     "</h5>"+
                                 "</div>"+
-                                "<div id=\"collapseOne" + i + "\" " + "class=\"collapse show\" aria-labelledby=\"headingOne\" data-parent=\"#accordionExample\">"+
-                                    "<div class=\"card-body\">"+
-                                        
-                                            "Serial Number (SN): "+data.data[i].serial_number+"<br/>"+
-                                        
+                                "<div id=\"collapseOne" + i + "\"" + " class=\"collapse\" aria-labelledby=\"headingOne"+i+ "\"" +" data-parent=\"#listaPerfil"+i+ "\"" +">"+
+                                    "<div class=\"card-body\">"+      
+                                            "Serial Number (SN): "+data.data[i].serial_number+"<br/>"+                                       
                                     "</div>"+
                                 "</div>"+
                             "</div>"+
@@ -58,14 +59,21 @@ $(document).ready(function(){
                         for(var a = 0;a<contb;a++)
                             if(aux2[i].serial_number == data.data[a].serial_number){
                             $('#collapseOne'+i).append(
-
-                               ( "Amostra: "+data.data[a].id_history+ " "+ "<br/>").bold()+
+                            "<div class=\"single-element-widget\""+">"+
+                                "<h3 class=\"mb-30 title_color\""+">"+"Lista de Amostras"+"</h3>"+
+                                "<div class=\"default-select\" id=\"default-select"+a+ "\"" +">"+
+                                  "<select>"+
+                                    "<option value=\""+a+"\"" +">"+ "Amostra "+a+"</option>"+
+                                  "</select>"+
+                                "</div>"+
+                            "</div>"
+                               /* "Amostra: "+data.data[a].id_history+ " "+ "<br/>"+
                                 "Timestamp: "+data.data[a].timest+"<br/>"+
                                 "Temperatura: "+data.data[a].temp+"<br/>"+
                                 "Humidade do ar: "+data.data[a].hum_air+"<br/>"+
                                 "Humidade do solo: "+data.data[a].hum_earth+"<br/>"+
                                 "Luminosidade: "+data.data[a].luminosity+"<br/>"+
-                                "Estado do motor: "+data.data[a].states+"<br/>"
+                                "Estado do motor: "+data.data[a].states+"<br/>"*/
 
                             );
                         }
