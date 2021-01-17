@@ -171,6 +171,7 @@ class WaterPump{
         };
 
         void regar(){
+            Serial.println("Regar");
             digitalWrite(pin, LOW);
             //int tim = millis();
             //while (m->estado() < max);
@@ -179,8 +180,8 @@ class WaterPump{
         }
 
         void verifica(){
+            Serial.println("Verificar niveis de agua");
             if (m->estado() < min){
-                Serial.println("Need water");
                 regar();
             }
         }
@@ -220,6 +221,7 @@ class Motor {
 
         void abrir(){
             if(!aberto){
+                Serial.println("Abrir");
                 aberto = true;
                 for(int i = 0; i < 10; i++){
                     this->myStepper->step(steps);
@@ -229,6 +231,7 @@ class Motor {
 
         void fechar(){
             if(aberto){
+                Serial.println("Fechar");
                 aberto = false;
                 for(int i = 0; i < 10; i++){
                     this->myStepper->step(-steps);
@@ -237,6 +240,7 @@ class Motor {
         }
 
         void verifica(){
+            Serial.println("Verificar temperatura e humidade");
             if (a->estadoTemperatura() > tempmax || a->estadoHumidade() > hummax) {
                 abrir();
             }else if (a->estadoTemperatura() < tempmin || a->estadoHumidade() < hummin) {
@@ -264,11 +268,12 @@ class Motor {
     private:
     
         int steps = 0; // change this to fit the number of steps per revolution
+        
         float tempmax = 30;
         float tempmin = 10;
 
-        float hummax = 60;
-        float hummin = 50;
+        float hummax = 80;
+        float hummin = 60;
 
         boolean aberto = false;
 
@@ -344,7 +349,7 @@ void reconnect(){ //connect
 
 void callback(char *topic, byte *payload, unsigned int length){
     payload[length] = '\0';
-    char code[] = "0000000000";
+    //char code[] = "0000000000";
 
     //000000;2;tmax;tmin;humamax;humamin;humemax;humemin
     //123456;0/1;0/1;[default]
@@ -369,43 +374,48 @@ void callback(char *topic, byte *payload, unsigned int length){
     if (n == 0)
         return;
 
-    if (memcmp(request[0], /*totpcode*/ code, 6) != 0)
+    if (memcmp(request[0], totpcode, 6) != 0)
         return;
 
     Serial.println("Callback verificado");
 
     switch (request[1][0]){
         case '0': //MOTOR para abrir e fechar a estufa
-            if (request[2][0] == '0'){
-                Serial.println("fechar");
+            if (request[2][0] == '0')
                 motor->fechar();
-            } else if (request[2][0] == '1') {
-                Serial.println("abrir");
+            else if (request[2][0] == '1')
                 motor->abrir();
-            }
             return;
         case '1'://bomba para regar
-            if (request[2][0] == '1') {
-                Serial.println("regar");
+            if (request[2][0] == '1')
                 pump->regar();
-            }
             return;
         case '2':// novos limites
             if (n != 7)
                 return;
 
-            Serial.println("Set defaults");
+            Serial.println("Set Profile");
+
             //sets dos limites de temperatura temperatura
             motor->setTempMax(atof(request[2]));
+            Serial.printf("tempArMax: %f\n", atof(request[2]));
+
             motor->setTempMin(atof(request[3]));
+            Serial.printf("tempArMin: %f\n", atof(request[3]));
 
             //Humidade do ar
             motor->setHumMax(atof(request[4]));
+            Serial.printf("humArMax: %f\n", atof(request[4]));
+
             motor->setHumMin(atof(request[5]));
+            Serial.printf("humArMin: %f\n", atof(request[5]));
 
             //Humidade da terra
             pump->setMax(atof(request[6]));
+            Serial.printf("humSoloMax: %f\n", atof(request[6]));
+
             pump->setMin(atof(request[7]));
+            Serial.printf("humSoloMin: %f\n", atof(request[7]));
             return;
 
         default:
@@ -425,6 +435,7 @@ void postDeviceRegistation(){
              "\"registcode\":\""     + registcode + "\"}";
 
         http.POST(request);
+        Serial.println("Post: "+request);
         http.end();
     }
 }
@@ -446,7 +457,7 @@ void postValues(){
              "\"states\":\""        + String(motor->estado())           + "\"}";
         
         http.POST(request);
-        Serial.println(request);
+        Serial.println("Post: "+request);
         http.end();
 
         if (!client.connected())
@@ -467,6 +478,7 @@ void postValues(){
 }
 
 void printValues(){
+    Serial.println("==========================Debug==========================");
     if (motor->estado())
         Serial.println("Estufa aberta");
     else
@@ -487,7 +499,7 @@ void printValues(){
     Serial.print("Percentagem de humidade da terra: ");
     Serial.print(moisture->estado());
     Serial.println("%");
-
+    Serial.println("=========================================================");
     delay(5000);
 }
 
@@ -547,10 +559,9 @@ void setup(){
         initialConfig = true;
     }
 
-    if (drd->detectDoubleReset()){
-        //Serial.println("Double Reset Detected");
+    if (drd->detectDoubleReset())
         initialConfig = true;
-    }
+    
 
     if (initialConfig){
         Serial.println("Starting configuration portal @ 192.168.4.1");
@@ -606,6 +617,7 @@ void setup(){
 
     hmac();
     Serial.println(registcode);
+
     totp = new TOTP((uint8_t*) &hmac_UID[22], 10);
 
     timeClient.begin();
@@ -629,6 +641,7 @@ void loop(){
     drd->loop();
 
     timeClient.update();
+
     totpcode = totp->getCode(timeClient.getEpochTime());
 
     if (!client.connected())
@@ -637,9 +650,9 @@ void loop(){
     client.loop();
 
     
-    if (timeout.post()) {
+    if (timeout.post()) 
         postValues();
-    }
+    
 
     if (timeout.check()) {
         motor->verifica();
