@@ -32,6 +32,16 @@ $(document).ready(function(){
 				console.log("a: "+a);
 				localStorage.setItem('des',auxes[a].designacao);
 				strings=localStorage.getItem('des');
+				$('#estufa').append(
+					"<div class=\"container\">"+
+						"<div class=\"section-top-border\">"+
+							"<h3 class=\"mb-30 title_color\" "+"id=\"de"+a+"\""+">"+strings+"</h3>"+
+								"<div class=\"row\">"+
+									"<div class=\"col-md-3\">"+
+										"<img src=\"img/estufa2.jpeg\" alt=\"\" class=\"img-fluid\">"+
+									"</div>"+
+								"<div class=\"col-md-9 mt-sm-20 left-align-p\" "+"id=\"esdata"+a+"\""+">"
+				);
 				
 				$.ajax({
 					url: localStorage.getItem('base_url') + "history/"+auxes[a].serial_number,
@@ -41,34 +51,23 @@ $(document).ready(function(){
 					data: {},
 					success: function (data) {
 						var his = data.data.length;
-						$('#estufa').append(
-							"<div class=\"container\">"+
-								"<div class=\"section-top-border\">"+
-									"<h3 class=\"mb-30 title_color\" "+"id=\"de"+cont2+"\""+">"+"</h3>"+
-										"<div class=\"row\">"+
-											"<div class=\"col-md-3\">"+
-												"<img src=\"img/estufa2.jpeg\" alt=\"\" class=\"img-fluid\">"+
-											"</div>"+
-										"<div class=\"col-md-9 mt-sm-20 left-align-p\">"+
-											"<p>"+ "Dispositivo (SN): "+ data.data[his-1].serial_number+"</p>"+
-											"<p>"+ "Temperatura: "+ data.data[his-1].temp + " ªC" +"</p>"+
-											"<p>"+ "Humidade do ar: "+ data.data[his-1].hum_air + "%" +"</p>"+
-											"<p>"+ "Humidade do solo: "+ data.data[his-1].hum_earth + "%" +"</p>"+
-											"<p>"+ "Luminosidade: "+ data.data[his-1].luminosity+ "%" +"</p>"+
-											"<p>"+ "Estado do motor: "+ getState(data.data[his-1].states,cont2) +"</p>"+
-											"<div class=\"container text-right\">"+	
-												"<a class=\"banner_btn\" id=\"active_btn_"+cont2+"\""+" "+ "value=\""+cont2+"\"" +">Ativar<i class=\"ti-arrow-right\"></i></a>"+
-												"<a class=\"banner_btn\" id=\"nactive_btn_"+cont2+"\""+" "+ "value=\""+cont2+"\"" +">Desativar<i class=\"ti-arrow-right\"></i></a>"+
-											"</div"+
-										"</div>"+
+						$('#esdata'+cont2).append(
+										"<p>"+ "Dispositivo (SN): "+ data.data[his-1].serial_number+"</p>"+
+										"<p>"+ "Temperatura: "+ data.data[his-1].temp + " ªC" +"</p>"+
+										"<p>"+ "Humidade do ar: "+ data.data[his-1].hum_air + "%" +"</p>"+
+										"<p>"+ "Humidade do solo: "+ data.data[his-1].hum_earth + "%" +"</p>"+
+										"<p>"+ "Luminosidade: "+ data.data[his-1].luminosity+ "%" +"</p>"+
+										"<p>"+ "Estado do motor: "+ getState(data.data[his-1].states,cont2) +"</p>"+
+										"<div class=\"container text-right\">"+	
+											"<a class=\"banner_btn\" id=\"active_btn_"+cont2+"\""+" "+ "value=\""+cont2+"\"" +">Ativar<i class=\"ti-arrow-right\"></i></a>"+
+											"<a class=\"banner_btn\" id=\"nactive_btn_"+cont2+"\""+" "+ "value=\""+cont2+"\"" +">Desativar<i class=\"ti-arrow-right\"></i></a>"+
+										"</div"+
 									"</div>"+
 								"</div>"+
-							"</div>"
+							"</div>"+
+						"</div>"
 						);	
-						console.log("Aqui: "+strings);
-						$('#de'+cont2).append(
-							strings
-						);
+					
 						cont2++;			
 					},
 					
@@ -87,7 +86,6 @@ $(document).ready(function(){
 });
 
 function getState(aux,ole){
-	console.log("ole: "+ole);
 	if(aux == 0){
 		$('#nactive_btn_'+ole).show().hide();
 		return "Desativado";
