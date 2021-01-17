@@ -1,7 +1,8 @@
 var edit;
 var aux =0; 
 var aux2=[];
-
+var hisaux=[];
+var contaux=0;
 $(document).ready(function(){
     jQuery.support.cors = true;
     userI=localStorage.getItem("userID");  
@@ -17,7 +18,7 @@ $(document).ready(function(){
         crossDomain:true,
         data:{},
         success:function(data){
-            console.log(data.data.length);
+           // console.log(data.data.length);
             for(i=0;i<data.data.length;i++){
                 aux2[i]=data.data[i];
                 aux++;
@@ -41,6 +42,7 @@ $(document).ready(function(){
                     "</div>"
                 );
             }
+            //console.log(aux)
 
             $.ajax({
                 url:  localStorage.getItem('base_url')+"history",
@@ -50,47 +52,82 @@ $(document).ready(function(){
                 crossDomain:true,
                 data:{},
                 success:function(data){
-                    console.log(data.data.length);
+                   // console.log(data.data.length);
                     contb = data.data.length;
-                    /*localStorage.setItem('userID',data.data.username);*/
-                    //localStorage.setItem('userIdgrande',data.userIdgrande);
-                    //alert("Perfil adiconado!\nA redirecionar...")
-                    for(var i=0;i<aux;i++){
-                        for(var a = 0;a<contb;a++)
-                            if(aux2[i].serial_number == data.data[a].serial_number){
-                            $('#collapseOne'+i).append(
-                            "<div class=\"single-element-widget\""+">"+
-                                "<h3 class=\"mb-30 title_color\""+">"+"Lista de Amostras"+"</h3>"+
-                                "<div class=\"default-select\" id=\"default-select"+a+ "\"" +">"+
-                                  "<select>"+
-                                    "<option value=\""+a+"\"" +">"+ "Amostra "+a+"</option>"+
-                                  "</select>"+
-                                "</div>"+
-                            "</div>"
-                               /* "Amostra: "+data.data[a].id_history+ " "+ "<br/>"+
-                                "Timestamp: "+data.data[a].timest+"<br/>"+
-                                "Temperatura: "+data.data[a].temp+"<br/>"+
-                                "Humidade do ar: "+data.data[a].hum_air+"<br/>"+
-                                "Humidade do solo: "+data.data[a].hum_earth+"<br/>"+
-                                "Luminosidade: "+data.data[a].luminosity+"<br/>"+
-                                "Estado do motor: "+data.data[a].states+"<br/>"*/
+                    hisaux = data.data;
 
-                            );
+                    for(var i=0;i<aux;i++){
+                        $('#collapseOne'+i).append(
+                            "<div class=\"container text-center\">"+
+                                "<div class=\"single-element-widget\""+">"+
+                                    "<div class=\"default-select\" id=\"default-select"+i+ "\"" +">"+
+                                    "<select id=\"amos"+i+"\" " +">"
+                        );
+                        var cont=0;
+                        for(var a = 0;a<contb;a++){                          
+                            if(aux2[i].serial_number == data.data[a].serial_number){
+                                cont++;
+                                $('#amos'+i).append(
+                                        "<option value=\""+data.data[a].id_history+";"+i+"\"" +">"+ "Amostra "+cont+"</option>"+
+                                        "</select>"+
+                                        "</div>"+
+                                    "</div>"+
+                                "</div>"
+                                );   
+                            }
                         }
+                    }
+                    
+                
+                    console.log(hisaux);
+                    //console.log(aux);
+                    for(var i=0;i<aux;i++){
+                        // console.log(hisaux[a].id_history);
+                        $('#amos'+i).click(function(){
+                            for(var a=0;a<contb;a++){
+                                var value=$(this).val();
+                                var res=value.split(";");
+                                // alert($(this).val());
+                                if(hisaux[a].id_history == res[0]){
+                                    $('#collapseOne'+res[1]).append(
+                                        "<div class=\"card-body\">"+          
+                                            "ID_Amostra: "+hisaux[a].id_history+"<br/>"+
+                                            "Timestamp: "+hisaux[a].timest+"<br/>"+
+                                            "Temperatura: "+hisaux[a].temp+"<br/>"+
+                                            "Humidade do ar: "+hisaux[a].hum_air+"<br/>"+
+                                            "Humidade do solo: "+hisaux[a].hum_earth+"<br/>"+
+                                            "Luminosidade: "+hisaux[a].luminosity+"<br/>"+
+                                            "Estado do motor: "+hisaux[a].states+"<br/>"+
+                                        "</div"
+                                    );
+                                }
+                            }
+                        });
+                        
                     }
                 },
                 error: function (xhr, ajaxOptions, thrownError) {
                     console.log(JSON.stringify(xhr));
                     console.log(JSON.stringify(thrownError));
-                    alert("Inseriu valores não válidos !");
+                    alert("Erro de ligação!");
                 }
             });
-
+            
         },
         error: function (xhr, ajaxOptions, thrownError) {
             console.log(JSON.stringify(xhr));
             console.log(JSON.stringify(thrownError));
-            alert("Inseriu valores não válidos !");
+            alert("Erro de ligação!");
         }
+        
     });
+
 });
+
+/* "ID_Amostra: "+data.data[a].id_history+ " "+ "<br/>"+
+"Timestamp: "+data.data[a].timest+"<br/>"+
+"Temperatura: "+data.data[a].temp+"<br/>"+
+"Humidade do ar: "+data.data[a].hum_air+"<br/>"+
+"Humidade do solo: "+data.data[a].hum_earth+"<br/>"+
+"Luminosidade: "+data.data[a].luminosity+"<br/>"+
+"Estado do motor: "+data.data[a].states+"<br/>"*/
