@@ -42,7 +42,7 @@ $(document).ready(function(){
 									"</div>"+
 								"<div class=\"col-md-9 mt-sm-20 left-align-p\" "+"id=\"esdata"+a+"\""+">"
 				);
-				
+				 
 				$.ajax({
 					url: localStorage.getItem('base_url') + "history/"+auxes[a].serial_number,
 					type: 'GET',

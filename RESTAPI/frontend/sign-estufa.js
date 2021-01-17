@@ -64,9 +64,7 @@ $(document).ready(function(){
                 crossDomain:true,
                 data:JSON.stringify({"id_user":user,"serial_number":dev,"designacao":desi}),
                 success:function(data){
-                    /*console.log(data.data.username);
-                    localStorage.setItem('userID',data.data.username);*/
-                    //localStorage.setItem('userIdgrande',data.userIdgrande);
+                
                     alert("Estufa adicionada!\nA redirecionar...")
                     window.location.href = "admin.html";
                 },
