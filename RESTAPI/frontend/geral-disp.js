@@ -93,11 +93,11 @@ $(document).ready(function(){
                                         "<div class=\"card-body\">"+          
                                             "ID_Amostra: "+hisaux[a].id_history+"<br/>"+
                                             "Timestamp: "+hisaux[a].timest+"<br/>"+
-                                            "Temperatura: "+hisaux[a].temp+"<br/>"+
-                                            "Humidade do ar: "+hisaux[a].hum_air+"<br/>"+
-                                            "Humidade do solo: "+hisaux[a].hum_earth+"<br/>"+
-                                            "Luminosidade: "+hisaux[a].luminosity+"<br/>"+
-                                            "Estado do motor: "+hisaux[a].states+"<br/>"+
+                                            "Temperatura: "+hisaux[a].temp+"ºC"+"<br/>"+
+                                            "Humidade do ar: "+hisaux[a].hum_air+"%"+"<br/>"+
+                                            "Humidade do solo: "+hisaux[a].hum_earth+"%"+"<br/>"+
+                                            "Luminosidade: "+hisaux[a].luminosity+"%"+"<br/>"+
+                                            "Estado: "+hisaux[a].states+"<br/>"+
                                         "</div"
                                     );
                                 }
