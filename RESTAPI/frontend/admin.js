@@ -61,7 +61,7 @@ $(document).ready(function(){
 										"<div class=\"container text-right\">"+	
 											"<a class=\"banner_btn\" id=\"active_btn_"+cont2+"\""+" "+ "value=\""+cont2+"\"" +">Abrir<i class=\"ti-arrow-right\"></i></a>"+
 											"<a class=\"banner_btn\" id=\"nactive_btn_"+cont2+"\""+" "+ "value=\""+cont2+"\"" +">Fechar<i class=\"ti-arrow-right\"></i></a>"+
-											"<a class=\"banner_btn\" id=\"rega_btn_"+cont2+"\""+" "+ "value=\""+cont2+"\"" +">Regar<i class=\"ti-arrow-right\"></i></a>"+										
+											"<p>"+"<a class=\"banner_btn\" id=\"rega_btn_"+cont2+"\""+" "+ "value=\""+cont2+"\"" +">Regar<i class=\"ti-arrow-right\"></i></a>"+"</p>"+										
 										"</div"+
 									"</div>"+
 								"</div>"+
