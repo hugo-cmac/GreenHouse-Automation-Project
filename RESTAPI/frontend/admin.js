@@ -57,10 +57,11 @@ $(document).ready(function(){
 										"<p>"+ "Humidade do ar: "+ data.data[his-1].hum_air + "%" +"</p>"+
 										"<p>"+ "Humidade do solo: "+ data.data[his-1].hum_earth + "%" +"</p>"+
 										"<p>"+ "Luminosidade: "+ data.data[his-1].luminosity+ "%" +"</p>"+
-										"<p>"+ "Estado do motor: "+ getState(data.data[his-1].states,cont2) +"</p>"+
+										"<p>"+ "Estado da estufa: "+ getState(data.data[his-1].states,cont2) +"</p>"+
 										"<div class=\"container text-right\">"+	
-											"<a class=\"banner_btn\" id=\"active_btn_"+cont2+"\""+" "+ "value=\""+cont2+"\"" +">Ativar<i class=\"ti-arrow-right\"></i></a>"+
-											"<a class=\"banner_btn\" id=\"nactive_btn_"+cont2+"\""+" "+ "value=\""+cont2+"\"" +">Desativar<i class=\"ti-arrow-right\"></i></a>"+
+											"<a class=\"banner_btn\" id=\"active_btn_"+cont2+"\""+" "+ "value=\""+cont2+"\"" +">Abrir<i class=\"ti-arrow-right\"></i></a>"+
+											"<a class=\"banner_btn\" id=\"nactive_btn_"+cont2+"\""+" "+ "value=\""+cont2+"\"" +">Fechar<i class=\"ti-arrow-right\"></i></a>"+
+											"<a class=\"banner_btn\" id=\"rega_btn_"+cont2+"\""+" "+ "value=\""+cont2+"\"" +">Regar<i class=\"ti-arrow-right\"></i></a>"+										
 										"</div"+
 									"</div>"+
 								"</div>"+
@@ -88,11 +89,11 @@ $(document).ready(function(){
 function getState(aux,ole){
 	if(aux == 0){
 		$('#nactive_btn_'+ole).show().hide();
-		return "Desativado";
+		return "Fechada";
 	}
 	else{
 		$("#active_btn_"+ole).show().hide();
-		return "Ativado";
+		return "Aberta";
 	}
 	
 }
