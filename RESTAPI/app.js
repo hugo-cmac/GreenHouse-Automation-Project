@@ -6,8 +6,7 @@ var servBD = require("./api/servBD");
 const jwt = require('jsonwebtoken');
 var cors = require('cors');
 const mysql = require('mysql');
-/*var jsdom = require('jsdom');
-$ = require('jquery')(new jsdom.JSDOM().window);*/
+
 
 
 
@@ -27,7 +26,7 @@ app.use(bodyParser.json());
 
 
 
-// LOGIN, REGISTER e UTILIZADORES
+// LOGIN, REGISTER AND USERS
 
 app.post('/register', function (req,res){
 	servBD.register(req, function (error, results) {
@@ -52,71 +51,51 @@ app.post('/login', function (req, res) {
 });
 
 app.get('/utilizadores', verifyToken, function (req, res) {
-	// jwt.verify(req.token, "config.secret", (err, authData) => {
-	// 	if (err) {
-	// 		res.status(status.UNAUTHORIZED).send("Wrong token");
-	// 	} else {
-			servBD.getUtilizadores(function (error, results) {
-				if (error) {
-					res.status(error.code).send(error.message);
-				}
-				else {
-					res.status(status.OK).send({ error: false, data: results, message: 'All users.' });
-				}
-			});
-	// 	}
-	// });
+	servBD.getUtilizadores(function (error, results) {
+		if (error) {
+			res.status(error.code).send(error.message);
+		}
+		else {
+			res.status(status.OK).send({ error: false, data: results, message: 'All users.' });
+		}
+	});
 });
 
 app.get('/utilizadores/:id_user', verifyToken, function (req, res) {
-	// jwt.verify(req.token, "config.secret", (err, authData) => {
-	// 	if (err) {
-	// 		res.status(status.UNAUTHORIZED).send("Wrong token");
-	// 	} else {
-			servBD.getUtilizadoresById(req, function (error, results) {
-				if (error) {
-					res.status(error.code).send(error.message);
-				}
-				else {
-					return res.status(status.OK).send({ error: false, data: results, message: 'User data found.' });
-				}
-			});
-	// 	}
-	// });
+	servBD.getUtilizadoresById(req, function (error, results) {
+		if (error) {
+			res.status(error.code).send(error.message);
+		}
+		else {
+			return res.status(status.OK).send({ error: false, data: results, message: 'User data found.' });
+		}
+	});
+
 });
 
 app.put('/utilizadores/:id_user', verifyToken, function (req, res) {
-	// jwt.verify(req.token, "config.secret", (err, authData) => {
-	// 	if (err) {
-	// 		res.status(status.UNAUTHORIZED).send("Wrong token");
-	// 	} else {
-			servBD.updateUtilizador(req, function (error, results) {
-				if (error) {
-					res.status(error.code).send(error.message);
-				}
-				else {
-					return res.status(status.CREATED).send({ error: false, data: results, message: 'New utilizador has been modified successfully.' });
-				}
-			});
-	// 	}
-	// });
+	servBD.updateUtilizador(req, function (error, results) {
+		if (error) {
+			res.status(error.code).send(error.message);
+		}
+		else {
+			return res.status(status.CREATED).send({ error: false, data: results, message: 'New utilizador has been modified successfully.' });
+		}
+	});
+	
 });
 
 app.delete('/utilizadores/:id_user', verifyToken, function (req, res) {
-	// jwt.verify(req.token, "config.secret", (err, authData) => {
-	// 	if (err) {
-	// 		res.status(status.UNAUTHORIZED).send("Wrong token");
-	// 	} else {
-			servBD.deleteUtilizador(req, function (error, results) {
-				if (error) {
-					res.status(error.code).send(error.message);
-				}
-				else {
-					return res.status(status.CREATED).send({ error: false, data: results, message: 'User deleted successfully' });
-				}
-			});
-	// 	}
-	// });
+
+	servBD.deleteUtilizador(req, function (error, results) {
+		if (error) {
+			res.status(error.code).send(error.message);
+		}
+		else {
+			return res.status(status.CREATED).send({ error: false, data: results, message: 'User deleted successfully' });
+		}
+	});
+
 });
 
 //DEVICES
@@ -133,55 +112,40 @@ app.post('/devices', function (req, res) {
 });
 
 app.get('/devices', verifyToken, function (req, res) {
-	// jwt.verify(req.token, "config.secret", (err, authData) => {
-	// 	if (err) {
-	// 		res.status(status.UNAUTHORIZED).send("Wrong token");
-	// 	} else {
-			servBD.getDevices(function (error, results) {
-				if (error) {
-					res.status(error.code).send(error.message);
-				}
-				else {
-					res.status(status.OK).send({ error: false, data: results, message: 'All devices!' });
-				}
-			});
-	// 	}
-	// });
+	servBD.getDevices(function (error, results) {
+		if (error) {
+			res.status(error.code).send(error.message);
+		}
+		else {
+			res.status(status.OK).send({ error: false, data: results, message: 'All devices!' });
+		}
+	});
+
 });
 
 app.get('/devices/:id_device', verifyToken, function (req, res) {
-	// jwt.verify(req.token, "config.secret", (err, authData) => {
-	// 	if (err) {
-	// 		res.status(status.UNAUTHORIZED).send("Wrong token");
-	// 	} else {
-			servBD.getDevicesById(req, function (error, results) {
-				if (error) {
-					res.status(error.code).send(error.message);
-				}
-				else {
-					return res.status(status.OK).send({ error: false, data: results, message: 'Specific device obtained.' });
-				}
-			});
-	// 	}
-	// });
+	servBD.getDevicesById(req, function (error, results) {
+		if (error) {
+			res.status(error.code).send(error.message);
+		}
+		else {
+			return res.status(status.OK).send({ error: false, data: results, message: 'Specific device obtained.' });
+		}
+	});
+
 });
 
 
 app.delete('/devices/:id_device', verifyToken, function (req, res) {
-	// jwt.verify(req.token, "config.secret", (err, authData) => {
-	// 	if (err) {
-	// 		res.status(status.UNAUTHORIZED).send("Wrong token");
-	// 	} else {
-			servBD.deleteUtilizador(req, function (error, results) {
-				if (error) {
-					res.status(error.code).send(error.message);
-				}
-				else {
-					return res.status(status.CREATED).send({ error: false, data: results, message: 'Device deleted successfully' });
-				}
-			});
-	// 	}
-	// });
+	servBD.deleteUtilizador(req, function (error, results) {
+		if (error) {
+			res.status(error.code).send(error.message);
+		}
+		else {
+			return res.status(status.CREATED).send({ error: false, data: results, message: 'Device deleted successfully' });
+		}
+	});
+
 });
 
 //HISTORY
@@ -198,55 +162,41 @@ app.post('/history', function (req, res) {
 });
 
 app.get('/history', verifyToken, function (req, res) {
-	// jwt.verify(req.token, "config.secret", (err, authData) => {
-	// 	if (err) {
-	// 		res.status(status.UNAUTHORIZED).send("Wrong token");
-	// 	} else {
-			servBD.getHistory(function (error, results) {
-				if (error) {
-					res.status(error.code).send(error.message);
-				}
-				else {
-					res.status(status.OK).send({ error: false, data: results, message: 'All device histotry.' });
-				}
-			});
-	// 	}
-	// });
+
+	servBD.getHistory(function (error, results) {
+		if (error) {
+			res.status(error.code).send(error.message);
+		}
+		else {
+			res.status(status.OK).send({ error: false, data: results, message: 'All device histotry.' });
+		}
+	});
+
 });
 
 app.get('/history/:serial_number', verifyToken, function (req, res) {
-	// jwt.verify(req.token, "config.secret", (err, authData) => {
-	// 	if (err) {
-	// 		res.status(status.UNAUTHORIZED).send("Wrong token");
-	// 	} else {
-			servBD.getHistoryById(req, function (error, results) {
-				if (error) {
-					res.status(error.code).send(error.message);
-				}
-				else {
-					return res.status(status.OK).send({ error: false, data: results, message: 'Device history' });
-				}
-			});
-	// 	}
-	// });
+	servBD.getHistoryById(req, function (error, results) {
+		if (error) {
+			res.status(error.code).send(error.message);
+		}
+		else {
+			return res.status(status.OK).send({ error: false, data: results, message: 'Device history' });
+		}
+	});
+
 });
 
 
 app.delete('/history/:id_history', verifyToken, function (req, res) {
-	// jwt.verify(req.token, "config.secret", (err, authData) => {
-	// 	if (err) {
-	// 		res.status(status.UNAUTHORIZED).send("Wrong token");
-	// 	} else {
-			servBD.deleteHistory(req, function (error, results) {
-				if (error) {
-					res.status(error.code).send(error.message);
-				}
-				else {
-					return res.status(status.CREATED).send({ error: false, data: results, message: 'History deleted successfully' });
-				}
-			});
-	// 	}
-	// });
+	servBD.deleteHistory(req, function (error, results) {
+		if (error) {
+			res.status(error.code).send(error.message);
+		}
+		else {
+			return res.status(status.CREATED).send({ error: false, data: results, message: 'History deleted successfully' });
+		}
+	});
+
 });
 
 //PROFILES
@@ -264,55 +214,40 @@ app.post('/profiles', function (req, res) {
 });
 
 app.get('/profiles', verifyToken, function (req, res) {
-	// jwt.verify(req.token, "config.secret", (err, authData) => {
-	// 	if (err) {
-	// 		res.status(status.UNAUTHORIZED).send("Wrong token");
-	// 	} else {
-			servBD.getProfile(function (error, results) {
-				if (error) {
-					res.status(error.code).send(error.message);
-				}
-				else {
-					res.status(status.OK).send({ error: false, data: results, message: 'All profiles.' });
-				}
-			});
-	// 	}
-	// });
+	servBD.getProfile(function (error, results) {
+		if (error) {
+			res.status(error.code).send(error.message);
+		}
+		else {
+			res.status(status.OK).send({ error: false, data: results, message: 'All profiles.' });
+		}
+	});
+
 });
 
 app.get('/profiles/:id_perfil', verifyToken, function (req, res) {
-	// jwt.verify(req.token, "config.secret", (err, authData) => {
-	// 	if (err) {
-	// 		res.status(status.UNAUTHORIZED).send("Wrong token");
-	// 	} else {
-			servBD.getProfileById(req, function (error, results) {
-				if (error) {
-					res.status(error.code).send(error.message);
-				}
-				else {
-					return res.status(status.OK).send({ error: false, data: results, message: 'Specific profile.' });
-				}
-			});
-	// 	}
-	// });
+	servBD.getProfileById(req, function (error, results) {
+		if (error) {
+			res.status(error.code).send(error.message);
+		}
+		else {
+			return res.status(status.OK).send({ error: false, data: results, message: 'Specific profile.' });
+		}
+	});
+
 });
 
 
 app.delete('/profiles/:id_perfil', verifyToken, function (req, res) {
-	// jwt.verify(req.token, "config.secret", (err, authData) => {
-	// 	if (err) {
-	// 		res.status(status.UNAUTHORIZED).send("Wrong token");
-	// 	} else {
-			servBD.deleteProfile(req, function (error, results) {
-				if (error) {
-					res.status(error.code).send(error.message);
-				}
-				else {
-					return res.status(status.CREATED).send({ error: false, data: results, message: 'Profile deleted successfully' });
-				}
-			});
-	// 	}
-	// });
+	servBD.deleteProfile(req, function (error, results) {
+		if (error) {
+			res.status(error.code).send(error.message);
+		}
+		else {
+			return res.status(status.CREATED).send({ error: false, data: results, message: 'Profile deleted successfully' });
+		}
+	});
+
 });
 
 //USER-DEVICE
@@ -330,55 +265,41 @@ app.post('/reluser', function (req, res) {
 });
 
 app.get('/reluser', verifyToken, function (req, res) {
-	// jwt.verify(req.token, "config.secret", (err, authData) => {
-	// 	if (err) {
-	// 		res.status(status.UNAUTHORIZED).send("Wrong token");
-	// 	} else {
-			servBD.getUSRDEV(function (error, results) {
-				if (error) {
-					res.status(error.code).send(error.message);
-				}
-				else {
-					res.status(status.OK).send({ error: false, data: results, message: 'All greenhouses.' });
-				}
-			});
-	// 	}
-	// });
+	
+	servBD.getUSRDEV(function (error, results) {
+		if (error) {
+			res.status(error.code).send(error.message);
+		}
+		else {
+			res.status(status.OK).send({ error: false, data: results, message: 'All greenhouses.' });
+		}
+	});
+
 });
 
 app.get('/reluser/:id_rel_user_device', verifyToken, function (req, res) {
-	// jwt.verify(req.token, "config.secret", (err, authData) => {
-	// 	if (err) {
-	// 		res.status(status.UNAUTHORIZED).send("Wrong token");
-	// 	} else {
-			servBD.getUSRDEVById(req, function (error, results) {
-				if (error) {
-					res.status(error.code).send(error.message);
-				}
-				else {
-					return res.status(status.OK).send({ error: false, data: results, message: 'User greenhouse.' });
-				}
-			});
-	// 	}
-	// });
+
+	servBD.getUSRDEVById(req, function (error, results) {
+		if (error) {
+			res.status(error.code).send(error.message);
+		}
+		else {
+			return res.status(status.OK).send({ error: false, data: results, message: 'User greenhouse.' });
+		}
+	});
+
 });
 
 
 app.delete('/reluser/:id_rel_user_device', verifyToken, function (req, res) {
-	// jwt.verify(req.token, "config.secret", (err, authData) => {
-	// 	if (err) {
-	// 		res.status(status.UNAUTHORIZED).send("Wrong token");
-	// 	} else {
-			servBD.deleteUSRDEV(req, function (error, results) {
-				if (error) {
-					res.status(error.code).send(error.message);
-				}
-				else {
-					return res.status(status.CREATED).send({ error: false, data: results, message: 'Greenhouse deleted successfully' });
-				}
-			});
-	// 	}
-	// });
+	servBD.deleteUSRDEV(req, function (error, results) {
+		if (error) {
+			res.status(error.code).send(error.message);
+		}
+		else {
+			return res.status(status.CREATED).send({ error: false, data: results, message: 'Greenhouse deleted successfully' });
+		}
+	});
 });
 
 
@@ -398,29 +319,8 @@ app.use((error, req, res, next) => {
     });
 });
 
-
-
-// FORMAT OF TOKEN
-// Authorization: Bearer <access_token>
-
-// Verify Token
 function verifyToken(req, res, next) {
-	// Get auth header value
-	// const bearerHeader = req.headers['authorization'];
-	// // Check if bearer is undefined
-	// if (typeof bearerHeader !== 'undefined') {
-	// 	// Split at the space
-	// 	const bearer = bearerHeader.split(' ');
-	// 	// Get token from array
-	// 	const bearerToken = bearer[1];
-	// 	// Set the token
-	// 	req.token = bearerToken;
-	// 	// Next middleware
 		next();
-	// } else {
-	// 	// Forbidden
-	// 	res.status(status.UNAUTHORIZED).send("No authorization");
-	// }
 }
 
 module.exports = app;

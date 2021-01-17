@@ -13,7 +13,7 @@ var pool = mysql.createPool({
 
 module.exports={
 	
-	// REGISTER, LOGIN E UTILIZADORES
+	// REGISTER, LOGIN AND USERS
 
 	register: function (req, callback) {
 		if (!req.body.username || !req.body.mail || !req.body.pass) {
@@ -21,8 +21,8 @@ module.exports={
 			return callback(err, null);
 		} else {
 			//verificar se email já existe
-			let query = "select * from User where mail = ?";
-			let table = [req.body.mail];
+			let query = "select * from User where username = ?";
+			let table = [req.body.username];
 			query = mysql.format(query, table);
 			pool.query(query, function (errorMail, resultsMail) {
 				if (errorMail) {
@@ -31,12 +31,12 @@ module.exports={
 				}
 				else {
 					if (resultsMail.length > 0) {
-						//mail já existe, não é possivel registar
-						err = { code: status.BAD_REQUEST, message: "Mail already exists" };
+						//user já existe, não é possivel registar
+						err = { code: status.BAD_REQUEST, message: "User already exists" };
 						return callback(err, null);
 					} else {
 						let hashedPassword = bcrypt.hashSync(req.body.pass, 8);
-						//mail não existe, pode fazer insert
+						//user não existe, pode fazer insert
 						let query = "call insert_user(?,?,?)";
 						let table = [req.body.username, req.body.mail, hashedPassword];
 						query = mysql.format(query, table);
@@ -46,9 +46,8 @@ module.exports={
 								return callback(err, null);
 							}
 							else {
-								//create token
 								var token = jwt.sign({ id: results.insertId }, "config.secret", {
-									expiresIn: 86400 // expires in 24 hours
+									expiresIn: 86400 //24 hours
 								});
 								results.token = token;
 								results.auth = true;
@@ -63,7 +62,7 @@ module.exports={
 	},
 	login: function (req, callback) {
 		if (!req.body.pass || !req.body.username) {
-			let err = { code: status.BAD_REQUEST, message: "Please provide utilizador" };
+			let err = { code: status.BAD_REQUEST, message: "Please provide a user" };
 			return callback(err, null);
 		} else {
 			let query = "select * from User where username = ?";
@@ -76,7 +75,6 @@ module.exports={
 				}
 				else {
 					if (results.length > 0) {
-						//check pass
 						console.log(JSON.stringify(req.body) + " \n" + JSON.stringify(results));
 						var passwordIsValid = bcrypt.compareSync(req.body.pass, results[0].pass);
 						if (!passwordIsValid) {
@@ -91,7 +89,7 @@ module.exports={
 						//console.log(JSON.stringify(results[0].username));
 						return callback(null, results[0]);
 					} else {
-						let err = { code: status.NOT_FOUND, message: "Utilizador doesn't exist" };
+						let err = { code: status.NOT_FOUND, message: "User doesn't exist" };
 						return callback(err, null);
 					}
 				}
@@ -116,7 +114,7 @@ module.exports={
 					if (results.affectedRows > 0)
 						return callback(null, results);
 					else {
-						err = { code: status.NOT_FOUND, message: "Utilizador doesn't exist" };
+						err = { code: status.NOT_FOUND, message: "User doesn't exist" };
 						return callback(err, null);
 					}
 				}
@@ -136,7 +134,7 @@ module.exports={
 				if (results.affectedRows > 0)
 					return callback(null, results);
 				else {
-					err = { code: status.NOT_FOUND, message: "Utilizador doesn't exist" };
+					err = { code: status.NOT_FOUND, message: "User doesn't exist" };
 					return callback(err, null);
 				}
 			}
@@ -166,7 +164,7 @@ module.exports={
 				if (results.length > 0)
 					return callback(null, results);
 				else {
-					let err = { code: status.NOT_FOUND, message: "Utilizador doesn't exist" };
+					let err = { code: status.NOT_FOUND, message: "User doesn't exist" };
 					return callback(err, null);
 				}
 			}
@@ -448,7 +446,7 @@ module.exports={
 				if (results.length > 0)
 					return callback(null, results);
 				else {
-					let err = { code: status.NOT_FOUND, message: "Device doesn't exist" };
+					let err = { code: status.NOT_FOUND, message: "GreenHouse doesn't exist" };
 					return callback(err, null);
 				}
 			}
@@ -468,7 +466,7 @@ module.exports={
 				if (results.affectedRows > 0)
 					return callback(null, results);
 				else {
-					err = { code: status.NOT_FOUND, message: "Device doesn't exist" };
+					err = { code: status.NOT_FOUND, message: "GreenHouse doesn't exist" };
 					return callback(err, null);
 				}
 			}
