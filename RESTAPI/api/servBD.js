@@ -176,13 +176,13 @@ module.exports={
 	//DEVICES
 
 	insertDevice: function (req, callback) {
-		if (!req.body.serial_number) {
+		if (!req.body.serial_number|| !req.body.registcode) {
 			let err = { code: status.BAD_REQUEST, message: "Please provide a device" };
 			return callback(err, null);
 		} else {
 			//console.log(req.body.serial);
-			let query = "call insert_device(?)";
-			let table = [req.body.serial_number];
+			let query = "call insert_device(?,?)";
+			let table = [req.body.serial_number,req.body.registcode];
 			query = mysql.format(query, table);
 			pool.query(query, function (error, results) {
 				if (error) {
@@ -210,7 +210,7 @@ module.exports={
 		});
 	},
 	getDevicesById: function (req, callback) {
-		let query = "SELECT serial_number, serial FROM Device WHERE serial_number = ?";
+		let query = "SELECT serial_number, registcode FROM Device WHERE serial_number = ?";
 		let table = [req.params.serial_number];
 		query = mysql.format(query, table);
 		pool.query(query, function (error, results) {

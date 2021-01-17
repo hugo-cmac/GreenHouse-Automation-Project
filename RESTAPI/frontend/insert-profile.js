@@ -10,8 +10,8 @@ $(document).ready(function(){
 		var hummin = $('#hummin').val();
 		var hummax = $('#hummax').val();
 		var humme = $('#humme').val();
-		var hummemax = $('#hummemax').val();
-        var token = '';
+        var hummemax = $('#hummemax').val();
+        
         if(desi == '' || tempmin == '' || tempmax == '' || hummin == '' || hummax == '' || humme == '' || hummemax == '' ){
                 alert("Preencha todos os dados!");		
         }
@@ -24,9 +24,6 @@ $(document).ready(function(){
                 crossDomain:true,
                 data:JSON.stringify({"designacao":desi,"temp_min":tempmin,"temp_max":tempmax,"hum_air_min":hummin,"hum_air_max":hummax,"hum_earth_min":humme,"hum_earth_max":hummemax}),
                 success:function(data){
-                    /*console.log(data.data.username);
-                    localStorage.setItem('userID',data.data.username);*/
-                    //localStorage.setItem('userIdgrande',data.userIdgrande);
                     alert("Perfil adiconado!\nA redirecionar...")
                     window.location.href = "geral-perfil.html";
                 },

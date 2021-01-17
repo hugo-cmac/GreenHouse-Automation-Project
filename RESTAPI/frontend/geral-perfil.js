@@ -129,7 +129,7 @@ $(document).ready(function(){
                                     var val = document.getElementById("default-switch"+b).value;
                                     console.log('/augustocesarsilvamota@gmail.com/'+val);
                                     var payload = "000000;2;"+aux[btnValue].temp_max+";"+aux[btnValue].temp_min+";"+aux[btnValue].hum_air_max+";"+aux[btnValue].hum_air_min+";"+aux[btnValue].hum_earth_max+";"+aux[btnValue].hum_earth_min;
-                                    client.publish('/augustocesarsilvamota@gmail.com/'+val, payload, function() {
+                                    client.publish('/augustocesarsilvamota@gmail.com/'+val+"/in", payload, function() {
                                         console.log("Message is published");
                                         client.end(); // Close the connection when published
                                     });
