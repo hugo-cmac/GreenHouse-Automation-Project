@@ -13,7 +13,7 @@ CREATE TABLE User(
 
 CREATE TABLE Device(
   serial_number  varchar(255) NOT NULL,
-  resgistcode varchar(255) NOT NULL, 
+  registcode varchar(255) NOT NULL, 
   PRIMARY KEY (serial_number)
 
 );
@@ -64,7 +64,7 @@ delimiter ;
 delimiter //
 create procedure insert_device(srl varchar(255),rg varchar(255))
 begin
-	insert into Device(serial_number,resgistcode)
+	insert into Device(serial_number,registcode)
 		values(srl,rg);
 end//
 delimiter ;

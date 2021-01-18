@@ -14,16 +14,6 @@ var client = mqtt.connect(url, options);
 
 client.on('connect', function() { // When connected
 	console.log("connected");
-    /*
-        client.subscribe('augustocesarsilvamota@gmail.com/ativar', function() {
-            // when a message arrives, do something with it
-            client.on('message', function(topic, message, packet) {
-                console.log("Received '" + message + "' on '" + topic + "'");
-            });
-        });*/
-
-        // publish a message to a topic
-        
 });
 
 
@@ -42,9 +32,6 @@ $(document).ready(function(){
         data:{},
         success:function(data){
             cont = data.data.length;
-            /*localStorage.setItem('userID',data.data.username);*/
-            //localStorage.setItem('userIdgrande',data.userIdgrande);
-            //alert("Perfil adiconado!\nA redirecionar...")
             for(i=0;i<data.data.length;i++){
                 //console.log(aux[i]);
                 aux[i]=data.data[i];
@@ -84,18 +71,6 @@ $(document).ready(function(){
 
 
             }
-
-            /*for(var a=0;a<cont;a++){
-                console.log(aux[a]);
-                
-                $("#active_btn_"+a).click(function() {
-                    var payload = "000000;2;"+aux[a].temp_max+";"+aux[a].temp_min+";"+aux[a].hum_air_max+";"+aux[a].hum_air_min+";"+aux[a].hum_earth_max+";"+aux[a].hum_earth_min;
-                    client.publish('/augustocesarsilvamota@gmail.com/ativar', payload, function() {
-                        console.log("Message is published");
-                        client.end(); // Close the connection when published
-                    });
-                });
-            }*/
 
             $.ajax({
                 url:  localStorage.getItem('base_url')+"devices",

@@ -5,6 +5,20 @@ var cont = 0;
 var cont2=0;
 var arr=[];
 var strings=' ';
+
+var url = "ws://mqtt.dioty.co:8080/mqtt";
+var options = {
+    clientId: 'mqttjs_' + Math.random().toString(16).substr(2, 8),
+    username: "augustocesarsilvamota@gmail.com",
+    password: "323c0782",
+};
+ 
+var client = mqtt.connect(url, options);
+
+client.on('connect', function() { // When connected
+	console.log("connected");
+});
+
 $(document).ready(function(){
 	userI=localStorage.getItem("userID");  
 	userN=localStorage.getItem("userN");
@@ -57,17 +71,19 @@ $(document).ready(function(){
 										"<p>"+ "Humidade do ar: "+ data.data[his-1].hum_air + "%" +"</p>"+
 										"<p>"+ "Humidade do solo: "+ data.data[his-1].hum_earth + "%" +"</p>"+
 										"<p>"+ "Luminosidade: "+ data.data[his-1].luminosity+ "%" +"</p>"+
-										"<p>"+ "Estado da estufa: "+ getState(data.data[his-1].states,cont2) +"</p>"+
+										"<p>"+ "Estado da estufa: "+ getState(data.data[his-1].states) +"</p>"+
 										"<div class=\"container text-right\">"+	
-											"<a class=\"banner_btn\" id=\"active_btn_"+cont2+"\""+" "+ "value=\""+cont2+"\"" +">Abrir<i class=\"ti-arrow-right\"></i></a>"+
-											"<a class=\"banner_btn\" id=\"nactive_btn_"+cont2+"\""+" "+ "value=\""+cont2+"\"" +">Fechar<i class=\"ti-arrow-right\"></i></a>"+
-											"<a class=\"banner_btn\" id=\"rega_btn_"+cont2+"\""+" "+ "value=\""+cont2+"\"" +">Regar<i class=\"ti-arrow-right\"></i></a>"+										
+											"<a class=\"banner_btn\" id=\"active_btn_"+cont2+"\""+" "+ "value=\""+ data.data[his-1].serial_number+"\"" +">Abrir<i class=\"ti-arrow-right\"></i></a>"+
+											"<a class=\"banner_btn\" id=\"nactive_btn_"+cont2+"\""+" "+ "value=\""+ data.data[his-1].serial_number+"\"" +">Fechar<i class=\"ti-arrow-right\"></i></a>"+
+											"<a class=\"banner_btn\" id=\"rega_btn_"+cont2+"\""+" "+ "value=\""+ data.data[his-1].serial_number+"\"" +">Regar<i class=\"ti-arrow-right\"></i></a>"+										
 										"</div"+
 									"</div>"+
 								"</div>"+
 							"</div>"+
 						"</div>"
 						);	
+
+						buttonWork(cont2);
 					
 						cont2++;			
 					},
@@ -86,14 +102,130 @@ $(document).ready(function(){
 	}); 
 });
 
-function getState(aux,ole){
+function getState(aux){
 	if(aux == 0){
-		$('#nactive_btn_'+ole).show().hide();
 		return "Fechada";
 	}
 	else{
-		$("#active_btn_"+ole).show().hide();
 		return "Aberta";
 	}
 	
 }
+
+function buttonWork(iter){
+	
+	$("#active_btn_"+iter).click(function() {
+		var btnValue=($(this).attr('value'));
+		console.log("SN BTN: "+btnValue);
+
+		$.ajax({
+			url: localStorage.getItem('base_url')+ "devices/"+btnValue,
+			type: 'GET',
+			contentType: "application/json; charset=utf-8",
+			dataType: "json",
+			data: {},
+			success: function (data) {
+				var top = data.data[data.data.length-1].registcode;
+				var data=data.data;
+				console.log(top);
+				var strBytes = top.toBytes();
+				console.log(strBytes);
+				var date = new Date().getMilliseconds();
+				console.log(date);
+				var totp = new jsOTP.totp();
+				var timeCode = totp.getOtp(strBytes,date);
+				var payload = timeCode+";0;1";
+				console.log(payload);
+				console.log('/augustocesarsilvamota@gmail.com/'+btnValue+"/in");
+				client.publish('/augustocesarsilvamota@gmail.com/'+btnValue+"/in", payload, function() {
+					console.log("Message is published");
+					client.end(); // Close the connection when published
+				});
+			},
+	
+			error: function (xhr, ajaxOptions, thrownError) {
+				console.log(xhr.status);
+				console.log(thrownError);
+			}
+		});
+	
+		
+	});
+
+	$("#nactive_btn_"+iter).click(function() {
+		var btnValue=($(this).attr('value'));
+		console.log("SN BTN: "+btnValue);
+		$.ajax({
+			url: localStorage.getItem('base_url')+ "devices/"+btnValue,
+			type: 'GET',
+			contentType: "application/json; charset=utf-8",
+			dataType: "json",
+			data: {},
+			success: function (data) {
+				var top = data.data[data.data.length-1].registcode;
+				var data=data.data;
+				console.log(top);
+				var strBytes = top.toBytes();
+				console.log(strBytes);
+				var date = new Date().getMilliseconds();
+				var totp = new jsOTP.totp();
+				var timeCode = totp.getOtp(strBytes,date);
+				var payload = timeCode+";0;0";
+				console.log(payload);
+				client.publish('/augustocesarsilvamota@gmail.com/'+btnValue+"/in", payload, function() {
+					console.log("Message is published");
+					client.end(); // Close the connection when published
+				});
+			},
+	
+			error: function (xhr, ajaxOptions, thrownError) {
+				console.log(xhr.status);
+				console.log(thrownError);
+			}
+		});
+		
+	});
+
+	$("#rega_btn_"+iter).click(function() {
+		var btnValue=($(this).attr('value'));
+		console.log("SN BTN: "+btnValue);
+
+		$.ajax({
+			url: localStorage.getItem('base_url')+"devices/"+btnValue,
+			type: 'GET',
+			contentType: "application/json; charset=utf-8",
+			dataType: "json",
+			data: {},
+			success: function (data) {
+				var top = data.data[data.data.length-1].registcode;
+				var data=data.data;
+				console.log(top);
+				var strBytes = top.toBytes();
+				console.log(strBytes);
+				var date = new Date().getMilliseconds();
+				var totp = new jsOTP.totp();
+				var timeCode = totp.getOtp(strBytes,date);
+				var payload = timeCode+";1;1";
+				console.log(payload);
+				client.publish('/augustocesarsilvamota@gmail.com/'+btnValue+"/in", payload, function() {
+					console.log("Message is published");
+					client.end(); // Close the connection when published
+				});
+			},
+	
+			error: function (xhr, ajaxOptions, thrownError) {
+				console.log(xhr.status);
+				console.log(thrownError);
+			}
+		});
+		
+	});
+}
+
+String.prototype.toBytes = function () {
+	var i, ii, bytes = [];
+	for (i = 0, ii = this.length; i < ii; i += 1) {
+	   bytes.push(this.charCodeAt(i));
+	}
+	return bytes;
+ };

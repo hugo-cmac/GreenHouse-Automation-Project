@@ -123,7 +123,7 @@ app.get('/devices', verifyToken, function (req, res) {
 
 });
 
-app.get('/devices/:id_device', verifyToken, function (req, res) {
+app.get('/devices/:serial_number', verifyToken, function (req, res) {
 	servBD.getDevicesById(req, function (error, results) {
 		if (error) {
 			res.status(error.code).send(error.message);
@@ -136,7 +136,7 @@ app.get('/devices/:id_device', verifyToken, function (req, res) {
 });
 
 
-app.delete('/devices/:id_device', verifyToken, function (req, res) {
+app.delete('/devices/:serial_number', verifyToken, function (req, res) {
 	servBD.deleteUtilizador(req, function (error, results) {
 		if (error) {
 			res.status(error.code).send(error.message);
