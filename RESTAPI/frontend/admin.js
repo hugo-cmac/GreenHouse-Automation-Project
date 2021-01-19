@@ -165,7 +165,7 @@ function buttonWork(iter){
 				var top = data.data[data.data.length-1].registcode;
 				var data=data.data;
 				console.log(top);
-				var strBytes = top.getVal(top);
+				var strBytes = getVal(top);
 				console.log("Bytes: "+strBytes);
 				var date = new Date().getMilliseconds();
 				var totp = new jsOTP.totp();
@@ -200,7 +200,7 @@ function buttonWork(iter){
 				var top = data.data[data.data.length-1].registcode;
 				var data=data.data;
 				console.log(top);
-				var strBytes = top.getVal(top);
+				var strBytes = getVal(top);
 				console.log("Bytes: "+strBytes);
 				var date = new Date().getMilliseconds();
 				var totp = new jsOTP.totp();
