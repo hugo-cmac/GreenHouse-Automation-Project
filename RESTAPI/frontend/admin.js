@@ -128,12 +128,12 @@ function buttonWork(iter){
 				var top = data.data[data.data.length-1].registcode;
 				var data=data.data;
 				console.log(top);
-				var strBytes = top.toBytes();
-				console.log(strBytes);
+				var strBytes = getVal(top);
+				console.log("Bytes: "+strBytes);
 				var date = new Date().getMilliseconds();
 				console.log(date);
 				var totp = new jsOTP.totp();
-				var timeCode = totp.getOtp(strBytes,date);
+				var timeCode = totp.getOtp("12",date);
 				var payload = timeCode+";0;1";
 				console.log(payload);
 				console.log('/augustocesarsilvamota@gmail.com/'+btnValue+"/in");
@@ -165,8 +165,8 @@ function buttonWork(iter){
 				var top = data.data[data.data.length-1].registcode;
 				var data=data.data;
 				console.log(top);
-				var strBytes = top.toBytes();
-				console.log(strBytes);
+				var strBytes = top.getVal(top);
+				console.log("Bytes: "+strBytes);
 				var date = new Date().getMilliseconds();
 				var totp = new jsOTP.totp();
 				var timeCode = totp.getOtp(strBytes,date);
@@ -200,8 +200,8 @@ function buttonWork(iter){
 				var top = data.data[data.data.length-1].registcode;
 				var data=data.data;
 				console.log(top);
-				var strBytes = top.toBytes();
-				console.log(strBytes);
+				var strBytes = top.getVal(top);
+				console.log("Bytes: "+strBytes);
 				var date = new Date().getMilliseconds();
 				var totp = new jsOTP.totp();
 				var timeCode = totp.getOtp(strBytes,date);
@@ -222,10 +222,17 @@ function buttonWork(iter){
 	});
 }
 
-String.prototype.toBytes = function () {
-	var i, ii, bytes = [];
-	for (i = 0, ii = this.length; i < ii; i += 1) {
-	   bytes.push(this.charCodeAt(i));
+function getVal(str){
+
+var bytes = [];
+var charCode;
+
+	for (var i = 0; i < str.length; ++i){
+		charCode = str.charCodeAt(i);
+		bytes.push((charCode & 0xFF00) >> 8);
+		bytes.push(charCode & 0xFF);
 	}
-	return bytes;
- };
+	var valtop=bytes.join();
+	console.log(bytes.join());
+	return valtop;
+}
