@@ -4,8 +4,8 @@ const https = require('https');
 const app = require('./app');
 var connect = require('connect');
 var serveStatic = require('serve-static');
-var privateKey  = fs.readFileSync('./Cert/cert.key', 'utf8');
-var certificate = fs.readFileSync('./Cert/cert.crt', 'utf8');
+var privateKey  = fs.readFileSync('./Cert/cert.key');
+var certificate = fs.readFileSync('./Cert/cert.crt');
 var credentials = {key: privateKey, cert: certificate};
 
 
@@ -15,7 +15,7 @@ connect().use(serveStatic(__dirname)).listen(8080, function(){
 
 const port = process.env.PORT || 3000;
 
-const server = https.createServer(credentials,app);
+const server = http.createServer(app);
 
 server.listen(port);
 
