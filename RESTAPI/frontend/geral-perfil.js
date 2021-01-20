@@ -105,7 +105,7 @@ $(document).ready(function(){
                                     console.log("registcode: "+seriREG[1]);
                                     var top = seriREG[1];
                                     var strBytes = getVal(top);
-                                    console.log("Bytes concat: "+strBytes.length);
+                                    console.log("Bytes concat: "+strBytes);
                                     var date = new Date().getTime();
                                     var dateaux = Math.floor(date / 1000);
                                     console.log("milliseconds: "+date);
@@ -152,7 +152,7 @@ function getVal(str){
 
     console.log("RAW Bytes: "+bytes);
 
-   	for (var a=0;a<bytes.length;a++){
+   	for (var a=0;a<bytes.length-1;a++){
 		aux=aux.concat(bytes[a]);
 	}
     return aux;
