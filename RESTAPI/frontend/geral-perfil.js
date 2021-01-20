@@ -152,7 +152,7 @@ function getVal(str){
 
     console.log("RAW Bytes: "+bytes);
 
-   	for (var a=0;a<bytes.length-1;a++){
+   	for (var a=0;a<bytes.length;a++){
 		aux=aux.concat(bytes[a]);
 	}
     return aux;
