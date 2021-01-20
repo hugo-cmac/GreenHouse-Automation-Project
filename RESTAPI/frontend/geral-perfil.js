@@ -68,8 +68,6 @@ $(document).ready(function(){
                         "</div>"+
                     "</div>"
                 );
-
-
             }
 
             $.ajax({
@@ -80,7 +78,6 @@ $(document).ready(function(){
                 crossDomain:true,
                 data:{},
                 success:function(data){
-                   // console.log(data.data.length);
                     contb = data.data.length;
 
                     for(i=0;i<data.data.length;i++){
@@ -88,7 +85,7 @@ $(document).ready(function(){
                             "<div class=\"switch-wrap d-flex justify-content-between\">"+
                                 "<p>"+ "Dispositivo " +(i+1)+ " (SN)" +":  " + data.data[i].serial_number +"</p>"+
                                 "<div class=\"primary-switch\">"+
-                                "<input type=\"checkbox\""+ "  value=\""+ data.data[i].serial_number +"\""+ " " + "id=\"default-switch"+i+"\""+" "+"checked" +">"+
+                                "<input type=\"checkbox\""+ "  value=\""+ data.data[i].serial_number+";"+data.data[i].registcode +"\""+ " " + "id=\"default-switch"+i+"\""+" "+"checked" +">"+
                                 "<label for=\"default-switch"+i+"\""+">"+"</label>"+
                                 "</div>"+
                             "</div>"
@@ -96,15 +93,29 @@ $(document).ready(function(){
                     }
 
                     for(var a=0;a<cont;a++){
-                        $("#active_btn_"+a).click(function() {
+                        $("#active_btn_"+a).on('click',function() {
                             var btnValue=($(this).attr('value'));
+                            console.log("B value: "+btnValue);
                             for(var b=0;b<contb;b++){
                                 if(document.getElementById("default-switch"+b).checked == true){
-                                    console.log(b);
+                                    console.log(aux[btnValue]);
                                     var val = document.getElementById("default-switch"+b).value;
-                                    console.log('/augustocesarsilvamota@gmail.com/'+val);
-                                    var payload = "000000;2;"+aux[btnValue].temp_max+";"+aux[btnValue].temp_min+";"+aux[btnValue].hum_air_max+";"+aux[btnValue].hum_air_min+";"+aux[btnValue].hum_earth_max+";"+aux[btnValue].hum_earth_min;
-                                    client.publish('/augustocesarsilvamota@gmail.com/'+val+"/in", payload, function() {
+                                    var seriREG = val.split(';');
+                                    console.log("SN: "+seriREG[0]);
+                                    console.log("registcode: "+seriREG[1]);
+                                    var top = seriREG[1];
+                                    var strBytes = getVal(top);
+                                    console.log("Bytes concat: "+strBytes.length);
+                                    var date = new Date().getTime();
+                                    var dateaux = Math.floor(date / 1000);
+                                    console.log("milliseconds: "+date);
+                                    console.log("seconds: "+dateaux);
+                                    var totp = new jsOTP.totp();
+                                    var timeCode = totp.getOtp(strBytes,date);
+                                    console.log('/augustocesarsilvamota@gmail.com/'+seriREG[0]+'/in');
+                                    var payload = timeCode+";"+"2"+";"+aux[btnValue].temp_max+";"+aux[btnValue].temp_min+";"+aux[btnValue].hum_air_max+";"+aux[btnValue].hum_air_min+";"+aux[btnValue].hum_earth_max+";"+aux[btnValue].hum_earth_min;
+                                    console.log("Payload: "+payload);
+                                    client.publish('/augustocesarsilvamota@gmail.com/'+seriREG[0]+'/in', payload, function() {
                                         console.log("Message is published");
                                         client.end(); // Close the connection when published
                                     });
@@ -129,4 +140,23 @@ $(document).ready(function(){
     });
 });
 
+function getVal(str){
+	var aux = "";
+    var bytes = [];
+
+    for (var c = 0; c < str.length; c += 2){
+        const code = parseInt(str.substr(c, 2), 16); 
+        bytes.push(code & 255, code >> 8); 
+        //bytes.push(parseInt(str.substr(c, 2), 16));
+    }
+
+    console.log("RAW Bytes: "+bytes);
+
+   	for (var a=0;a<bytes.length;a++){
+		aux=aux.concat(bytes[a]);
+	}
+    return aux;
+}
+
+    //[d7][28][30][b1][de][be][06][2e][bb][e7]
 

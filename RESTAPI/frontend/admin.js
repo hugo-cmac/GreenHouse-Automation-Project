@@ -114,9 +114,9 @@ function getState(aux){
 
 function buttonWork(iter){
 	
-	$("#active_btn_"+iter).click(function() {
+	$("#active_btn_"+iter).on('click',function() {
 		var btnValue=($(this).attr('value'));
-		console.log("SN BTN: "+btnValue);
+	//	console.log("SN BTN: "+btnValue);
 
 		$.ajax({
 			url: localStorage.getItem('base_url')+ "devices/"+btnValue,
@@ -127,15 +127,15 @@ function buttonWork(iter){
 			success: function (data) {
 				var top = data.data[data.data.length-1].registcode;
 				var data=data.data;
-				console.log(top);
+				console.log("SN: "+btnValue);
+				console.log("registcode: "+top);
 				var strBytes = getVal(top);
-				console.log("Bytes: "+strBytes);
-				var date = new Date().getMilliseconds();
-				console.log(date);
+				console.log("Bytes concat: "+strBytes);
+				var date = new Date().getTime();
 				var totp = new jsOTP.totp();
 				var timeCode = totp.getOtp(strBytes,date);
-				var payload = timeCode+";0;1";
-				console.log(payload);
+				var payload = timeCode+";0;0";
+				console.log("Payload: "+payload);
 				console.log('/augustocesarsilvamota@gmail.com/'+btnValue+"/in");
 				client.publish('/augustocesarsilvamota@gmail.com/'+btnValue+"/in", payload, function() {
 					console.log("Message is published");
@@ -154,7 +154,7 @@ function buttonWork(iter){
 
 	$("#nactive_btn_"+iter).click(function() {
 		var btnValue=($(this).attr('value'));
-		console.log("SN BTN: "+btnValue);
+		//console.log("SN BTN: "+btnValue);
 		$.ajax({
 			url: localStorage.getItem('base_url')+ "devices/"+btnValue,
 			type: 'GET',
@@ -164,14 +164,16 @@ function buttonWork(iter){
 			success: function (data) {
 				var top = data.data[data.data.length-1].registcode;
 				var data=data.data;
-				console.log(top);
+				console.log("SN: "+btnValue);
+				console.log("registcode: "+top);
 				var strBytes = getVal(top);
-				//console.log("Bytes: "+strBytes);
-				var date = new Date().getMilliseconds();
+				console.log("Bytes concat: "+strBytes);
+				var date = new Date().getTime();
 				var totp = new jsOTP.totp();
 				var timeCode = totp.getOtp(strBytes,date);
 				var payload = timeCode+";0;0";
-				console.log(payload);
+				console.log("Payload: "+payload);
+				console.log('/augustocesarsilvamota@gmail.com/'+btnValue+"/in");
 				client.publish('/augustocesarsilvamota@gmail.com/'+btnValue+"/in", payload, function() {
 					console.log("Message is published");
 					client.end(); // Close the connection when published
@@ -186,9 +188,8 @@ function buttonWork(iter){
 		
 	});
 
-	$("#rega_btn_"+iter).click(function() {
+	$("#rega_btn_"+iter).on('click',function() {
 		var btnValue=($(this).attr('value'));
-		console.log("SN BTN: "+btnValue);
 
 		$.ajax({
 			url: localStorage.getItem('base_url')+"devices/"+btnValue,
@@ -199,14 +200,18 @@ function buttonWork(iter){
 			success: function (data) {
 				var top = data.data[data.data.length-1].registcode;
 				var data=data.data;
-				console.log(top);
+				console.log("SN: "+btnValue);
+				console.log("registcode: "+top);
 				var strBytes = getVal(top);
-				//console.log("Bytes: "+strBytes);
-				var date = new Date().getMilliseconds();
-				var totp = new jsOTP.totp(30,6);
+				console.log("Bytes concat: "+strBytes);
+				var date = new Date().getTime();
+				console.log("milliseconds: "+date)
+				var totp = new jsOTP.totp();
 				var timeCode = totp.getOtp(strBytes,date);
-				var payload = timeCode+";1;1";
-				console.log(payload);
+				var payload = timeCode+";0;0";
+				console.log("Payload: "+payload);
+				console.log('/augustocesarsilvamota@gmail.com/'+btnValue+"/in");
+
 				client.publish('/augustocesarsilvamota@gmail.com/'+btnValue+"/in", payload, function() {
 					console.log("Message is published");
 					client.end(); // Close the connection when published
@@ -225,25 +230,19 @@ function buttonWork(iter){
 function getVal(str){
 	var aux = "";
 	var bytes = [];
-//     //currently the function returns without BOM. Uncomment the next line to change that.
-//     //bytes.push(0, 0, 254, 255);  //Big Endian Byte Order Marks
-//    for (var i = 0; i < str.length; i+=2)
-//    {
-//        var charPoint = str.codePointAt(i);
-//        //char > 4 bytes is impossible since codePointAt can only return 4 bytes
-//        bytes.push((charPoint & 0xFF000000) >>> 24);
-//        bytes.push((charPoint & 0xFF0000) >>> 16);
-//        bytes.push((charPoint & 0xFF00) >>> 8);
-//        bytes.push(charPoint & 0xFF);
-//    }
-	for (ii = 0; ii < str.length; ii++) {
-		const code = str.charCodeAt(ii); // x00-xFFFF
-		bytes.push(code & 255, code >> 8); // low, high
-	}
-	console.log("RAW Bytes: "+bytes);
-   
+
+    for (var c = 0; c < str.length; c += 2){
+        const code = parseInt(str.substr(c, 2), 16);
+        bytes.push(code & 255, code >> 8); 
+        //bytes.push(parseInt(str.substr(c, 2), 16));
+    }
+
+    console.log("RAW Bytes: "+bytes);
+
    	for (var a=0;a<bytes.length;a++){
 		aux=aux.concat(bytes[a]);
 	}
     return aux;
 }
+
+//[d7][28][30][b1][de][be][06][2e][bb][e7]
