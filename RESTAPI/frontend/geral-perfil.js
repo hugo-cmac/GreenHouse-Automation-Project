@@ -105,14 +105,14 @@ $(document).ready(function(){
                                     console.log("registcode: "+seriREG[1]);
                                     var top = seriREG[1];
                                     var strBytes = getVal(top);
-                                    console.log("Bytes concat: "+strBytes);
+                                   // console.log("Bytes concat: "+strBytes);
                                     console.log("top: "+top);
                                     var date = new Date().getTime();
                                     var dateaux = Math.floor(date / 1000);
                                     console.log("milliseconds: "+date);
                                     console.log("seconds: "+dateaux);
                                     var totp = new jsOTP.totp();
-                                    var timeCode = totp.getOtp("00000000000000000000",date);
+                                    var timeCode = totp.getOtp(top,date);
                                     console.log('/augustocesarsilvamota@gmail.com/'+seriREG[0]+'/in');
                                     var payload = timeCode+";"+"2"+";"+aux[btnValue].temp_max+";"+aux[btnValue].temp_min+";"+aux[btnValue].hum_air_max+";"+aux[btnValue].hum_air_min+";"+aux[btnValue].hum_earth_max+";"+aux[btnValue].hum_earth_min;
                                     console.log("Payload: "+payload);
@@ -151,7 +151,7 @@ function getVal(str){
         //bytes.push(parseInt(str.substr(c, 2), 16));
     }
 
-    console.log("RAW Bytes: "+bytes);
+//    console.log("RAW Bytes: "+bytes);
 
    	for (var a=0;a<bytes.length;a++){
 		aux=aux.concat(bytes[a]);
