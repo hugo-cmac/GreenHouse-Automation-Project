@@ -133,7 +133,7 @@ function buttonWork(iter){
 				var date = new Date().getMilliseconds();
 				console.log(date);
 				var totp = new jsOTP.totp();
-				var timeCode = totp.getOtp("12",date);
+				var timeCode = totp.getOtp(strBytes,date);
 				var payload = timeCode+";0;1";
 				console.log(payload);
 				console.log('/augustocesarsilvamota@gmail.com/'+btnValue+"/in");
@@ -166,7 +166,7 @@ function buttonWork(iter){
 				var data=data.data;
 				console.log(top);
 				var strBytes = getVal(top);
-				console.log("Bytes: "+strBytes);
+				//console.log("Bytes: "+strBytes);
 				var date = new Date().getMilliseconds();
 				var totp = new jsOTP.totp();
 				var timeCode = totp.getOtp(strBytes,date);
@@ -201,9 +201,9 @@ function buttonWork(iter){
 				var data=data.data;
 				console.log(top);
 				var strBytes = getVal(top);
-				console.log("Bytes: "+strBytes);
+				//console.log("Bytes: "+strBytes);
 				var date = new Date().getMilliseconds();
-				var totp = new jsOTP.totp();
+				var totp = new jsOTP.totp(30,6);
 				var timeCode = totp.getOtp(strBytes,date);
 				var payload = timeCode+";1;1";
 				console.log(payload);
@@ -223,16 +223,27 @@ function buttonWork(iter){
 }
 
 function getVal(str){
-
-var bytes = [];
-var charCode;
-
-	for (var i = 0; i < str.length; ++i){
-		charCode = str.charCodeAt(i);
-		bytes.push((charCode & 0xFF00) >> 8);
-		bytes.push(charCode & 0xFF);
+	var aux = "";
+	var bytes = [];
+//     //currently the function returns without BOM. Uncomment the next line to change that.
+//     //bytes.push(0, 0, 254, 255);  //Big Endian Byte Order Marks
+//    for (var i = 0; i < str.length; i+=2)
+//    {
+//        var charPoint = str.codePointAt(i);
+//        //char > 4 bytes is impossible since codePointAt can only return 4 bytes
+//        bytes.push((charPoint & 0xFF000000) >>> 24);
+//        bytes.push((charPoint & 0xFF0000) >>> 16);
+//        bytes.push((charPoint & 0xFF00) >>> 8);
+//        bytes.push(charPoint & 0xFF);
+//    }
+	for (ii = 0; ii < str.length; ii++) {
+		const code = str.charCodeAt(ii); // x00-xFFFF
+		bytes.push(code & 255, code >> 8); // low, high
 	}
-	var valtop=bytes.join();
-	console.log(bytes.join());
-	return valtop;
+	console.log("RAW Bytes: "+bytes);
+   
+   	for (var a=0;a<bytes.length;a++){
+		aux=aux.concat(bytes[a]);
+	}
+    return aux;
 }
