@@ -134,7 +134,7 @@ function buttonWork(iter){
 				var date = new Date().getTime();
 				var totp = new jsOTP.totp();
 				var timeCode = totp.getOtp(strBytes,date);
-				var payload = timeCode+";0;0";
+				var payload = timeCode+";0;1";
 				console.log("Payload: "+payload);
 				console.log('/augustocesarsilvamota@gmail.com/'+btnValue+"/in");
 				client.publish('/augustocesarsilvamota@gmail.com/'+btnValue+"/in", payload, function() {
@@ -208,7 +208,7 @@ function buttonWork(iter){
 				console.log("milliseconds: "+date)
 				var totp = new jsOTP.totp();
 				var timeCode = totp.getOtp(strBytes,date);
-				var payload = timeCode+";0;0";
+				var payload = timeCode+";1;1";
 				console.log("Payload: "+payload);
 				console.log('/augustocesarsilvamota@gmail.com/'+btnValue+"/in");
 
