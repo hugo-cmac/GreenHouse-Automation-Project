@@ -58,6 +58,7 @@ $(document).ready(function(){
 
 			for(var a=0;a<data.data.length;a++){
 				console.log("a: "+a);
+				var regiscode = data.data[a].registcode;
 				//localStorage.setItem('des',auxes[a].designacao);
 				//strings=localStorage.getItem('des');
 				$('#estufa').append(
@@ -73,19 +74,7 @@ $(document).ready(function(){
 				);
 				 
 				var del = $('#esdata'+data.data[a].serial_number).attr('value');
-				$('#esdata'+data.data[a].serial_number).append(
-								"<div class=\"container text-right\">"+	
-									"<a class=\"banner_btn\" id=\"active_btn_"+data.data[a].serial_number+"\""+" "+ "value=\""+ data.data[a].serial_number+"\"" +" registcode=\""+ data.data[a].registcode +"\">Abrir<i class=\"ti-arrow-right\"></i></a>"+
-									"<a class=\"banner_btn\" id=\"nactive_btn_"+data.data[a].serial_number+"\""+" "+ "value=\""+ data.data[a].serial_number+"\""+" registcode=\""+ data.data[a].registcode +"\">Fechar<i class=\"ti-arrow-right\"></i></a>"+
-									"<a class=\"banner_btn\" id=\"rega_btn_"+data.data[a].serial_number+"\""+" "+ "value=\""+ data.data[a].serial_number+"\""+" registcode=\""+ data.data[a].registcode  +"\">Regar<i class=\"ti-arrow-right\"></i></a>"+		
-									"<a class=\"banner_btn\" id=\"eliminar_btn_"+data.data[a].serial_number+"\""+" "+ "value=\""+ del+"\"" +">Eliminar<i class=\"ti-arrow-right\"></i></a>"+																		
-								"</div"+
-							"</div>"+
-						"</div>"+
-					"</div>"+
-				"</div>"
-				);
-				buttonWork(data.data[a].serial_number);
+				
 				$.ajax({
 					url: localStorage.getItem('base_url') + "history/"+data.data[a].serial_number,
 					type: 'GET',
@@ -109,7 +98,19 @@ $(document).ready(function(){
 								"<p>"+ "Não tem histórico!! </p>"
 							);
 						}
-						
+						$('#esdata'+data2.data.serial_number).append(
+										"<div class=\"container text-right\">"+	
+											"<a class=\"banner_btn\" id=\"active_btn_"+data2.data.serial_number+"\""+" "+ "value=\""+ data2.data.serial_number+"\"" +" registcode=\""+ regiscode +"\">Abrir<i class=\"ti-arrow-right\"></i></a>"+
+											"<a class=\"banner_btn\" id=\"nactive_btn_"+data2.data.serial_number+"\""+" "+ "value=\""+ data2.data.serial_number+"\""+" registcode=\""+ regiscode +"\">Fechar<i class=\"ti-arrow-right\"></i></a>"+
+											"<a class=\"banner_btn\" id=\"rega_btn_"+data2.data.serial_number+"\""+" "+ "value=\""+ data2.data.serial_number+"\""+" registcode=\""+ regiscode  +"\">Regar<i class=\"ti-arrow-right\"></i></a>"+		
+											"<a class=\"banner_btn\" id=\"eliminar_btn_"+data2.data.serial_number+"\""+" "+ "value=\""+ del+"\"" +">Eliminar<i class=\"ti-arrow-right\"></i></a>"+																		
+										"</div"+
+									"</div>"+
+								"</div>"+
+							"</div>"+
+						"</div>"
+						);
+						buttonWork(data2.data.serial_number);
 					},
 					
 					error: function (xhr, ajaxOptions, thrownError) {
