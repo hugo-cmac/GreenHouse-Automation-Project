@@ -69,9 +69,9 @@ $(document).ready(function(){
                     window.location.href = "admin.html";
                 },
                 error: function (xhr, ajaxOptions, thrownError) {
-                    console.log(JSON.stringify(xhr));
+                    console.log(JSON.stringify(xhr.responseText));
                     console.log(JSON.stringify(thrownError));
-                    alert("Erro de ligação!!");
+                    alert(xhr.responseText);
                 }
             });
         }

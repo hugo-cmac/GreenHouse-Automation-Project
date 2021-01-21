@@ -406,17 +406,33 @@ module.exports={
 			let err = { code: status.BAD_REQUEST, message: "Please provide a relation" };
 			return callback(err, null);
 		} else {
-			let query = "call insert_reldevice(?,?,?)";
-			let table = [req.body.id_user,req.body.serial_number,req.body.designacao];
+			let query = "select * from rel_user_device where designacao = ?";
+			let table = [req.body.designacao];
 			query = mysql.format(query, table);
-			pool.query(query, function (error, results) {
-				if (error) {
-					err = { code: status.INTERNAL_SERVER_ERROR, message: error };
+			pool.query(query, function (errorGreen, resultsGreen) {
+				if (errorGreen) {
+					err = { code: status.INTERNAL_SERVER_ERROR, message: errorGreen };
 					return callback(err, null);
 				}
 				else {
-					console.log(JSON.stringify(results));
-					return callback(null, results);
+					if (resultsGreen.length > 0) {
+						err = { code: status.BAD_REQUEST, message: "Estufa já existente!" };
+						return callback(err, null);
+					} else {
+						//insert
+						let query = "call insert_reldevice(?,?,?)";
+						let table = [req.body.id_user,req.body.serial_number,req.body.designacao];						query = mysql.format(query, table);
+						pool.query(query, function (error, results) {
+							if (error) {
+								err = { code: status.INTERNAL_SERVER_ERROR, message: error };
+								return callback(err, null);
+							}
+							else {
+								console.log(JSON.stringify(results));
+								return callback(null, results);
+							}
+						});
+					}
 				}
 			});
 		}

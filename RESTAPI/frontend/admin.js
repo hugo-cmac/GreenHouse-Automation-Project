@@ -68,7 +68,8 @@ $(document).ready(function(){
 									"<div class=\"col-md-3\">"+
 										"<img src=\"img/estufa2.jpeg\" alt=\"\" class=\"img-fluid\">"+
 									"</div>"+
-								"<div class=\"col-md-9 mt-sm-20 left-align-p\" "+"id=\"esdata"+a+"\""+">"
+								"<div class=\"col-md-9 mt-sm-20 left-align-p\" "+"id=\"esdata"+a+"\" "+ "value=\""+auxes[a].id_rel_user_device
+								 +"\""+">"
 				);
 				 
 				$.ajax({
@@ -79,6 +80,8 @@ $(document).ready(function(){
 					data: {},
 					success: function (data) {
 						var his = data.data.length;
+						var del = $('#esdata'+cont2).attr('value');
+						console.log(del);
 						$('#esdata'+cont2).append(
 										"<p>"+ "Dispositivo (SN): "+ data.data[his-1].serial_number+"</p>"+
 										"<p>"+ "Temperatura: "+ data.data[his-1].temp + " ªC" +"</p>"+
@@ -89,7 +92,8 @@ $(document).ready(function(){
 										"<div class=\"container text-right\">"+	
 											"<a class=\"banner_btn\" id=\"active_btn_"+cont2+"\""+" "+ "value=\""+ data.data[his-1].serial_number+"\"" +">Abrir<i class=\"ti-arrow-right\"></i></a>"+
 											"<a class=\"banner_btn\" id=\"nactive_btn_"+cont2+"\""+" "+ "value=\""+ data.data[his-1].serial_number+"\"" +">Fechar<i class=\"ti-arrow-right\"></i></a>"+
-											"<a class=\"banner_btn\" id=\"rega_btn_"+cont2+"\""+" "+ "value=\""+ data.data[his-1].serial_number+"\"" +">Regar<i class=\"ti-arrow-right\"></i></a>"+										
+											"<a class=\"banner_btn\" id=\"rega_btn_"+cont2+"\""+" "+ "value=\""+ data.data[his-1].serial_number+"\"" +">Regar<i class=\"ti-arrow-right\"></i></a>"+		
+											"<a class=\"banner_btn\" id=\"eliminar_btn_"+cont2+"\""+" "+ "value=\""+ del+"\"" +">Eliminar<i class=\"ti-arrow-right\"></i></a>"+																		
 										"</div"+
 									"</div>"+
 								"</div>"+
@@ -202,39 +206,23 @@ function buttonWork(iter){
 		
 	});
 
-	$("#rega_btn_"+iter).on('click',function() {
+	$("#eliminar_btn_"+iter).on('click',function() {
 		var btnValue=($(this).attr('value'));
-
 		$.ajax({
-			url: localStorage.getItem('base_url')+"devices/"+btnValue,
-			type: 'GET',
+			url: localStorage.getItem('base_url')+"reluser/"+btnValue,
+			type: 'DELETE',
 			contentType: "application/json; charset=utf-8",
 			dataType: "json",
 			data: {},
 			success: function (data) {
-				var top = data.data[data.data.length-1].registcode;
-				var data=data.data;
-				console.log("SN: "+btnValue);
-				console.log("registcode: "+top);
-				var strBytes = getVal(top);
-				console.log("Bytes concat: "+strBytes);
-				var date = new Date().getTime();
-				console.log("milliseconds: "+date)
-				var totp = new jsOTP.totp();
-				var timeCode = totp.getOtp(strBytes,date);
-				var payload = timeCode+";1;1";
-				console.log("Payload: "+payload);
-				console.log('/augustocesarsilvamota@gmail.com/'+btnValue+"/in");
-
-				client.publish('/augustocesarsilvamota@gmail.com/'+btnValue+"/in", payload, function() {
-					console.log("Message is published");
-					client.end(); // Close the connection when published
-				});
+				window.location.href = "admin.html";
 			},
 	
 			error: function (xhr, ajaxOptions, thrownError) {
 				console.log(xhr.status);
 				console.log(thrownError);
+				alert(xhr.responseText);
+
 			}
 		});
 		
