@@ -153,7 +153,7 @@ function buttonWork(iter){
 		console.log("Bytes concat: "+strBytes);
 		var date = new Date().getTime();
 		var totp = new jsOTP.totp();
-		var timeCode = totp.getOtp(strBytes,date);
+		var timeCode = totp.getOtp(regi,date);
 		var payload = timeCode+";0;1";
 		console.log("Payload: "+payload);
 		console.log('/augustocesarsilvamota@gmail.com/'+btnValue+"/in");
