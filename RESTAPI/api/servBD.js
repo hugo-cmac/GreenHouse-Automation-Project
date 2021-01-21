@@ -369,12 +369,12 @@ module.exports={
 				return callback(err, null);
 			}
 			else {
-				if (results.length > 0)	
+				//if (results.length > 0)	
 					return callback(null, results);
-				else {
-					let err = { code: status.NOT_FOUND, message: "History doesn't exist" };
-					return callback(err, null);
-				}
+				//else {
+				//	let err = { code: status.NOT_FOUND, message: "History doesn't exist" };
+				//	return callback(err, null);
+				//}
 			}
 		});
 	},
@@ -482,7 +482,7 @@ module.exports={
 		});
 	},
 	getUSRDEVById: function (req, callback) {
-		let query = "SELECT rud.id_rel_user_device, rud.id_user,rud.serial_number,rud.designacao FROM Device d join rel_user_device rud on rud.serial_number=d.serial_number WHERE rud.id_user = ?";
+		let query = "SELECT rud.id_rel_user_device, rud.id_user,rud.serial_number,rud.designacao, d.registcode FROM Device d join rel_user_device rud on rud.serial_number=d.serial_number WHERE rud.id_user = ?";
 		let table = [req.params.id_user];
 		query = mysql.format(query, table);
 		pool.query(query, function (error, results) {

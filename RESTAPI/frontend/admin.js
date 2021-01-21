@@ -25,6 +25,8 @@ $(document).ready(function(){
 	console.log(userI);
 	console.log(userN);
 
+	var SN;
+
 	document.getElementById("username").innerHTML = "Olá, "+userN;
 
     $.ajax({
@@ -48,80 +50,76 @@ $(document).ready(function(){
 				);
 			}
 			
-			for(var i=0;i<data.data.length;i++){
-				if(data.data[i].id_user==userI){
-					auxes[cont]=data.data[i];
-					cont++;
-				}
-			}
-			console.log(auxes.length);
+			// for(var i=0;i<data.data.length;i++){
+			// 	if(data.data[i].id_user==userI){
+			// 		auxes[cont]=data.data[i];
+			// 		cont++;
+			// 	}
+		
 			
 
-			for(var a=0;a<auxes.length;a++){
+			for(var a=0;a<data.data.length;a++){
+				SN=data.data[a].serial_number;
 				console.log("a: "+a);
-				localStorage.setItem('des',auxes[a].designacao);
-				strings=localStorage.getItem('des');
+				//localStorage.setItem('des',auxes[a].designacao);
+				//strings=localStorage.getItem('des');
 				$('#estufa').append(
 					"<div class=\"container\">"+
 						"<div class=\"section-top-border\">"+
-							"<h3 class=\"mb-30 title_color\" "+"id=\"de"+a+"\""+">"+strings+"</h3>"+
+							"<h3 class=\"mb-30 title_color\" "+"id=\"de"+a+"\""+">"+data.data[a].designacao+"</h3>"+
 								"<div class=\"row\">"+
 									"<div class=\"col-md-3\">"+
 										"<img src=\"img/estufa2.jpeg\" alt=\"\" class=\"img-fluid\">"+
 									"</div>"+
-								"<div class=\"col-md-9 mt-sm-20 left-align-p\" "+"id=\"esdata"+a+"\" "+ "value=\""+auxes[a].id_rel_user_device
+								"<div class=\"col-md-9 mt-sm-20 left-align-p\" "+"id=\"esdata"+a+"\" "+ "value=\""+data.data[a].id_rel_user_device
 								 +"\""+">"
 				);
 				 
+				var del = $('#esdata'+a).attr('value');
 				$.ajax({
-					url: localStorage.getItem('base_url') + "history/"+auxes[a].serial_number,
+					url: localStorage.getItem('base_url') + "history/"+SN,
 					type: 'GET',
 					contentType: "application/json; charset=utf-8",
 					dataType: "json",
 					data: {},
-					success: function (data) {
-						var del = $('#esdata'+cont2).attr('value');
-						console.log(data.data.length);
-						if(data.data.length > 0){
-							$('#esdata'+cont2).append(
-											"<p>"+ "Dispositivo (SN): "+ data.data[0].serial_number+"</p>"+
-											"<p>"+ "Temperatura: "+ data.data[0].temp + " ªC" +"</p>"+
-											"<p>"+ "Humidade do ar: "+ data.data[0].hum_air + "%" +"</p>"+
-											"<p>"+ "Humidade do solo: "+ data.data[0].hum_earth + "%" +"</p>"+
-											"<p>"+ "Luminosidade: "+ data.data[0].luminosity+ "%" +"</p>"+
-											"<p>"+ "Estado da estufa: "+ getState(data.data[0].states) +"</p>"+
-											"<div class=\"container text-right\">"+	
-												"<a class=\"banner_btn\" id=\"active_btn_"+cont2+"\""+" "+ "value=\""+ data.data[0].serial_number+"\"" +" registcode=\""+ data.data[0].registcode +"\">Abrir<i class=\"ti-arrow-right\"></i></a>"+
-												"<a class=\"banner_btn\" id=\"nactive_btn_"+cont2+"\""+" "+ "value=\""+ data.data[0].serial_number+"\""+" registcode=\""+ data.data[0].registcode +"\">Fechar<i class=\"ti-arrow-right\"></i></a>"+
-												"<a class=\"banner_btn\" id=\"rega_btn_"+cont2+"\""+" "+ "value=\""+ data.data[0].serial_number+"\""+" registcode=\""+ data.data[0].registcode  +"\">Regar<i class=\"ti-arrow-right\"></i></a>"+		
-												"<a class=\"banner_btn\" id=\"eliminar_btn_"+cont2+"\""+" "+ "value=\""+ del+"\"" +">Eliminar<i class=\"ti-arrow-right\"></i></a>"+																		
-											"</div"+
-										"</div>"+
-									"</div>"+
-								"</div>"+
-							"</div>"
+					success: function (data2) {
+						
+						console.log(data2.data.length);
+						if(data2.data.length > 0){
+							$('#esdata'+a).append(
+											"<p>"+ "Dispositivo (SN): "+ SN+"</p>"+
+											"<p>"+ "Temperatura: "+ data2.data[0].temp + " ªC" +"</p>"+
+											"<p>"+ "Humidade do ar: "+ data2.data[0].hum_air + "%" +"</p>"+
+											"<p>"+ "Humidade do solo: "+ data2.data[0].hum_earth + "%" +"</p>"+
+											"<p>"+ "Luminosidade: "+ data2.data[0].luminosity+ "%" +"</p>"+
+											"<p>"+ "Estado da estufa: "+ getState(data2.data[0].states) +"</p>"
+							);
+						}else{
+							$('#esdata'+a).append(
+								"<p>"+ "Dispositivo (SN): "+ SN+"</p>"+
+								"<p>"+ "Não tem histórico!! </p>"
 							);
 						}
-					
-
-						buttonWork(cont2);
-					
-						cont2++;			
+						
 					},
 					
 					error: function (xhr, ajaxOptions, thrownError) {
-						$('#esdata'+cont2).append(
-									"<p>"+ "Dispositivo (SN): "+ data.data[0].serial_number+"</p>"+
-									"<p>"+ "Não tem histórico!! </p>"+
-									"</div>"+
-								"</div>"+
-							"</div>"+
-						"</div>"
-						);
-						// alert(xhr.status);
-						// alert(thrownError); 
+
 					}
 				});
+				$('#esdata'+a).append(
+								"<div class=\"container text-right\">"+	
+									"<a class=\"banner_btn\" id=\"active_btn_"+a+"\""+" "+ "value=\""+ data.data[a].serial_number+"\"" +" registcode=\""+ data.data[a].registcode +"\">Abrir<i class=\"ti-arrow-right\"></i></a>"+
+									"<a class=\"banner_btn\" id=\"nactive_btn_"+a+"\""+" "+ "value=\""+ data.data[a].serial_number+"\""+" registcode=\""+ data.data[a].registcode +"\">Fechar<i class=\"ti-arrow-right\"></i></a>"+
+									"<a class=\"banner_btn\" id=\"rega_btn_"+a+"\""+" "+ "value=\""+ data.data[a].serial_number+"\""+" registcode=\""+ data.data[a].registcode  +"\">Regar<i class=\"ti-arrow-right\"></i></a>"+		
+									"<a class=\"banner_btn\" id=\"eliminar_btn_"+a+"\""+" "+ "value=\""+ del+"\"" +">Eliminar<i class=\"ti-arrow-right\"></i></a>"+																		
+								"</div"+
+							"</div>"+
+						"</div>"+
+					"</div>"+
+				"</div>"
+				);
+				buttonWork(a);
 			}
 		},
 		error: function (xhr, ajaxOptions, thrownError) {
