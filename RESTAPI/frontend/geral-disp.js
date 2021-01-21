@@ -11,7 +11,7 @@ $(document).ready(function(){
     
 
     $.ajax({
-        url:  localStorage.getItem('base_url')+"devices",
+        url:  localStorage.getItem('base_url')+"devices/"+userI,
         type: 'GET',
         dataType : 'json',
         contentType: "application/json; charset=utf-8",
