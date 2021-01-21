@@ -72,8 +72,6 @@ $(document).ready(function(){
 								"<div class=\"col-md-9 mt-sm-20 left-align-p\" "+"id=\"esdata"+data.data[a].serial_number+"\" "+ "value=\""+data.data[a].id_rel_user_device
 								 +"\""+">"
 				);
-				 
-				var del = $('#esdata'+data.data[a].serial_number).attr('value');
 				
 				$.ajax({
 					url: localStorage.getItem('base_url') + "history/"+data.data[a].serial_number,
@@ -98,6 +96,7 @@ $(document).ready(function(){
 								"<p>"+ "Não tem histórico!! </p>"
 							);
 						}
+						var del = $('#esdata'+data2.data.serial_number).attr('value');
 						$('#esdata'+data2.data.serial_number).append(
 										"<div class=\"container text-right\">"+	
 											"<a class=\"banner_btn\" id=\"active_btn_"+data2.data.serial_number+"\""+" "+ "value=\""+ data2.data.serial_number+"\"" +" registcode=\""+ regiscode +"\">Abrir<i class=\"ti-arrow-right\"></i></a>"+
