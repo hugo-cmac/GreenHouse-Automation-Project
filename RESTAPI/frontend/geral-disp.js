@@ -83,14 +83,15 @@ $(document).ready(function(){
                     //console.log(aux);
                     for(var i=0;i<aux;i++){
                         // console.log(hisaux[a].id_history);
-                        $('#amos'+i).click(function(){
+                        $('#amos'+i).on('click',function(){
                             for(var a=0;a<contb;a++){
                                 var value=$(this).val();
                                 var res=value.split(";");
+                                $('#te'+res[1]).remove();
                                 // alert($(this).val());
                                 if(hisaux[a].id_history == res[0]){
                                     $('#collapseOne'+res[1]).append(
-                                        "<div class=\"card-body\">"+          
+                                        "<div class=\"card-body\" "+"id=\"te"+res[1]+"\""+">"+          
                                             "ID_Amostra: "+hisaux[a].id_history+"<br/>"+
                                             "Timestamp: "+hisaux[a].timest+"<br/>"+
                                             "Temperatura: "+hisaux[a].temp+"ºC"+"<br/>"+
