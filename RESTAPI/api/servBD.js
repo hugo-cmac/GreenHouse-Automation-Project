@@ -360,7 +360,7 @@ module.exports={
 	},
 
 	getHistoryById: function (req, callback) {
-		let query = "SELECT h.id_history,h.serial_number,h.timest,h.temp,h.hum_air,h.hum_earth,h.luminosity,h.states,d.registcode FROM History h join Device d on d.serial_number=h.serial_number WHERE h.serial_number = ? ORDER BY h.timest DESC LIMIT 1,1";
+		let query = "SELECT h.id_history,h.serial_number,h.timest,h.temp,h.hum_air,h.hum_earth,h.luminosity,h.states,d.registcode FROM History h join Device d on d.serial_number=h.serial_number WHERE h.serial_number = ? ORDER BY h.timest DESC LIMIT 1";
 		let table = [req.params.serial_number];
 
 		query = mysql.format(query, table);
