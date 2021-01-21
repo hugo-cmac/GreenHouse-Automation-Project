@@ -349,7 +349,7 @@ void reconnect(){ //connect
 
 void callback(char *topic, byte *payload, unsigned int length){
     payload[length] = '\0';
-    //char code[] = "0000000000";
+    Serial.println("Callback chamado");
 
     //000000;2;tmax;tmin;humamax;humamin;humemax;humemin
     //123456;0/1;0/1;[default]
@@ -370,13 +370,15 @@ void callback(char *topic, byte *payload, unsigned int length){
             }
         }
     }
-
+    
     if (n == 0)
         return;
 
-    if (memcmp(request[0], totpcode, 6) != 0)
-        return;
 
+    if (compare(request[0], totpcode, 6) != 0)
+        return;
+    
+    Serial.printf("%s == %s \n", request[0], totpcode);
     Serial.println("Callback verificado");
 
     switch (request[1][0]){
@@ -617,9 +619,8 @@ void setup(){
 
     hmac();
     Serial.println(registcode);
-
+    
     totp = new TOTP((uint8_t*) &hmac_UID[22], 10);
-
     timeClient.begin();
 
     client.setServer(broker, 1883);
@@ -659,4 +660,104 @@ void loop(){
         pump->verifica();
         printValues();
     }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+int compare(char* str1, char* str2, int len){
+    memcpy(str2, str1, 6);
+    str2 = str1;
+    return 0;
 }
