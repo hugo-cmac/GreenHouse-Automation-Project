@@ -87,9 +87,9 @@ $(document).ready(function(){
                             for(var a=0;a<contb;a++){
                                 var value=$(this).val();
                                 var res=value.split(";");
-                                $('#te'+res[1]).remove();
                                 // alert($(this).val());
                                 if(hisaux[a].id_history == res[0]){
+                                    $('#te'+res[1]).remove();
                                     $('#collapseOne'+res[1]).append(
                                         "<div class=\"card-body\" "+"id=\"te"+res[1]+"\""+">"+          
                                             "ID_Amostra: "+hisaux[a].id_history+"<br/>"+
