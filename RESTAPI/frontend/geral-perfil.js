@@ -118,7 +118,7 @@ $(document).ready(function(){
                                     console.log("Payload: "+payload);
                                     client.publish('/augustocesarsilvamota@gmail.com/'+seriREG[0]+'/in', payload, function() {
                                         console.log("Message is published");
-                                        client.end(); // Close the connection when published
+                                       // client.end(); // Close the connection when published
                                     });
                                 }
                             }
