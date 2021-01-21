@@ -482,7 +482,7 @@ module.exports={
 		});
 	},
 	getUSRDEVById: function (req, callback) {
-		let query = "SELECT id_rel_user_device, id_user,serial_number,designacao FROM Device WHERE id_user = ?";
+		let query = "SELECT d.id_rel_user_device, d.id_user,d.serial_number,d.designacao FROM Device d join rel_user_device rud on rud.serial_nuber=d.serial_number WHERE rud.id_user = ?";
 		let table = [req.params.id_user];
 		query = mysql.format(query, table);
 		pool.query(query, function (error, results) {
