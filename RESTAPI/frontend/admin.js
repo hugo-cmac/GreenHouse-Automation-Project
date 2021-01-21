@@ -40,7 +40,7 @@ $(document).ready(function(){
 						"<div class=\"single-service\""+">"+
 							"<div class=\"service-content\""+">"+
 								"<h5>Oh não!</h5>"+
-								"<p>Não tem estufas registadas, registe já !</p>"+
+								"<p>Não tem estufas registadas, registe já!</p>"+
 							"</div>"+
 						"</div>"+
 					"</div>"
