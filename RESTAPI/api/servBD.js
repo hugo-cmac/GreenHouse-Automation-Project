@@ -402,21 +402,22 @@ module.exports={
 	//USER-DEVICE 
 
 	insertUSRDEV: function (req, callback) {
-		if (!req.body.id_user || !req.body.serial_number || !req.body.designacao) {
+		if (!req.body.id_user || !req.body.serial_number || !req.body.designacao || !req.body.registcode) {
 			let err = { code: status.BAD_REQUEST, message: "Please provide a relation" };
 			return callback(err, null);
 		} else {
-			let query = "select * from rel_user_device where designacao = ?";
-			let table = [req.body.designacao];
+			let query = "select * from Device where serial_number =? and registcode=?";
+			let table = [req.body.serial_number,req.body.registcode];
 			query = mysql.format(query, table);
+
 			pool.query(query, function (errorGreen, resultsGreen) {
 				if (errorGreen) {
 					err = { code: status.INTERNAL_SERVER_ERROR, message: errorGreen };
 					return callback(err, null);
 				}
 				else {
-					if (resultsGreen.length > 0) {
-						err = { code: status.BAD_REQUEST, message: "Estufa já existente!" };
+					if (resultsGreen.length != 1) {
+						err = { code: status.BAD_REQUEST, message: "Serial or Registcode Wrong!" };
 						return callback(err, null);
 					} else {
 						//insert
@@ -435,6 +436,37 @@ module.exports={
 					}
 				}
 			});
+
+
+			// let query = "select * from rel_user_device where designacao = ?";
+			// let table = [req.body.designacao];
+			// query = mysql.format(query, table);
+			// pool.query(query, function (errorGreen, resultsGreen) {
+			// 	if (errorGreen) {
+			// 		err = { code: status.INTERNAL_SERVER_ERROR, message: errorGreen };
+			// 		return callback(err, null);
+			// 	}
+			// 	else {
+			// 		if (resultsGreen.length > 0) {
+			// 			err = { code: status.BAD_REQUEST, message: "Estufa já existente!" };
+			// 			return callback(err, null);
+			// 		} else {
+			// 			//insert
+			// 			let query = "call insert_reldevice(?,?,?)";
+			// 			let table = [req.body.id_user,req.body.serial_number,req.body.designacao];						query = mysql.format(query, table);
+			// 			pool.query(query, function (error, results) {
+			// 				if (error) {
+			// 					err = { code: status.INTERNAL_SERVER_ERROR, message: error };
+			// 					return callback(err, null);
+			// 				}
+			// 				else {
+			// 					console.log(JSON.stringify(results));
+			// 					return callback(null, results);
+			// 				}
+			// 			});
+			// 		}
+			// 	}
+			// });
 		}
 	},
 
@@ -450,8 +482,8 @@ module.exports={
 		});
 	},
 	getUSRDEVById: function (req, callback) {
-		let query = "SELECT id_rel_user_device, id_user,serial_number,designacao FROM Device WHERE id_rel_user_device = ?";
-		let table = [req.params.id_rel_user_device];
+		let query = "SELECT id_rel_user_device, id_user,serial_number,designacao FROM Device WHERE id_user = ?";
+		let table = [req.params.id_user];
 		query = mysql.format(query, table);
 		pool.query(query, function (error, results) {
 			if (error) {
@@ -462,7 +494,7 @@ module.exports={
 				if (results.length > 0)
 					return callback(null, results);
 				else {
-					let err = { code: status.NOT_FOUND, message: "GreenHouse doesn't exist" };
+					let err = { code: status.NOT_FOUND, message: "Não tens estufas a" };
 					return callback(err, null);
 				}
 			}

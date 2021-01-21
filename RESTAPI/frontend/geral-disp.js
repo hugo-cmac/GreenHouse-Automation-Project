@@ -19,6 +19,18 @@ $(document).ready(function(){
         data:{},
         success:function(data){
            // console.log(data.data.length);
+           if(data.data.length == 0){
+                $('#swiPerfil').append(
+                    "<div class=\"col-md-6 col-lg-12\""+">"+
+                        "<div class=\"single-service\""+">"+
+                            "<div class=\"service-content\""+">"+
+                                "<h5>Oh não!</h5>"+
+                                "<p>Não tem dispositivos ligados à rede, atualize a página ou tente mais tarde!</p>"+
+                            "</div>"+
+                        "</div>"+
+                    "</div>"
+                );
+            }
             for(i=0;i<data.data.length;i++){
                 aux2[i]=data.data[i];
                 aux++;

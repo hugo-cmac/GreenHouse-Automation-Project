@@ -264,20 +264,22 @@ app.post('/reluser', function (req, res) {
 	});
 });
 
-app.get('/reluser', verifyToken, function (req, res) {
+// app.get('/reluser', verifyToken, function (req, res) {
 	
-	servBD.getUSRDEV(function (error, results) {
-		if (error) {
-			res.status(error.code).send(error.message);
-		}
-		else {
-			res.status(status.OK).send({ error: false, data: results, message: 'All greenhouses.' });
-		}
-	});
+// 	servBD.getUSRDEV(function (error, results) {
+// 		if (error) {
+// 			res.status(error.code).send(error.message);
+// 		}
+// 		else {
+// 			res.status(status.OK).send({ error: false, data: results, message: 'All greenhouses.' });
+// 		}
+// 	});
 
-});
+// });
 
-app.get('/reluser/:id_rel_user_device', verifyToken, function (req, res) {
+
+
+app.get('/reluser/:id_user', verifyToken, function (req, res) {
 
 	servBD.getUSRDEVById(req, function (error, results) {
 		if (error) {
