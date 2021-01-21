@@ -159,7 +159,7 @@ function buttonWork(iter){
 		console.log('/augustocesarsilvamota@gmail.com/'+btnValue+"/in");
 		client.publish('/augustocesarsilvamota@gmail.com/'+btnValue+"/in", payload, function() {
 			console.log("Message is published");
-			client.end(); // Close the connection when published
+			//client.end(); // Close the connection when published
 		});
 		
 	});
@@ -181,7 +181,7 @@ function buttonWork(iter){
 		console.log('/augustocesarsilvamota@gmail.com/'+btnValue+"/in");
 		client.publish('/augustocesarsilvamota@gmail.com/'+btnValue+"/in", payload, function() {
 			console.log("Message is published");
-			client.end(); // Close the connection when published
+			//client.end(); // Close the connection when published
 		});
 		
 	});
@@ -203,7 +203,7 @@ function buttonWork(iter){
 		console.log('/augustocesarsilvamota@gmail.com/'+btnValue+"/in");
 		client.publish('/augustocesarsilvamota@gmail.com/'+btnValue+"/in", payload, function() {
 			console.log("Message is published");
-			client.end(); // Close the connection when published
+			//client.end(); // Close the connection when published
 		});
 		
 	});
