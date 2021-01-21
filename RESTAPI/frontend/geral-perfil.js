@@ -71,7 +71,7 @@ $(document).ready(function(){
             }
 
             $.ajax({
-                url:  localStorage.getItem('base_url')+"devices",
+                url:  localStorage.getItem('base_url')+"devices/"+userI,
                 type: 'GET',
                 dataType : 'json',
                 contentType: "application/json; charset=utf-8",
@@ -83,7 +83,7 @@ $(document).ready(function(){
                     for(i=0;i<data.data.length;i++){
                         $('#swiPerfil').append(
                             "<div class=\"switch-wrap d-flex justify-content-between\">"+
-                                "<p>"+ "Dispositivo " +(i+1)+ " (SN)" +":  " + data.data[i].serial_number +"</p>"+
+                                "<p>"+data.data[i].designacao +"</p>"+
                                 "<div class=\"primary-switch\">"+
                                 "<input type=\"checkbox\""+ "  value=\""+ data.data[i].serial_number+";"+data.data[i].registcode +"\""+ " " + "id=\"default-switch"+i+"\""+" "+"checked" +">"+
                                 "<label for=\"default-switch"+i+"\""+">"+"</label>"+
