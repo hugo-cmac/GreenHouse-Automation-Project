@@ -123,7 +123,7 @@ app.get('/devices', verifyToken, function (req, res) {
 
 });
 
-app.get('/devices/:serial_number', verifyToken, function (req, res) {
+app.get('/devices/:id_user', verifyToken, function (req, res) {
 	servBD.getDevicesById(req, function (error, results) {
 		if (error) {
 			res.status(error.code).send(error.message);
