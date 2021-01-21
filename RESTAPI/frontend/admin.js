@@ -61,6 +61,7 @@ $(document).ready(function(){
 				var regiscode = data.data[a].registcode;
 				//localStorage.setItem('des',auxes[a].designacao);
 				//strings=localStorage.getItem('des');
+				var sn;
 				$('#estufa').append(
 					"<div class=\"container\">"+
 						"<div class=\"section-top-border\">"+
@@ -82,6 +83,7 @@ $(document).ready(function(){
 					success: function (data2) {
 						//console.log(data2.data.length);
 						if(data2.data.length > 0){
+							sn = data2.data[0].serial_number;
 							$('#esdata'+data2.data[0].serial_number).append(
 											"<p>"+ "Dispositivo (SN): "+ data2.data[0].serial_number+"</p>"+
 											"<p>"+ "Temperatura: "+ data2.data[0].temp + " ªC" +"</p>"+
@@ -91,27 +93,28 @@ $(document).ready(function(){
 											"<p>"+ "Estado da estufa: "+ getState(data2.data[0].states) +"</p>"
 							);
 						}else{
-							$('#esdata'+data2.data[0].serial_number).append(
+							sn = data2.data.serial_number;
+							$('#esdata'+data2.data.serial_number).append(
 								"<p>"+ "Dispositivo (SN): "+ data2.data.serial_number+"</p>"+
 								"<p>"+ "Não tem histórico!! </p>"
 							);
 						}
 						console.log("hello");
-						var del = $('#esdata'+data2.data[0].serial_number).attr('value');
+						var del = $('#esdata'+sn).attr('value');
 						console.log("hello");
-						$('#esdata'+data2.data[0].serial_number).append(
+						$('#esdata'+sn).append(
 										"<div class=\"container text-right\">"+	
-											"<a class=\"banner_btn\" id=\"active_btn_"+data2.data[0].serial_number+"\""+" "+ "value=\""+ data2.data[0].serial_number+"\"" +" registcode=\""+ regiscode +"\">Abrir<i class=\"ti-arrow-right\"></i></a>"+
-											"<a class=\"banner_btn\" id=\"nactive_btn_"+data2.data[0].serial_number+"\""+" "+ "value=\""+ data2.data[0].serial_number+"\""+" registcode=\""+ regiscode +"\">Fechar<i class=\"ti-arrow-right\"></i></a>"+
-											"<a class=\"banner_btn\" id=\"rega_btn_"+data2.data[0].serial_number+"\""+" "+ "value=\""+ data2.data[0].serial_number+"\""+" registcode=\""+ regiscode  +"\">Regar<i class=\"ti-arrow-right\"></i></a>"+		
-											"<a class=\"banner_btn\" id=\"eliminar_btn_"+data2.data[0].serial_number+"\""+" "+ "value=\""+ del+"\"" +">Eliminar<i class=\"ti-arrow-right\"></i></a>"+																		
+											"<a class=\"banner_btn\" id=\"active_btn_"+sn+"\""+" "+ "value=\""+ sn+"\"" +" registcode=\""+ regiscode +"\">Abrir<i class=\"ti-arrow-right\"></i></a>"+
+											"<a class=\"banner_btn\" id=\"nactive_btn_"+sn+"\""+" "+ "value=\""+ sn+"\""+" registcode=\""+ regiscode +"\">Fechar<i class=\"ti-arrow-right\"></i></a>"+
+											"<a class=\"banner_btn\" id=\"rega_btn_"+sn+"\""+" "+ "value=\""+ sn+"\""+" registcode=\""+ regiscode  +"\">Regar<i class=\"ti-arrow-right\"></i></a>"+		
+											"<a class=\"banner_btn\" id=\"eliminar_btn_"+sn+"\""+" "+ "value=\""+ del+"\"" +">Eliminar<i class=\"ti-arrow-right\"></i></a>"+																		
 										"</div"+
 									"</div>"+
 								"</div>"+
 							"</div>"+
 						"</div>"
 						);
-						buttonWork(data2.data[0].serial_number);
+						buttonWork(sn);
 					},
 					
 					error: function (xhr, ajaxOptions, thrownError) {
