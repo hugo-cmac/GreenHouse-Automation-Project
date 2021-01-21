@@ -28,7 +28,7 @@ $(document).ready(function(){
 	document.getElementById("username").innerHTML = "Olá, "+userN;
 
     $.ajax({
-		url: localStorage.getItem('base_url') + "reluser",
+		url: localStorage.getItem('base_url') + "reluser/"+userI,
 		type: 'GET',
 		contentType: "application/json; charset=utf-8",
 		dataType: "json",
