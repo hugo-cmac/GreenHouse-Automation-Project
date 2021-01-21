@@ -25,8 +25,6 @@ $(document).ready(function(){
 	console.log(userI);
 	console.log(userN);
 
-	var SN;
-
 	document.getElementById("username").innerHTML = "Olá, "+userN;
 
     $.ajax({
@@ -59,7 +57,6 @@ $(document).ready(function(){
 			
 
 			for(var a=0;a<data.data.length;a++){
-				SN=data.data[a].serial_number;
 				console.log("a: "+a);
 				//localStorage.setItem('des',auxes[a].designacao);
 				//strings=localStorage.getItem('des');
@@ -71,23 +68,35 @@ $(document).ready(function(){
 									"<div class=\"col-md-3\">"+
 										"<img src=\"img/estufa2.jpeg\" alt=\"\" class=\"img-fluid\">"+
 									"</div>"+
-								"<div class=\"col-md-9 mt-sm-20 left-align-p\" "+"id=\"esdata"+a+"\" "+ "value=\""+data.data[a].id_rel_user_device
+								"<div class=\"col-md-9 mt-sm-20 left-align-p\" "+"id=\"esdata"+data.data[a].serial_number+"\" "+ "value=\""+data.data[a].id_rel_user_device
 								 +"\""+">"
 				);
 				 
-				var del = $('#esdata'+a).attr('value');
+				var del = $('#esdata'+data.data[a].serial_number).attr('value');
+				$('#esdata'+data.data[a].serial_number).append(
+								"<div class=\"container text-right\">"+	
+									"<a class=\"banner_btn\" id=\"active_btn_"+data.data[a].serial_number+"\""+" "+ "value=\""+ data.data[a].serial_number+"\"" +" registcode=\""+ data.data[a].registcode +"\">Abrir<i class=\"ti-arrow-right\"></i></a>"+
+									"<a class=\"banner_btn\" id=\"nactive_btn_"+data.data[a].serial_number+"\""+" "+ "value=\""+ data.data[a].serial_number+"\""+" registcode=\""+ data.data[a].registcode +"\">Fechar<i class=\"ti-arrow-right\"></i></a>"+
+									"<a class=\"banner_btn\" id=\"rega_btn_"+data.data[a].serial_number+"\""+" "+ "value=\""+ data.data[a].serial_number+"\""+" registcode=\""+ data.data[a].registcode  +"\">Regar<i class=\"ti-arrow-right\"></i></a>"+		
+									"<a class=\"banner_btn\" id=\"eliminar_btn_"+data.data[a].serial_number+"\""+" "+ "value=\""+ del+"\"" +">Eliminar<i class=\"ti-arrow-right\"></i></a>"+																		
+								"</div"+
+							"</div>"+
+						"</div>"+
+					"</div>"+
+				"</div>"
+				);
+				buttonWork(data.data[a].serial_number);
 				$.ajax({
-					url: localStorage.getItem('base_url') + "history/"+SN,
+					url: localStorage.getItem('base_url') + "history/"+data.data[a].serial_number,
 					type: 'GET',
 					contentType: "application/json; charset=utf-8",
 					dataType: "json",
 					data: {},
 					success: function (data2) {
-						
 						console.log(data2.data.length);
 						if(data2.data.length > 0){
-							$('#esdata'+a).append(
-											"<p>"+ "Dispositivo (SN): "+ SN+"</p>"+
+							$('#esdata'+data2.data[0].serial_number).append(
+											"<p>"+ "Dispositivo (SN): "+ data2.data[0].serial_number+"</p>"+
 											"<p>"+ "Temperatura: "+ data2.data[0].temp + " ªC" +"</p>"+
 											"<p>"+ "Humidade do ar: "+ data2.data[0].hum_air + "%" +"</p>"+
 											"<p>"+ "Humidade do solo: "+ data2.data[0].hum_earth + "%" +"</p>"+
@@ -95,8 +104,8 @@ $(document).ready(function(){
 											"<p>"+ "Estado da estufa: "+ getState(data2.data[0].states) +"</p>"
 							);
 						}else{
-							$('#esdata'+a).append(
-								"<p>"+ "Dispositivo (SN): "+ SN+"</p>"+
+							$('#esdata'+data2.data.serial_number).append(
+								"<p>"+ "Dispositivo (SN): "+ data2.data.serial_number+"</p>"+
 								"<p>"+ "Não tem histórico!! </p>"
 							);
 						}
@@ -107,19 +116,6 @@ $(document).ready(function(){
 
 					}
 				});
-				$('#esdata'+a).append(
-								"<div class=\"container text-right\">"+	
-									"<a class=\"banner_btn\" id=\"active_btn_"+a+"\""+" "+ "value=\""+ data.data[a].serial_number+"\"" +" registcode=\""+ data.data[a].registcode +"\">Abrir<i class=\"ti-arrow-right\"></i></a>"+
-									"<a class=\"banner_btn\" id=\"nactive_btn_"+a+"\""+" "+ "value=\""+ data.data[a].serial_number+"\""+" registcode=\""+ data.data[a].registcode +"\">Fechar<i class=\"ti-arrow-right\"></i></a>"+
-									"<a class=\"banner_btn\" id=\"rega_btn_"+a+"\""+" "+ "value=\""+ data.data[a].serial_number+"\""+" registcode=\""+ data.data[a].registcode  +"\">Regar<i class=\"ti-arrow-right\"></i></a>"+		
-									"<a class=\"banner_btn\" id=\"eliminar_btn_"+a+"\""+" "+ "value=\""+ del+"\"" +">Eliminar<i class=\"ti-arrow-right\"></i></a>"+																		
-								"</div"+
-							"</div>"+
-						"</div>"+
-					"</div>"+
-				"</div>"
-				);
-				buttonWork(a);
 			}
 		},
 		error: function (xhr, ajaxOptions, thrownError) {

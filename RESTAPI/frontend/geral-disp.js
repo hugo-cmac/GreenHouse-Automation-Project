@@ -42,7 +42,8 @@ $(document).ready(function(){
                                     "<div class=\"card-header\""+" id=\"headingOne"+i+ "\"" +">" +
                                         "<h5 class=\"mb-0\">" +
                                             "<button class=\"btn btn-link\" type=\"button\" data-toggle=\"collapse\" data-target=\"#collapseOne"+ i +"\""+" aria-expanded=\"true\" aria-controls=\"collapseOne\">" +
-                                                + data.data[i].designacao +
+                                                data.data[i].designacao +
+                                            "</button>" +
                                         "</h5>"+
                                     "</div>"+
                                     "<div id=\"collapseOne" + i + "\"" + " class=\"collapse\" aria-labelledby=\"headingOne"+i+ "\"" +" data-parent=\"#listaPerfil"+i+ "\"" +">"+

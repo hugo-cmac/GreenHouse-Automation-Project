@@ -362,6 +362,7 @@ module.exports={
 	getHistoryById: function (req, callback) {
 		let query = "SELECT h.id_history,h.serial_number,h.timest,h.temp,h.hum_air,h.hum_earth,h.luminosity,h.states,d.registcode FROM History h join Device d on d.serial_number=h.serial_number WHERE h.serial_number = ? ORDER BY h.timest DESC LIMIT 1,1";
 		let table = [req.params.serial_number];
+
 		query = mysql.format(query, table);
 		pool.query(query, function (error, results) {
 			if (error) {
@@ -369,12 +370,12 @@ module.exports={
 				return callback(err, null);
 			}
 			else {
-				//if (results.length > 0)	
-					return callback(null, results);
-				//else {
+				if (results.length == 0){	
 				//	let err = { code: status.NOT_FOUND, message: "History doesn't exist" };
 				//	return callback(err, null);
-				//}
+					results = { serial_number: req.params.serial_number };
+				}
+				return callback(null, results);
 			}
 		});
 	},
