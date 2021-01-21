@@ -80,27 +80,29 @@ $(document).ready(function(){
 					dataType: "json",
 					data: {},
 					success: function (data) {
-						var his = data.data.length;
 						var del = $('#esdata'+cont2).attr('value');
-						console.log(del);
-						$('#esdata'+cont2).append(
-										"<p>"+ "Dispositivo (SN): "+ data.data[his-1].serial_number+"</p>"+
-										"<p>"+ "Temperatura: "+ data.data[his-1].temp + " ªC" +"</p>"+
-										"<p>"+ "Humidade do ar: "+ data.data[his-1].hum_air + "%" +"</p>"+
-										"<p>"+ "Humidade do solo: "+ data.data[his-1].hum_earth + "%" +"</p>"+
-										"<p>"+ "Luminosidade: "+ data.data[his-1].luminosity+ "%" +"</p>"+
-										"<p>"+ "Estado da estufa: "+ getState(data.data[his-1].states) +"</p>"+
-										"<div class=\"container text-right\">"+	
-											"<a class=\"banner_btn\" id=\"active_btn_"+cont2+"\""+" "+ "value=\""+ data.data[his-1].serial_number+"\"" +">Abrir<i class=\"ti-arrow-right\"></i></a>"+
-											"<a class=\"banner_btn\" id=\"nactive_btn_"+cont2+"\""+" "+ "value=\""+ data.data[his-1].serial_number+"\"" +">Fechar<i class=\"ti-arrow-right\"></i></a>"+
-											"<a class=\"banner_btn\" id=\"rega_btn_"+cont2+"\""+" "+ "value=\""+ data.data[his-1].serial_number+"\"" +">Regar<i class=\"ti-arrow-right\"></i></a>"+		
-											"<a class=\"banner_btn\" id=\"eliminar_btn_"+cont2+"\""+" "+ "value=\""+ del+"\"" +">Eliminar<i class=\"ti-arrow-right\"></i></a>"+																		
-										"</div"+
+						console.log(data.data.length);
+						if(data.data.length > 0){
+							$('#esdata'+cont2).append(
+											"<p>"+ "Dispositivo (SN): "+ data.data[0].serial_number+"</p>"+
+											"<p>"+ "Temperatura: "+ data.data[0].temp + " ªC" +"</p>"+
+											"<p>"+ "Humidade do ar: "+ data.data[0].hum_air + "%" +"</p>"+
+											"<p>"+ "Humidade do solo: "+ data.data[0].hum_earth + "%" +"</p>"+
+											"<p>"+ "Luminosidade: "+ data.data[0].luminosity+ "%" +"</p>"+
+											"<p>"+ "Estado da estufa: "+ getState(data.data[0].states) +"</p>"+
+											"<div class=\"container text-right\">"+	
+												"<a class=\"banner_btn\" id=\"active_btn_"+cont2+"\""+" "+ "value=\""+ data.data[0].serial_number+"\"" +" registcode=\""+ data.data[0].registcode +"\">Abrir<i class=\"ti-arrow-right\"></i></a>"+
+												"<a class=\"banner_btn\" id=\"nactive_btn_"+cont2+"\""+" "+ "value=\""+ data.data[0].serial_number+"\""+" registcode=\""+ data.data[0].registcode +"\">Fechar<i class=\"ti-arrow-right\"></i></a>"+
+												"<a class=\"banner_btn\" id=\"rega_btn_"+cont2+"\""+" "+ "value=\""+ data.data[0].serial_number+"\""+" registcode=\""+ data.data[0].registcode  +"\">Regar<i class=\"ti-arrow-right\"></i></a>"+		
+												"<a class=\"banner_btn\" id=\"eliminar_btn_"+cont2+"\""+" "+ "value=\""+ del+"\"" +">Eliminar<i class=\"ti-arrow-right\"></i></a>"+																		
+											"</div"+
+										"</div>"+
 									"</div>"+
 								"</div>"+
-							"</div>"+
-						"</div>"
-						);	
+							"</div>"
+							);
+						}
+					
 
 						buttonWork(cont2);
 					
@@ -108,6 +110,14 @@ $(document).ready(function(){
 					},
 					
 					error: function (xhr, ajaxOptions, thrownError) {
+						$('#esdata'+cont2).append(
+									"<p>"+ "Dispositivo (SN): "+ data.data[0].serial_number+"</p>"+
+									"<p>"+ "Não tem histórico!! </p>"+
+									"</div>"+
+								"</div>"+
+							"</div>"+
+						"</div>"
+						);
 						// alert(xhr.status);
 						// alert(thrownError); 
 					}
@@ -136,73 +146,65 @@ function buttonWork(iter){
 	$("#active_btn_"+iter).on('click',function() {
 		var btnValue=($(this).attr('value'));
 	//	console.log("SN BTN: "+btnValue);
-
-		$.ajax({
-			url: localStorage.getItem('base_url')+ "devices/"+btnValue,
-			type: 'GET',
-			contentType: "application/json; charset=utf-8",
-			dataType: "json",
-			data: {},
-			success: function (data) {
-				var top = data.data[data.data.length-1].registcode;
-				var data=data.data;
-				console.log("SN: "+btnValue);
-				console.log("registcode: "+top);
-				var strBytes = getVal(top);
-				console.log("Bytes concat: "+strBytes);
-				var date = new Date().getTime();
-				var totp = new jsOTP.totp();
-				var timeCode = totp.getOtp(strBytes,date);
-				var payload = timeCode+";0;1";
-				console.log("Payload: "+payload);
-				console.log('/augustocesarsilvamota@gmail.com/'+btnValue+"/in");
-				client.publish('/augustocesarsilvamota@gmail.com/'+btnValue+"/in", payload, function() {
-					console.log("Message is published");
-					client.end(); // Close the connection when published
-				});
-			},
-	
-			error: function (xhr, ajaxOptions, thrownError) {
-				console.log(xhr.status);
-				console.log(thrownError);
-			}
+		var regi = ($(this).attr('registcode'));
+		var top = regi;
+		console.log("SN: "+btnValue);
+		console.log("registcode: "+top);
+		var strBytes = getVal(top);
+		console.log("Bytes concat: "+strBytes);
+		var date = new Date().getTime();
+		var totp = new jsOTP.totp();
+		var timeCode = totp.getOtp(strBytes,date);
+		var payload = timeCode+";0;1";
+		console.log("Payload: "+payload);
+		console.log('/augustocesarsilvamota@gmail.com/'+btnValue+"/in");
+		client.publish('/augustocesarsilvamota@gmail.com/'+btnValue+"/in", payload, function() {
+			console.log("Message is published");
+			client.end(); // Close the connection when published
 		});
-	
 		
 	});
 
 	$("#nactive_btn_"+iter).click(function() {
 		var btnValue=($(this).attr('value'));
-		//console.log("SN BTN: "+btnValue);
-		$.ajax({
-			url: localStorage.getItem('base_url')+ "devices/"+btnValue,
-			type: 'GET',
-			contentType: "application/json; charset=utf-8",
-			dataType: "json",
-			data: {},
-			success: function (data) {
-				var top = data.data[data.data.length-1].registcode;
-				var data=data.data;
-				console.log("SN: "+btnValue);
-				console.log("registcode: "+top);
-				var strBytes = getVal(top);
-				console.log("Bytes concat: "+strBytes);
-				var date = new Date().getTime();
-				var totp = new jsOTP.totp();
-				var timeCode = totp.getOtp(strBytes,date);
-				var payload = timeCode+";0;0";
-				console.log("Payload: "+payload);
-				console.log('/augustocesarsilvamota@gmail.com/'+btnValue+"/in");
-				client.publish('/augustocesarsilvamota@gmail.com/'+btnValue+"/in", payload, function() {
-					console.log("Message is published");
-					client.end(); // Close the connection when published
-				});
-			},
-	
-			error: function (xhr, ajaxOptions, thrownError) {
-				console.log(xhr.status);
-				console.log(thrownError);
-			}
+	//	console.log("SN BTN: "+btnValue);
+		var regi = ($(this).attr('registcode'));
+		var top = regi;
+		console.log("SN: "+btnValue);
+		console.log("registcode: "+top);
+		var strBytes = getVal(top);
+		console.log("Bytes concat: "+strBytes);
+		var date = new Date().getTime();
+		var totp = new jsOTP.totp();
+		var timeCode = totp.getOtp(strBytes,date);
+		var payload = timeCode+";0;0";
+		console.log("Payload: "+payload);
+		console.log('/augustocesarsilvamota@gmail.com/'+btnValue+"/in");
+		client.publish('/augustocesarsilvamota@gmail.com/'+btnValue+"/in", payload, function() {
+			console.log("Message is published");
+			client.end(); // Close the connection when published
+		});
+		
+	});
+
+	$("#rega_btn_"+iter).on('click',function() {
+		var btnValue=($(this).attr('value'));
+	//	console.log("SN BTN: "+btnValue);
+		var regi = ($(this).attr('registcode'));
+		var top = regi;
+		console.log("SN: "+btnValue);
+		console.log("registcode: "+top);
+		var strBytes = getVal(top);
+		console.log("Bytes concat: "+strBytes);
+		var date = new Date().getTime();
+		var totp = new jsOTP.totp();
+		var timeCode = totp.getOtp(strBytes,date);
+		var payload = timeCode+";1;1";
+		console.log("Payload: "+payload);
+		console.log('/augustocesarsilvamota@gmail.com/'+btnValue+"/in");
+		client.publish('/augustocesarsilvamota@gmail.com/'+btnValue+"/in", payload, function() {
+			console.log("Message is published");
+			client.end(); // Close the connection when published
 		});
 		
 	});
