@@ -112,7 +112,7 @@ $(document).ready(function(){
                                     console.log("milliseconds: "+date);
                                     console.log("seconds: "+dateaux);
                                     var totp = new jsOTP.totp();
-                                    var timeCode = totp.getOtp(strBytes,date);
+                                    var timeCode = totp.getOtp(top,date);
                                     console.log('/augustocesarsilvamota@gmail.com/'+seriREG[0]+'/in');
                                     var payload = timeCode+";"+"2"+";"+aux[btnValue].temp_max+";"+aux[btnValue].temp_min+";"+aux[btnValue].hum_air_max+";"+aux[btnValue].hum_air_min+";"+aux[btnValue].hum_earth_max+";"+aux[btnValue].hum_earth_min;
                                     console.log("Payload: "+payload);
