@@ -93,7 +93,7 @@ $(document).ready(function(){
 					dataType: "json",
 					data: {},
 					success: function (data2) {
-						console.log(data2.data.length);
+						//console.log(data2.data.length);
 						if(data2.data.length > 0){
 							$('#esdata'+data2.data[0].serial_number).append(
 											"<p>"+ "Dispositivo (SN): "+ data2.data[0].serial_number+"</p>"+

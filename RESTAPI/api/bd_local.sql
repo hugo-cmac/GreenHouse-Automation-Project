@@ -88,8 +88,10 @@ delimiter ;
 delimiter //
 create procedure insert_reldevice(in idus int(10), iddev varchar(255), desi varchar(255))
 begin
-	insert into rel_user_device(id_user,serial_number,designacao)
-		values(idus,iddev,desi);
+  if not (select exists (select * from rel_user_device where serial_number=iddev and id_user = idus)) then
+    insert into rel_user_device(id_user,serial_number,designacao)
+		  values(idus,iddev,desi);
+  end if;
 end//
 delimiter ;
 
