@@ -34,6 +34,7 @@ $(document).ready(function(){
 		dataType: "json",
 		data: {},
 		success: function (data) {
+			console.log(data.data.length);
 			if(data.data.length == 0){
 				$('#estufa').append(
 					"<div class=\"col-md-6 col-lg-12\""+">"+
