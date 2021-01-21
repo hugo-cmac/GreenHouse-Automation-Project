@@ -23,18 +23,20 @@ $(document).ready(function(){
                 aux2[i]=data.data[i];
                 aux++;
                 $('#listaDisp').append(
-                    "<div class=\"col-sm-12 col-lg-6\">" +
-                        "<div class=\"accordion\" id=\"listaPerfil"+i+ "\"" +">"+
-                            "<div class=\"card\">"+
-                                "<div class=\"card-header\""+" id=\"headingOne"+i+ "\"" +">" +
-                                    "<h5 class=\"mb-0\">" +
-                                        "<button class=\"btn btn-link\" type=\"button\" data-toggle=\"collapse\" data-target=\"#collapseOne"+ i +"\""+" aria-expanded=\"true\" aria-controls=\"collapseOne\">" +
-                                            "Dispositivo nº: " + aux +
-                                    "</h5>"+
-                                "</div>"+
-                                "<div id=\"collapseOne" + i + "\"" + " class=\"collapse\" aria-labelledby=\"headingOne"+i+ "\"" +" data-parent=\"#listaPerfil"+i+ "\"" +">"+
-                                    "<div class=\"card-body\">"+      
-                                            "Serial Number (SN): "+data.data[i].serial_number+"<br/>"+                                       
+                    "<div class=\"container\""+
+                        "<div class=\"col-sm-12 col-lg-6\">" +
+                            "<div class=\"accordion\" id=\"listaPerfil"+i+ "\"" +">"+
+                                "<div class=\"card\">"+
+                                    "<div class=\"card-header\""+" id=\"headingOne"+i+ "\"" +">" +
+                                        "<h5 class=\"mb-0\">" +
+                                            "<button class=\"btn btn-link\" type=\"button\" data-toggle=\"collapse\" data-target=\"#collapseOne"+ i +"\""+" aria-expanded=\"true\" aria-controls=\"collapseOne\">" +
+                                                "Dispositivo nº: " + aux +
+                                        "</h5>"+
+                                    "</div>"+
+                                    "<div id=\"collapseOne" + i + "\"" + " class=\"collapse\" aria-labelledby=\"headingOne"+i+ "\"" +" data-parent=\"#listaPerfil"+i+ "\"" +">"+
+                                        "<div class=\"card-body\">"+      
+                                                "Serial Number (SN): "+data.data[i].serial_number+"<br/>"+                                       
+                                        "</div>"+
                                     "</div>"+
                                 "</div>"+
                             "</div>"+

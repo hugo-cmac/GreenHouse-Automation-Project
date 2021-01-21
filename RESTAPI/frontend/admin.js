@@ -34,6 +34,19 @@ $(document).ready(function(){
 		dataType: "json",
 		data: {},
 		success: function (data) {
+			if(data.data.length == 0){
+				$('#estufa').append(
+					"<div class=\"col-md-6 col-lg-12\""+">"+
+						"<div class=\"single-service\""+">"+
+							"<div class=\"service-content\""+">"+
+								"<h5>Oh não!</h5>"+
+								"<p>Não tem estufas registadas, registe já !</p>"+
+							"</div>"+
+						"</div>"+
+					"</div>"
+				);
+			}
+			
 			for(var i=0;i<data.data.length;i++){
 				if(data.data[i].id_user==userI){
 					auxes[cont]=data.data[i];
@@ -41,6 +54,7 @@ $(document).ready(function(){
 				}
 			}
 			console.log(auxes.length);
+			
 
 			for(var a=0;a<auxes.length;a++){
 				console.log("a: "+a);
