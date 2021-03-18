@@ -1,4 +1,4 @@
-# Micro-Dispositivos-Project
+# Greenhouse Automation Project
 
 ## Introduction
 
