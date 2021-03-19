@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This is a project of the course Microcontrollers and Wireless Sensor Networks, and implements a greenhouse through an Arduino device that is controlled by a web page.
+This is a project carried out within the scope of the course Microcontrollers and Wireless Sensor Networks and implements a greenhouse through an Arduino device that is controlled by a web page.
 
 
 The objective that we tried to achieve was the automatic control of the needs of the cultivation through the construction of profiles. Thus managing to remove the need for crop treatment.
